@@ -1,0 +1,96 @@
+<div class="container-fluid">
+  <app-page-title title="Transacciones"></app-page-title>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row mb-md-2">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length">
+                <label class="d-inline-flex align-items-center">Mostrar
+                  <select name="pageSize" [(ngModel)]="pageSize" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm" (change)="onPageSizeChange()">
+                    <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div id="tickets-table_filter" class="dataTables_filter text-md-end">
+                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Buscar:
+                    <input type="text" class="form-control" [(ngModel)]="searchTerm" (input)="performSearch()" placeholder="Buscar...">
+                </label>
+                <button type="button" class="btn btn-primary" style="margin-left: 15px;" (click)="exportToPDF()">
+                  Descargar PDF <i class="uil uil-arrow-right ml-2"></i>
+                </button>
+                <button type="button" class="btn btn-success" style="margin-left: 15px;" (click)="exportToExcel()">
+                  <i class="uil uil-check me-2"></i> Descargar Excel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-responsive mb-4 col-12 col-lg-12">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <div id="tableContainer" class="table-responsive content-cards">
+                        <table class="table table-centered datatables dt-responsive nowrap table-card-list">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Date</th>
+                              <th>Time</th>
+                              <th>OUT IP</th>
+                              <th>IN IP</th>
+                              <th>GEO OUT</th>
+                              <th>GEO IN</th>
+                              <th>CARRIER</th>
+                              <th>PRODUCT</th>
+                              <th>AMOUNT</th>
+                              <th>PHONE</th>
+                              <th>TRN</th>
+                              <th>STATUS</th>
+                              <th>T TIME</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let transaction of filteredTransactions.slice(startIndex, endIndex); let i = index">
+                              <th scope="row">{{ startIndex + i + 1 }}</th>
+                              <td>{{ transaction.DATE }}</td>
+                              <td>{{ transaction.TIME }}</td>
+                              <td>{{ transaction.OUT_IP }}</td>
+                              <td>{{ transaction.IN_IP }}</td>
+                              <td>{{ transaction.GEO_OUT }}</td>
+                              <td>{{ transaction.GEO_IN }}</td>
+                              <td>{{ transaction.CARRIER }}</td>
+                              <td>{{ transaction.PROD }}</td>
+                              <td>{{ transaction.AMOUNT }}</td>
+                              <td>{{ transaction.PHONE }}</td>
+                              <td>{{ transaction.TRN }}</td>
+                              <td>{{ transaction.ST }}</td>
+                              <td>{{ transaction.T_TIME }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="float-end">
+              <div class="d-flex justify-content-between">
+                <button class="btn btn-outline-primary" [disabled]="currentPage === 0" (click)="onPreviousPage()">Anterior</button>
+                <button class="btn btn-outline-primary" style="margin-left: 15px;" [disabled]="endIndex === totalRecords" (click)="onNextPage()">Siguiente</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
