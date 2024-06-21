@@ -432,9 +432,9 @@ export class OrdersComponent implements OnInit {
   
     // Coordenadas de la imagen
     const imgX = 15;
-    const imgY = 12;
+    const imgY = 14;
     const imgWidth = 20;
-    const imgHeight = 15;
+    const imgHeight = 12;
   
     doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
   
@@ -500,6 +500,11 @@ export class OrdersComponent implements OnInit {
   
     doc.save('Transacciones.pdf');
   }
+
+
+
+
+
   
 
 }

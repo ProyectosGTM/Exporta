@@ -49,18 +49,18 @@ export class PasswordresetComponent implements OnInit, AfterViewInit {
    * On submit form
    */
   onSubmit() {
-    this.success = '';
-    this.submitted = true;
+    // this.success = '';
+    // this.submitted = true;
 
-    // stop here if form is invalid
-    if (this.resetForm.invalid) {
-      return;
-    }
-    if (environment.defaultauth === 'firebase') {
-      this.authenticationService.resetPassword(this.f.email.value)
-        .catch(error => {
-          this.error = error ? error : '';
-        });
-    }
+    // // stop here if form is invalid
+    // if (this.resetForm.invalid) {
+    //   return;
+    // }
+    // if (environment.defaultauth === 'firebase') {
+    //   this.authenticationService.resetPassword(this.f.email.value)
+    //     .catch(error => {
+    //       this.error = error ? error : '';
+    //     });
+    // }
   }
 }
