@@ -4,19 +4,11 @@
 
 export const environment = {
   production: false,
-  defaultauth: 'fackbackend',
-  firebaseConfig: {
-    apiKey: '',
-    authDomain: '',
-    databaseURL: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
-    measurementId: ''
-  }
+  stripe_token: 'STRIPE_TOKEN',
+  paypal_token: 'PAYPAL_TOKEN',
+  API_SECURITY: 'http://216.238.84.225:3006',
 };
-
+// http://216.238.84.225:3006
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

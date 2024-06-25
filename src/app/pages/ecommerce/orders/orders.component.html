@@ -13,12 +13,18 @@
                     <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
                   </select>
                 </label>
+                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Desde:
+                  <input type="date" class="form-control" [(ngModel)]="startDate" (change)="filterByDateRange()">
+                </label>
+                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Hasta:
+                  <input type="date" class="form-control" [(ngModel)]="endDate" (change)="filterByDateRange()">
+                </label>
               </div>
             </div>
             <div class="col-sm-12 col-md-6">
               <div id="tickets-table_filter" class="dataTables_filter text-md-end">
                 <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Buscar:
-                    <input type="text" class="form-control" [(ngModel)]="searchTerm" (input)="performSearch()" placeholder="Buscar...">
+                  <input type="text" class="form-control" [(ngModel)]="searchTerm" (input)="performSearch()" placeholder="Buscar...">
                 </label>
                 <button type="button" class="btn btn-primary" style="margin-left: 15px;" (click)="exportToPDF()">
                   Descargar PDF <i class="uil uil-arrow-right ml-2"></i>

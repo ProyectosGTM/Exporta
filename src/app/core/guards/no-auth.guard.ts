@@ -10,15 +10,16 @@ import { AuthenticationService } from '../services/auth.service';
   
     constructor(private router: Router, private auth: AuthenticationService) {}
   
-    // canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    //     if (this.auth.isAuthenticated()) {
-    //       this.router.navigate(['dashboard']);
-    //       return false;
-    //     }
-    //     return true;
-    // }
+    canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+        //your logic goes here
+        if (this.auth.isAuthenticated()) {
+          this.router.navigate(['dashboard']);
+          return false;
+        }
+        return true;
+    }
   }
   
-  // export const AuthGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
-  //   return inject(NoAuthGuard).canActivate(next, state);
-  // }
+  export const AuthGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+    return inject(NoAuthGuard).canActivate(next, state);
+  }

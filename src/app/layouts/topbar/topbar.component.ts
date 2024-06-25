@@ -10,6 +10,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { LanguageService } from '../../core/services/language.service';
 import { TranslateService } from '@ngx-translate/core';
 
+import { Title } from '@angular/platform-browser';
+
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
@@ -28,12 +30,18 @@ export class TopbarComponent implements OnInit {
   countryName: any;
   valueset;
 
+  public imagenPerfil:string;
+  public nombre: string;
+  public apellidoPaterno: string;
+
   constructor(@Inject(DOCUMENT) private document: any,
     private router: Router,
     private authService: AuthenticationService,
     private authFackservice: AuthfakeauthenticationService,
     public languageService: LanguageService,
     public translate: TranslateService,
+    private titleService: Title,
+    private user:AuthenticationService,
     public _cookiesService: CookieService) {
   }
 
@@ -51,6 +59,20 @@ export class TopbarComponent implements OnInit {
   @Output() mobileMenuButtonClicked = new EventEmitter();
 
   ngOnInit() {
+    const user = this.user.getUser();
+    this.imagenPerfil = user.imagenPerfil;
+    this.nombre = user.nombre;
+
+    if (user.idCliente === 1) {
+      this.nombre = 'Konecta';
+      this.imagenPerfil = 'assets/images/profile/konecta.jpg';
+      this.titleService.setTitle('Konecta');
+    } else if (user.idCliente === 2) {
+      this.nombre = 'Tecsa';
+      this.imagenPerfil = 'assets/images/profile/tecsa.jpg';
+      this.titleService.setTitle('Tecsa');
+    }
+
     this.openMobileMenu = false;
     this.element = document.documentElement;
 
@@ -101,12 +123,6 @@ export class TopbarComponent implements OnInit {
    * Logout the user
    */
   logout() {
-    //user logout
-    if (environment.defaultauth === 'firebase') {
-      this.authService.logout();
-    } else {
-      this.authFackservice.logout();
-    }
     this.router.navigate(['/account/login']);
   }
 

@@ -4,7 +4,6 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { HttpClient } from '@angular/common/http';
 
-
 interface Transaction {
   DATE: string;
   TIME: string;
@@ -328,6 +327,404 @@ export class OrdersComponent implements OnInit {
       "ST": "00",
       "T_TIME": 2
     }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    },
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    },
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
+    ,
+    {
+      "DATE": "2024/02/26",
+      "TIME": "13:16:05",
+      "OUT_IP": "189.240.98.226",
+      "IN_IP": "54.163.211.222",
+      "GEO_OUT": "MEXICO UNINET",
+      "GEO_IN": "EE.UU ASHBURN AMAZON",
+      "CARRIER": "TELCEL",
+      "PROD": "PA20",
+      "AMOUNT": 20,
+      "PHONE": "****744625",
+      "TRN": 831396,
+      "ST": "00",
+      "T_TIME": 2
+    }
   ];
   filteredTransactions: Transaction[] = [];
   pageSizeOptions = [5, 10, 15, 20];
@@ -335,33 +732,23 @@ export class OrdersComponent implements OnInit {
   currentPage = 0;
   totalRecords = 0;
   searchTerm: string = '';
+  startDate: string = '';
+  endDate: string = '';
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    // Asignar los datos originales al array filtrado y calcular el total de registros
     this.filteredTransactions = this.transactions;
     this.totalRecords = this.transactions.length;
   }
 
   performSearch(): void {
-    if (this.searchTerm.trim() === '') {
-      this.filteredTransactions = this.transactions;
-    } else {
-      this.filteredTransactions = this.transactions.filter(transaction =>
-        Object.values(transaction).some(val =>
-          val.toString().toLowerCase().includes(this.searchTerm.toLowerCase())
-        )
-      );
-    }
-    // Actualizar el total de registros después de filtrar
-    this.totalRecords = this.filteredTransactions.length;
-    // Reiniciar la página actual a la primera cuando se realiza una búsqueda
-    this.currentPage = 0;
+    this.filterTransactions();
   }
 
   onPageSizeChange(): void {
-    this.currentPage = 0; // Reiniciar a la primera página cuando cambia el tamaño
+    this.currentPage = 0;
+    this.filterTransactions();
   }
 
   onNextPage(): void {
@@ -384,31 +771,46 @@ export class OrdersComponent implements OnInit {
     return Math.min((this.currentPage + 1) * this.pageSize, this.totalRecords);
   }
 
+  filterByDateRange(): void {
+    this.filterTransactions();
+  }
+
+  filterTransactions(): void {
+    this.filteredTransactions = this.transactions.filter(transaction => {
+      const transactionDate = new Date(transaction.DATE);
+      const start = this.startDate ? new Date(this.startDate) : null;
+      const end = this.endDate ? new Date(this.endDate) : null;
+
+      let matchesDateRange = true;
+      if (start && transactionDate < start) matchesDateRange = false;
+      if (end && transactionDate > end) matchesDateRange = false;
+
+      let matchesSearchTerm = Object.values(transaction).some(val =>
+        val.toString().toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+
+      return matchesDateRange && matchesSearchTerm;
+    });
+
+    this.totalRecords = this.filteredTransactions.length;
+    this.currentPage = 0;
+  }
+
   exportToExcel(): void {
-    // Crear una hoja de trabajo de Excel
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.filteredTransactions);
-  
-    // Definir el rango de encabezado
     const headerRange = XLSX.utils.decode_range(worksheet['!ref']);
     const headerCols = [];
     for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
       const headerCellRef = XLSX.utils.encode_cell({ r: 0, c: col });
       headerCols.push({ wch: worksheet[headerCellRef].v.toString().length + 5 });
-      // Aplicar estilo de texto negro al encabezado
       worksheet[headerCellRef].s = {
-        font: { bold: true, color: { rgb: 'd40c0c' } } // Color de texto negro
+        font: { bold: true, color: { rgb: 'd40c0c' } }
       };
     }
-  
-    // Aplicar estilos al encabezado
     worksheet['!cols'] = headerCols;
-  
-    // Crear libro de Excel y guardar
     const workbook: XLSX.WorkBook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
     XLSX.writeFile(workbook, 'Transacciones.xlsx');
   }
-  
-  
 
   private getBase64ImageFromURL(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -425,53 +827,46 @@ export class OrdersComponent implements OnInit {
 
   async exportToPDF(): Promise<void> {
     const doc = new jsPDF('landscape');
-  
-    // Agregar la imagen
     const imgUrl = '../../../../assets/images/logoTECSA.png';
     const imgData = await this.getBase64ImageFromURL(imgUrl);
-  
-    // Coordenadas de la imagen
+
     const imgX = 15;
     const imgY = 14;
     const imgWidth = 20;
     const imgHeight = 12;
-  
+
     doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
-  
-    // Línea vertical negra
+
     const lineX = imgX + imgWidth + 5;
     const lineY1 = imgY;
     const lineY2 = imgY + imgHeight;
-  
-    doc.setDrawColor(0, 0, 0); // Negro
+
+    doc.setDrawColor(0, 0, 0);
     doc.setLineWidth(0.5);
     doc.line(lineX, lineY1, lineX, lineY2);
-  
-    // Agregar texto en negrita
+
     const textX = lineX + 5;
     const textYStart = 13;
     const textLineHeight = 5;
-  
-    doc.setFont('courier', 'bold'); // Cambiar la fuente a Courier y negrita
+
+    doc.setFont('courier', 'bold');
     doc.setFontSize(10);
     doc.text('Konnecta System 7.0', textX, textYStart);
     doc.text('CLIENT : TECSA/INGFRAC', textX, textYStart + textLineHeight);
     doc.text('NAME : INGFRAC DISEÑO Y CONSTRUCCIÓN SA DE CV', textX, textYStart + 2 * textLineHeight);
     doc.text('SEND TO : STARCCLOUD CONNECT LLC', textX, textYStart + 3 * textLineHeight);
-    doc.text('TYPE : MX PIPE', 200, 23); // Ajusta estas coordenadas según la posición deseada
-  
-    // Obtener la fecha y hora actuales
+    doc.text('TYPE : MX PIPE', 200, 23);
+
     const currentDate = new Date();
     const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const formattedTime = currentDate.toLocaleTimeString('es-ES');
     const dateTimeText = `${formattedDate}, ${formattedTime}`;
     
-    doc.text(dateTimeText, 200, 28); // Ajusta estas coordenadas según la posición deseada
-  
-    // Agregar tabla con fuente Courier
+    doc.text(dateTimeText, 200, 28);
+
     (doc as any).autoTable({
       head: [['#', 'DATE', 'TIME', 'OUT IP', 'IN IP', 'GEO OUT', 'GEO IN', 'CARRIER', 'PROD', 'AMOUNT', 'PHONE', 'TRN', 'ST', 'T TIME']],
-      body: this.transactions.map((transaction, index) => [
+      body: this.filteredTransactions.map((transaction, index) => [
         index + 1,
         transaction.DATE,
         transaction.TIME,
@@ -487,24 +882,15 @@ export class OrdersComponent implements OnInit {
         transaction.ST,
         transaction.T_TIME,
       ]),
-  
       startY: 30,
-      styles: { fontSize: 8, font: 'courier', cellPadding: 1.5, lineHeight: 1 }, // Establecer la fuente Courier y ajustar el espaciado entre filas
-      headStyles: { fillColor: [31, 78, 120], textColor: [255, 255, 255], halign: 'center', font: 'courier', fontStyle: 'bold' }, // Establecer la fuente Courier y negrita para el encabezado
+      styles: { fontSize: 8, font: 'courier', cellPadding: 1.5, lineHeight: 1 },
+      headStyles: { fillColor: [31, 78, 120], textColor: [255, 255, 255], halign: 'center', font: 'courier', fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [255, 255, 255] },
     });
-  
-    // Agregar footer
+
     doc.setFontSize(10);
     doc.text('Tecsa', 14, doc.internal.pageSize.height - 10);
-  
+
     doc.save('Transacciones.pdf');
   }
-
-
-
-
-
-  
-
 }

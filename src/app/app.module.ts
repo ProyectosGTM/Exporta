@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 
+import { ToastrModule } from 'ngx-toastr';
 import { environment } from '../environments/environment';
 
 import { NgbNavModule, NgbAccordionModule, NgbTooltipModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -19,13 +20,9 @@ import { initFirebaseBackend } from './authUtils';
 import { ErrorInterceptor } from './core/helpers/error.interceptor';
 import { JwtInterceptor } from './core/helpers/jwt.interceptor';
 import { FakeBackendInterceptor } from './core/helpers/fake-backend';
-
-if (environment.defaultauth === 'firebase') {
-  initFirebaseBackend(environment.firebaseConfig);
-} else {
-  // tslint:disable-next-line: no-unused-expression
-  FakeBackendInterceptor;
-}
+import { AuthModule } from './account/auth/auth.module';
+import { InterceptService } from './account/auth/login/intercept.service';
+import { CommonModule } from '@angular/common';
 
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -36,7 +33,7 @@ export function createTranslateLoader(http: HttpClient): any {
     AppComponent,
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserAnimationsModule,
     HttpClientModule,
     TranslateModule.forRoot({
@@ -52,14 +49,28 @@ export function createTranslateLoader(http: HttpClient): any {
     NgbAccordionModule,
     NgbNavModule,
     NgbTooltipModule,
-    NgbModule
+    NgbModule,
+    AuthModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-top-right', // Ajusta según necesites: 'toast-top-right', 'toast-bottom-right', 'toast-top-left', 'toast-bottom-left', 'toast-top-full-width', 'toast-bottom-full-width', 'toast-top-center', 'toast-bottom-center'
+      preventDuplicates: true,
+      closeButton: true,
+      progressBar: true,
+      timeOut: 5000, // Ajusta el tiempo que el toastr permanece visible
+    }),
   ],
   bootstrap: [AppComponent],
-  providers: [
+/*  providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
   ],
+*/
+providers: [
+  { provide: HTTP_INTERCEPTORS, useClass: InterceptService, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 
+
+],
 })
 export class AppModule { }
