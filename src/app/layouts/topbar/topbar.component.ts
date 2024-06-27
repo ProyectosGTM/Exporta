@@ -11,6 +11,8 @@ import { LanguageService } from '../../core/services/language.service';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Title } from '@angular/platform-browser';
+import { ClienteService } from 'src/app/shared/services/clientes.service';
+import { SharedDataService } from 'src/app/shared/services/shared-data.service';
 
 @Component({
   selector: 'app-topbar',
@@ -42,6 +44,8 @@ export class TopbarComponent implements OnInit {
     public translate: TranslateService,
     private titleService: Title,
     private user:AuthenticationService,
+    private cliente: ClienteService,
+    private sharedDataService: SharedDataService,
     public _cookiesService: CookieService) {
   }
 
@@ -57,21 +61,22 @@ export class TopbarComponent implements OnInit {
 
   @Output() settingsButtonClicked = new EventEmitter();
   @Output() mobileMenuButtonClicked = new EventEmitter();
+  nombreCliente: string;
+logotipoReporte: string;
 
-  ngOnInit() {
-    const user = this.user.getUser();
-    this.imagenPerfil = user.imagenPerfil;
-    this.nombre = user.nombre;
-
-    if (user.idCliente === 1) {
-      this.nombre = 'Konecta';
-      this.imagenPerfil = 'assets/images/profile/konecta.jpg';
-      this.titleService.setTitle('Konecta');
-    } else if (user.idCliente === 2) {
-      this.nombre = 'Tecsa';
-      this.imagenPerfil = 'assets/images/profile/tecsa.jpg';
-      this.titleService.setTitle('Tecsa');
-    }
+  ngOnInit(): void {
+    this.nombreCliente = this.sharedDataService.getNombreClienteFromStorage(); // Obtener valor inicial de localStorage
+    this.logotipoReporte = this.sharedDataService.getLogotipoReporteFromStorage(); // Obtener valor inicial de localStorage
+    this.sharedDataService.nombreCliente$.subscribe(
+      nombre => {
+        this.nombreCliente = nombre;
+      }
+    );
+    this.sharedDataService.logotipoReporte$.subscribe(
+      logotipo => {
+        this.logotipoReporte = logotipo;
+      }
+    );
 
     this.openMobileMenu = false;
     this.element = document.documentElement;
@@ -103,6 +108,57 @@ export class TopbarComponent implements OnInit {
     this.cookieValue = lang;
     this.languageService.setLanguage(lang);
   }
+  
+  private setUserProfile(user: any) {
+    this.imagenPerfil = user.imagenPerfil;
+    this.nombre = user.nombre;
+
+    switch (user.idCliente) {
+        case 3:
+            // this.obtenerClienteEntorno();
+            this.nombre = 'Entorno';
+            this.titleService.setTitle('Entorno');
+            this.setFavicon('assets/images/logoKonnecta.png');
+            break;
+        case 2:
+            // this.obtenerClienteTecsa();
+            this.nombre = 'Tecsa';
+            this.titleService.setTitle('Tecsa');
+            this.setFavicon('assets/images/tecsalogo.ico');
+            break;
+        default:
+            // Valores por defecto si idCliente no es 1 ni 2
+            this.nombre = 'Cliente Desconocido';
+            this.imagenPerfil = 'assets/images/profile/default.jpg';
+            this.titleService.setTitle('Cliente Desconocido');
+            this.setFavicon('assets/images/icons/default-favicon.ico');
+            break;
+    }
+  }
+
+  // obtenerClienteTecsa(){
+  //   this.cliente.obtenerClienteTecsa().subscribe(
+  //     (res: any) => {
+  //       this.imagenPerfil = res.LogotipoReporte;
+  //     }
+  //   );
+  // }
+
+  obtenerClienteEntorno(){
+    this.cliente.obtenerClienteEntorno().subscribe(
+      (res: any) => {
+        this.imagenPerfil = res.LogotipoReporte;
+      }
+    );
+  }
+
+  private setFavicon(url: string) {
+    let link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = url;
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }  
 
   /**
    * Toggles the right sidebar
@@ -124,6 +180,10 @@ export class TopbarComponent implements OnInit {
    */
   logout() {
     this.router.navigate(['/account/login']);
+
+    setTimeout(()=>{
+      window.location.reload();
+    },700)
   }
 
   /**

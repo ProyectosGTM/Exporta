@@ -592,7 +592,7 @@ export const MENU: MenuItem[] = [
     // }
     {
         id: 109,
-        label: 'MENUITEMS.PRUEBACOMPONENT.TEXT',
+        label: 'Trabajo',
         isTitle: true
     },
     {
@@ -602,29 +602,58 @@ export const MENU: MenuItem[] = [
         link: '/ecommerce/orders',
     },
     {
-        id: 111,
-        label: 'MENUITEMS.PRUEBADOS.TEXT',
-        icon: 'uil-user-check',
-        link: '/ecommerce/orders',
+        id: 117,
+        label: 'Administración',
+        isTitle: true
     },
     {
-        id: 112,
-        label: 'MENUITEMS.PRUEBATRES.TEXT',
-        icon: 'uil-user-check',
-        link: '/ecommerce/orders',
+        id: 118,
+        label: 'Módulos',
+        icon: 'uil-box',
+        link: '/modulos/lista-modulos',
     },
     {
-        id: 113,
-        label: 'MENUITEMS.PRUEBACUATRO.TEXT',
+        id: 118,
+        label: 'Permisos',
         icon: 'uil-list-ul',
-        link: '/ecommerce/customers',
+        link: '/permisos/lista-permisos',
     },
     {
-        id: 115,
-        label: 'MENUITEMS.OPERACIONCOMPONENT.TEXT',
-        icon: 'uil-list-ul',
-        link: '/form/validation',
+        id: 118,
+        label: 'Roles',
+        icon: 'uil-gold',
+        link: '/roles/lista-roles',
     },
+    {
+        id: 118,
+        label: 'Usuarios',
+        icon: 'uil-users-alt',
+        link: '/usuarios/lista-usuarios',
+    },
+    // {
+    //     id: 111,
+    //     label: 'MENUITEMS.PRUEBADOS.TEXT',
+    //     icon: 'uil-user-check',
+    //     link: '/ecommerce/orders',
+    // },
+    // {
+    //     id: 112,
+    //     label: 'MENUITEMS.PRUEBATRES.TEXT',
+    //     icon: 'uil-user-check',
+    //     link: '/ecommerce/orders',
+    // },
+    // {
+    //     id: 113,
+    //     label: 'MENUITEMS.PRUEBACUATRO.TEXT',
+    //     icon: 'uil-list-ul',
+    //     link: '/ecommerce/customers',
+    // },
+    // {
+    //     id: 115,
+    //     label: 'MENUITEMS.OPERACIONCOMPONENT.TEXT',
+    //     icon: 'uil-list-ul',
+    //     link: '/form/validation',
+    // },
     {
         id: 114,
         label: 'MENUITEMS.PRUEBACOMPONENTCERRAR.TEXT',

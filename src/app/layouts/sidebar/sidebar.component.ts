@@ -7,6 +7,7 @@ import { MENU } from './menu';
 import { MenuItem } from './menu.model';
 import { TranslateService } from '@ngx-translate/core';
 import { EventService } from '../../core/services/event.service';
+import { SharedDataService } from 'src/app/shared/services/shared-data.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,7 +29,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('sideMenu') sideMenu: ElementRef;
   @ViewChild('componentRef') scrollRef;
 
-  constructor(private eventService: EventService, private router: Router, public translate: TranslateService) {
+  constructor(private eventService: EventService, private router: Router, public translate: TranslateService, private sharedDataService: SharedDataService) {
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this._activateMenuDropdown();
@@ -36,12 +37,20 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
       }
     });
   }
-
+  logotipo: string;
+  logotipoReporte: string;
 
   ngOnInit() {
     this.initialize();
     this._scrollElement();
-    // document.body.setAttribute('data-sidebar', 'light');
+    this.logotipo = this.sharedDataService.getLogotipoFromStorage();
+    this.logotipoReporte = this.sharedDataService.getLogotipoReporteFromStorage();
+    this.sharedDataService.logotipo$.subscribe(
+      logotipo => this.logotipo = logotipo
+    );
+    this.sharedDataService.logotipoReporte$.subscribe(
+      logotipoReporte => this.logotipoReporte = logotipoReporte
+    );
   }
   /**
    * Change the layout onclick

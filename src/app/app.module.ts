@@ -50,7 +50,6 @@ export function createTranslateLoader(http: HttpClient): any {
     NgbNavModule,
     NgbTooltipModule,
     NgbModule,
-    AuthModule,
     ToastrModule.forRoot({
       positionClass: 'toast-top-right', // Ajusta según necesites: 'toast-top-right', 'toast-bottom-right', 'toast-top-left', 'toast-bottom-left', 'toast-top-full-width', 'toast-bottom-full-width', 'toast-top-center', 'toast-bottom-center'
       preventDuplicates: true,

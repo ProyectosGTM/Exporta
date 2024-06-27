@@ -5,6 +5,10 @@
   transform: translate(-50%, -50%);
 }
 
+.text-muted{
+  color: #d5e2f9;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -30,4 +34,55 @@ body {
 .custom-img {
   width: 600px; /* Ancho deseado */
   height: 180px; /* Alto deseado */
+}
+
+.descrip{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #FFF;
+  border-bottom-color: #1bf1fb;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  }
+
+  @keyframes rotation {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+  } 
+
+  .eyeButton{
+    position: absolute;
+    cursor: pointer;
+    right: 55px;
+    top: 64%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+	transition: 0.3s ease-in-out all;
+    align-items: center;
+    border-radius: 50%;
+    background-color: none;
+    ::ng-deep svg{
+        display: flex;
+    }
+    & > * {
+        pointer-events: none;
+    }
+}
+.eyeButton:hover{
+    background-color: rgb(184, 184, 184);
 }

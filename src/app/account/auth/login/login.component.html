@@ -4,7 +4,7 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
-            EXPORTA.
+            Konnecta System 7.0
           </div>
           <!-- <div class="col-lg-6">
             <div class="text-sm-end d-none d-sm-block">
@@ -49,10 +49,16 @@
   
                 <div class="mb-3">
                   <div class="float-end">
-                    <a href="/account/reset-password" class="text-muted">Contraseña olvidada?</a>
+                    <a href="/account/reset-password" style="color: rgb(161, 161, 161);" class="text-muted">Contraseña olvidada?</a>
                   </div>
                   <label for="password" style="color: rgb(161, 161, 161);">Contraseña</label>
-                  <input type="password" formControlName="password" class="form-control" id="password" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" placeholder="password" />
+                  <input [type]="type" formControlName="password" class="form-control" id="password"  placeholder="password" />
+                  <span *ngIf="type == 'password'" style="color: rgb(161, 161, 161);" class="eyeButton" (click)="myFunctionPasswordCurrent()">
+                    <i class="fas fa-eye"></i>
+                </span>
+                <span *ngIf="type == 'text'"  style="color: rgb(161, 161, 161);"class="eyeButton" (click)="myFunctionPasswordCurrent()">
+                    <i class="fas fa-eye-slash"></i>
+                </span>
                   @if(submitted && f.email.errors){
                   <div class="invalid-feedback">
                     @if(f.email.errors.required){
@@ -66,7 +72,10 @@
                 </div> -->
   
                 <div class="mt-3 text-end">
-                  <button class="btn btn-primary w-sm waves-effect waves-light" type="submit">{{textLogin}}</button>
+                  <button class="btn btn-primary descrip w-sm waves-effect waves-light" type="submit">
+                    <span [@fadeInUp] *ngIf="loading" class="loader"></span>&nbsp;&nbsp;
+                    {{textLogin}}
+                  </button>
                 </div>
                 <!-- <div class="mt-4 text-center">
                   <div class="signin-other-title">
@@ -109,7 +118,7 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
-            Copyright 2024 © Konecta Todos los derechos reservados.
+            Copyright 2024 © Konnecta System 7.0 Todos los derechos reservados.
           </div>
           <!-- <div class="col-lg-6">
             <div class="text-sm-end d-none d-sm-block">

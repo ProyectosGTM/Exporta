@@ -8,22 +8,20 @@
           <div class="row mb-md-2">
             <div class="col-sm-12 col-md-6">
               <div class="dataTables_length">
-                <label class="d-inline-flex align-items-center">Mostrar
-                  <select name="pageSize" [(ngModel)]="pageSize" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm" (change)="onPageSizeChange()">
-                    <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
-                  </select>
-                </label>
-                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Desde:
+                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Inicio:
                   <input type="date" class="form-control" [(ngModel)]="startDate" (change)="filterByDateRange()">
                 </label>
-                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Hasta:
+                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Fin:
                   <input type="date" class="form-control" [(ngModel)]="endDate" (change)="filterByDateRange()">
                 </label>
+                <span [@fadeInUp] *ngIf="showTotalRecordsMessage" class="d-inline-flex align-items-center" style="margin-left: 15px;">
+                  Total de registros por fecha: {{ filteredTransactions.length }}
+                </span>
               </div>
             </div>
             <div class="col-sm-12 col-md-6">
               <div id="tickets-table_filter" class="dataTables_filter text-md-end">
-                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Buscar:
+                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Buscar:&nbsp;&nbsp;
                   <input type="text" class="form-control" [(ngModel)]="searchTerm" (input)="performSearch()" placeholder="Buscar...">
                 </label>
                 <button type="button" class="btn btn-primary" style="margin-left: 15px;" (click)="exportToPDF()">
@@ -42,8 +40,8 @@
                 <div class="col-lg-12">
                   <div class="card">
                     <div class="card-body">
-                      <div id="tableContainer" class="table-responsive content-cards">
-                        <table class="table table-centered datatables dt-responsive nowrap table-card-list">
+                      <div id="tableContainer" class="table-responsive content-cards" style="max-height: 440px;">
+                        <table class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
                           <thead>
                             <tr>
                               <th>#</th>
@@ -88,10 +86,16 @@
               </div>
             </div>
 
-            <div class="float-end">
-              <div class="d-flex justify-content-between">
-                <button class="btn btn-outline-primary" [disabled]="currentPage === 0" (click)="onPreviousPage()">Anterior</button>
-                <button class="btn btn-outline-primary" style="margin-left: 15px;" [disabled]="endIndex === totalRecords" (click)="onNextPage()">Siguiente</button>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <label class="d-inline-flex align-items-center">Mostrar
+                <select name="pageSize" [(ngModel)]="pageSize" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm" (change)="onPageSizeChange()">
+                  <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+                </select>
+              </label>
+              <div class="pagination-controls ms-auto">
+                <button class="btn btn-secondary" [disabled]="currentPage === 0" (click)="onPreviousPage()">Anterior</button>&nbsp;&nbsp;
+                <span>Página {{ currentPage + 1 }} de {{ totalPages }} ({{ totalRecords }} items)</span>&nbsp;&nbsp;
+                <button class="btn btn-secondary" [disabled]="currentPage === totalPages - 1" (click)="onNextPage()">Siguiente</button>
               </div>
             </div>
           </div>

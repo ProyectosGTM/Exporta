@@ -1,0 +1,13 @@
+/* styles.css or in your component's styles file */
+.compact-table tbody tr {
+    line-height: 1.1; /* Adjust this value to make rows more compact */
+  }
+  
+  .compact-table th, .compact-table td {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+  
+  th, td, tr {
+    text-align: center;
+  }

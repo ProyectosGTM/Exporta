@@ -43,7 +43,6 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     PagesRoutingModule,
     NgApexchartsModule,
     ReactiveFormsModule,
-    DashboardsModule,
     HttpClientModule,
     FullCalendarModule,
     NgbNavModule,

@@ -1,0 +1,101 @@
+<div class="container-fluid">
+    <!-- breadcrumb item -->
+    <div class="row">
+      <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+          <h4 class="mb-0 font-size-18">Usuarios</h4>
+          <div class="page-title-right">
+            <ol class="breadcrumb m-0">
+              <li class="breadcrumb-item">
+                
+                <a href="javascript: void(0);"></a>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row mb-md-2">
+              <div class="col-sm-12 col-md-6">
+                <div class="dataTables_length">
+                  
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div id="tickets-table_filter" class="dataTables_filter text-md-end">
+                  
+                  <button type="button" class="btn btn-success" style="margin-left: 15px;">
+                    <i class="uil uil-check me-2"></i> Descargar Excel
+                  </button>
+                </div>
+              </div>
+            </div>
+  
+            <div class="table-responsive mb-4 col-12 col-lg-12">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="card">
+                      <div class="card-body">
+                        <div id="tableContainer" class="table-responsive content-cards" style="max-height: 440px;">
+                          <table class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
+                            <thead>
+                              <tr>
+                                <th>Acciones</th>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Estatus</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <!-- <tr *ngFor="let transaction of filteredTransactions.slice(startIndex, endIndex); let i = index">
+                                <th scope="row">{{ startIndex + i + 1 }}</th>
+                                <td>{{ transaction.DATE }}</td>
+                                <td>{{ transaction.TIME }}</td>
+                                <td>{{ transaction.OUT_IP }}</td>
+                                <td>{{ transaction.IN_IP }}</td>
+                                <td>{{ transaction.GEO_OUT }}</td>
+                                <td>{{ transaction.GEO_IN }}</td>
+                                <td>{{ transaction.CARRIER }}</td>
+                                <td>{{ transaction.PROD }}</td>
+                                <td>{{ transaction.AMOUNT }}</td>
+                                <td>{{ transaction.PHONE }}</td>
+                                <td>{{ transaction.TRN }}</td>
+                                <td>{{ transaction.ST }}</td>
+                                <td>{{ transaction.T_TIME }}</td>
+                              </tr> -->
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <label class="d-inline-flex align-items-center">Mostrar
+                  <select name="pageSize"  class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm" >
+                    <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+                  </select>
+                </label>
+                <div class="pagination-controls ms-auto">
+                  <button class="btn btn-secondary" >Anterior</button>&nbsp;&nbsp;
+                  <span>Página 0/0</span>&nbsp;&nbsp;
+                  <button class="btn btn-secondary">Siguiente</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <dx-load-panel #loadPanel shadingColor="rgba(0,0,0,0.4)" [(visible)]="loading" [showIndicator]="true" [showPane]="true"
+    [shading]="true" [closeOnOutsideClick]="false" [message]="loadingMessage">
+  </dx-load-panel>

@@ -11,11 +11,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { fadeInRightAnimation } from 'src/app/core/animations/fade-in-right.animation';
+import { fadeInUpAnimation } from 'src/app/core/animations/fade-in-up.animation';
+import { scaleInAnimation } from 'src/app/core/animations/scale-in.animation';
+import * as AOS from 'aos';
+import { ClienteService } from 'src/app/shared/services/clientes.service';
+import { SharedDataService } from 'src/app/shared/services/shared-data.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
 
 /**
@@ -40,12 +47,16 @@ export class LoginComponent implements OnInit {
   // tslint:disable-next-line: max-line-length
   constructor(private router: Router,
     private auth: AuthenticationService,
+    private cliente: ClienteService,
     private fb: FormBuilder,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
+    private sharedDataService: SharedDataService,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
+    AOS.init();
+    window.addEventListener('load', AOS.refresh);
     this.initForm();
     document.body.setAttribute('class', 'authentication-bg');
 
@@ -140,6 +151,7 @@ export class LoginComponent implements OnInit {
         return throwError(() => "")
       })
       ).subscribe((result: User) => {
+        this.obtenerCliente(result.idCliente);
       this.auth.setData(result);
       this.router.navigate(['']);
       Swal.fire({
@@ -166,6 +178,22 @@ export class LoginComponent implements OnInit {
     //     // this.toastr.error('Usuario o contraseña incorrectos')
     //   })
   }
+  NombreCliente: any;
+  Logotipo: any;
+  LogotipoReporte:any
+  obtenerCliente(any){
+    this.cliente.obtenerClienteTecsa(any).subscribe(
+      (res: any) => {
+        this.NombreCliente = res.RFC;
+        this.Logotipo = res.Logotipo;
+        this.LogotipoReporte = res.LogotipoReporte;
+        this.sharedDataService.setNombreCliente(this.NombreCliente);
+        this.sharedDataService.setLogotipo(this.Logotipo);
+        this.sharedDataService.setLogotipoReporte(this.LogotipoReporte);
+      }
+    );
+  }
+  
 
 // onSubmit(){
 //   const data = {

@@ -3,6 +3,9 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { HttpClient } from '@angular/common/http';
+import { fadeInRightAnimation } from 'src/app/core/animations/fade-in-right.animation';
+import { fadeInUpAnimation } from 'src/app/core/animations/fade-in-up.animation';
+import { scaleInAnimation } from 'src/app/core/animations/scale-in.animation';
 
 interface Transaction {
   DATE: string;
@@ -23,7 +26,8 @@ interface Transaction {
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
+  styleUrls: ['./orders.component.scss'],
+  animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
 export class OrdersComponent implements OnInit {
   transactions: Transaction[] = [
@@ -88,7 +92,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 4
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/02/28",
       "TIME": "13:16:22",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -103,7 +107,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 3
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/02/28",
       "TIME": "13:16:22",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -118,7 +122,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 1
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/02/28",
       "TIME": "13:16:11",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -133,7 +137,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 6
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/02/28",
       "TIME": "13:16:12",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -148,7 +152,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 6
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/02/28",
       "TIME": "13:16:13",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -163,7 +167,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 1
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/02/28",
       "TIME": "13:16:09",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -178,7 +182,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 8
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/01",
       "TIME": "13:16:09",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -193,7 +197,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 5
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/01",
       "TIME": "13:16:10",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -208,7 +212,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 2
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/01",
       "TIME": "13:16:09",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -223,7 +227,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 6
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/01",
       "TIME": "13:16:12",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -238,7 +242,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 8
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/01",
       "TIME": "13:16:07",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -253,7 +257,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 8
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/01",
       "TIME": "13:16:07",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -268,7 +272,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 6
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/01",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -283,7 +287,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 9
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:06",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -298,7 +302,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 3
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:07",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -313,7 +317,7 @@ export class OrdersComponent implements OnInit {
       "T_TIME": 1
     },
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -329,7 +333,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -345,7 +349,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -361,7 +365,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -377,7 +381,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -393,7 +397,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -409,7 +413,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -425,7 +429,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -441,7 +445,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -457,7 +461,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -473,7 +477,7 @@ export class OrdersComponent implements OnInit {
     }
     ,
     {
-      "DATE": "2024/02/26",
+      "DATE": "2024/05/10",
       "TIME": "13:16:05",
       "OUT_IP": "189.240.98.226",
       "IN_IP": "54.163.211.222",
@@ -727,19 +731,26 @@ export class OrdersComponent implements OnInit {
     }
   ];
   filteredTransactions: Transaction[] = [];
-  pageSizeOptions = [5, 10, 15, 20];
+  pageSizeOptions = [10, 50, 100, 200];
   pageSize = 10;
   currentPage = 0;
   totalRecords = 0;
+  totalPages = 0;
   searchTerm: string = '';
   startDate: string = '';
   endDate: string = '';
+  showTotalRecordsMessage: boolean = false;
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.filteredTransactions = this.transactions;
     this.totalRecords = this.transactions.length;
+    this.updateTotalPages();
+  }
+
+  updateTotalPages(): void {
+    this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
   }
 
   performSearch(): void {
@@ -748,6 +759,7 @@ export class OrdersComponent implements OnInit {
 
   onPageSizeChange(): void {
     this.currentPage = 0;
+    this.updateTotalPages();
     this.filterTransactions();
   }
 
@@ -782,8 +794,13 @@ export class OrdersComponent implements OnInit {
       const end = this.endDate ? new Date(this.endDate) : null;
 
       let matchesDateRange = true;
-      if (start && transactionDate < start) matchesDateRange = false;
-      if (end && transactionDate > end) matchesDateRange = false;
+      if (start && end) {
+        matchesDateRange = transactionDate >= start && transactionDate <= end;
+      } else if (start) {
+        matchesDateRange = transactionDate >= start;
+      } else if (end) {
+        matchesDateRange = transactionDate <= end;
+      }
 
       let matchesSearchTerm = Object.values(transaction).some(val =>
         val.toString().toLowerCase().includes(this.searchTerm.toLowerCase())
@@ -793,7 +810,9 @@ export class OrdersComponent implements OnInit {
     });
 
     this.totalRecords = this.filteredTransactions.length;
+    this.updateTotalPages();
     this.currentPage = 0;
+    this.showTotalRecordsMessage = !!this.startDate || !!this.endDate;
   }
 
   exportToExcel(): void {

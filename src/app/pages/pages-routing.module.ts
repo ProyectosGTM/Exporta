@@ -23,7 +23,11 @@ const routes: Routes = [
   { path: 'tables', loadChildren: () => import('./tables/tables.module').then(m => m.TablesModule) },
   { path: 'charts', loadChildren: () => import('./chart/chart.module').then(m => m.ChartModule) },
   { path: 'icons', loadChildren: () => import('./icons/icons.module').then(m => m.IconsModule) },
-  { path: 'maps', loadChildren: () => import('./maps/maps.module').then(m => m.MapsModule) }
+  { path: 'maps', loadChildren: () => import('./maps/maps.module').then(m => m.MapsModule) },
+  { path: 'modulos', loadChildren: () => import('./administracion/modulos/modulos.module').then(m => m.ModulosModule)},
+  { path: 'permisos', loadChildren: () => import('./administracion/permisos/permisos.module').then(m => m.PermisosModule)},
+  { path: 'roles', loadChildren: () => import('./administracion/roles/roles.module').then(m => m.RolesModule)},
+  { path: 'usuarios', loadChildren: () => import('./administracion/usuarios/usuarios.module').then(m => m.UsuariosModule)},
 ];
 
 @NgModule({
