@@ -1,12 +1,20 @@
-/* styles.css or in your component's styles file */
-.compact-table tbody tr {
-  line-height: 1.1; /* Adjust this value to make rows more compact */
+.table td, .table th {
+  padding: 0.25rem; /* Reduce el padding de las celdas */
 }
 
-.compact-table th, .compact-table td {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+.table-card-list tr {
+  margin-bottom: 0; /* Asegura que no haya margen entre las filas */
 }
+
+.table-card-list td, .table-card-list th {
+  vertical-align: middle; /* Centra verticalmente el contenido */
+  white-space: nowrap; /* Previene que el texto se divida en varias líneas */
+}
+
+.table-card-list {
+  border-collapse: collapse; /* Colapsa los bordes de la tabla para reducir espacio */
+}
+
 
 th, td, tr {
   text-align: center;

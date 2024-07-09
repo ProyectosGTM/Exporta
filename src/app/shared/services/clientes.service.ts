@@ -14,7 +14,11 @@ export class ClienteService {
 		return this.http.get<any>(environment.API_SECURITY + '/api/clientes/' + idCliente);
 	}
 
-    obtenerClienteEntorno(): Observable<any> {
-		return this.http.get<any>(environment.API_SECURITY + '/api/clientes/' + 3);
+    obtenerUsuario(): Observable<any> {
+		return this.http.get<any>(environment.API_SECURITY + '/api/usuarios/' + 12);
+	}
+
+	obtenerTransacciones(id: number, year: number): Observable<any> {
+		return this.http.get<any>(`${environment.API_SECURITY}/api/transacciones/${id}?year=${year}`);
 	}
 }

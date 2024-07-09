@@ -34,13 +34,56 @@
             </div>
           </div>
 
+          <!-- Primera tabla (Informacion) -->
           <div class="table-responsive mb-4 col-12 col-lg-12">
             <div class="container-fluid">
               <div class="row">
                 <div class="col-lg-12">
                   <div class="card">
                     <div class="card-body">
-                      <div id="tableContainer" class="table-responsive content-cards" style="max-height: 440px;">
+                      <div class="table-responsive content-cards">
+                        <table class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Fecha Factura</th>
+                              <th>Folio Factura</th>
+                              <th>Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let data of informacion; let i = index">
+                              <td>{{ i + 1 + startIndex }}</td>
+                              <td>{{ data.FechaFactura | date: 'dd-MM-yyyy h:mm a' }}</td>
+                              <td>{{ data.FolioFactura }}</td>
+                              <td>
+                                <button type="button" 
+                                        (click)="showInfo(data.Id, data.FechaFactura)" 
+                                        class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
+                                  View Details
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Segunda tabla (serviceTransactions) -->
+          <div *ngIf="showServiceTable" class="table-responsive mb-4 col-12 col-lg-12">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <div id="tableContainer" class="table-responsive content-cards">
+                        <!-- <h3>Id: {{ selectedId }}</h3> 
+                        <h3>Año: {{ selectedYear }}</h3> -->
                         <table class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
                           <thead>
                             <tr>
@@ -61,8 +104,8 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <tr *ngFor="let transaction of filteredTransactions.slice(startIndex, endIndex); let i = index">
-                              <th scope="row">{{ startIndex + i + 1 }}</th>
+                            <tr *ngFor="let transaction of filteredServiceTransactions; let i = index">
+                              <th scope="row">{{ i + 1 + serviceStartIndex }}</th>
                               <td>{{ transaction.DATE }}</td>
                               <td>{{ transaction.TIME }}</td>
                               <td>{{ transaction.OUT_IP }}</td>
@@ -80,25 +123,25 @@
                           </tbody>
                         </table>
                       </div>
+                      <div class="d-flex justify-content-between align-items-center mt-3">
+                        <label class="d-inline-flex align-items-center">Mostrar
+                          <select name="servicePageSize" [(ngModel)]="servicePageSize" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm" (change)="onServicePageSizeChange()">
+                            <option *ngFor="let option of servicePageSizeOptions" [ngValue]="option">{{ option }}</option>
+                          </select>
+                        </label>
+                        <div class="pagination-controls ms-auto">
+                          <button class="btn btn-secondary" [disabled]="serviceCurrentPage === 0" (click)="onServicePreviousPage()">Anterior</button>&nbsp;&nbsp;
+                          <span>Página {{ serviceCurrentPage + 1 }} de {{ serviceTotalPages }} ({{ serviceTotalRecords }} items)</span>&nbsp;&nbsp;
+                          <button class="btn btn-secondary" [disabled]="serviceCurrentPage === serviceTotalPages - 1" (click)="onServiceNextPage()">Siguiente</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div class="d-flex justify-content-between align-items-center mt-3">
-              <label class="d-inline-flex align-items-center">Mostrar
-                <select name="pageSize" [(ngModel)]="pageSize" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm" (change)="onPageSizeChange()">
-                  <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
-                </select>
-              </label>
-              <div class="pagination-controls ms-auto">
-                <button class="btn btn-secondary" [disabled]="currentPage === 0" (click)="onPreviousPage()">Anterior</button>&nbsp;&nbsp;
-                <span>Página {{ currentPage + 1 }} de {{ totalPages }} ({{ totalRecords }} items)</span>&nbsp;&nbsp;
-                <button class="btn btn-secondary" [disabled]="currentPage === totalPages - 1" (click)="onNextPage()">Siguiente</button>
-              </div>
-            </div>
           </div>
+
         </div>
       </div>
     </div>

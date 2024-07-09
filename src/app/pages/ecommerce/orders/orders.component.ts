@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { fadeInRightAnimation } from 'src/app/core/animations/fade-in-right.animation';
 import { fadeInUpAnimation } from 'src/app/core/animations/fade-in-up.animation';
 import { scaleInAnimation } from 'src/app/core/animations/scale-in.animation';
+import { ClienteService } from 'src/app/shared/services/clientes.service';
 
 interface Transaction {
   DATE: string;
@@ -30,706 +31,7 @@ interface Transaction {
   animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
 export class OrdersComponent implements OnInit {
-  transactions: Transaction[] = [
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:19",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****277870",
-      "TRN": 576428,
-      "ST": "00",
-      "T_TIME": 21
-    },
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:27",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA50",
-      "AMOUNT": 50,
-      "PHONE": "****045075",
-      "TRN": 301791,
-      "ST": "00",
-      "T_TIME": 8
-    },
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:15",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA50",
-      "AMOUNT": 50,
-      "PHONE": "****939158",
-      "TRN": 930423,
-      "ST": "00",
-      "T_TIME": 2
-    },
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:15",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****495463",
-      "TRN": 913591,
-      "ST": "00",
-      "T_TIME": 4
-    },
-    {
-      "DATE": "2024/02/28",
-      "TIME": "13:16:22",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA50",
-      "AMOUNT": 50,
-      "PHONE": "****531177",
-      "TRN": 503793,
-      "ST": "00",
-      "T_TIME": 3
-    },
-    {
-      "DATE": "2024/02/28",
-      "TIME": "13:16:22",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****162textX8",
-      "TRN": 218432,
-      "ST": "00",
-      "T_TIME": 1
-    },
-    {
-      "DATE": "2024/02/28",
-      "TIME": "13:16:11",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA150",
-      "AMOUNT": 150,
-      "PHONE": "****758028",
-      "TRN": 616797,
-      "ST": "00",
-      "T_TIME": 6
-    },
-    {
-      "DATE": "2024/02/28",
-      "TIME": "13:16:12",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "TAE050",
-      "AMOUNT": 50,
-      "PHONE": "****467508",
-      "TRN": 803206,
-      "ST": "00",
-      "T_TIME": 6
-    },
-    {
-      "DATE": "2024/02/28",
-      "TIME": "13:16:13",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA50",
-      "AMOUNT": 50,
-      "PHONE": "****137526",
-      "TRN": 548170,
-      "ST": "00",
-      "T_TIME": 1
-    },
-    {
-      "DATE": "2024/02/28",
-      "TIME": "13:16:09",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA200",
-      "AMOUNT": 200,
-      "PHONE": "****071464",
-      "TRN": 450390,
-      "ST": "00",
-      "T_TIME": 8
-    },
-    {
-      "DATE": "2024/05/01",
-      "TIME": "13:16:09",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****223468",
-      "TRN": 995317,
-      "ST": "00",
-      "T_TIME": 5
-    },
-    {
-      "DATE": "2024/05/01",
-      "TIME": "13:16:10",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA100",
-      "AMOUNT": 100,
-      "PHONE": "****442496",
-      "TRN": 271598,
-      "ST": "00",
-      "T_TIME": 2
-    },
-    {
-      "DATE": "2024/05/01",
-      "TIME": "13:16:09",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA100",
-      "AMOUNT": 100,
-      "PHONE": "****216019",
-      "TRN": 221547,
-      "ST": "00",
-      "T_TIME": 6
-    },
-    {
-      "DATE": "2024/05/01",
-      "TIME": "13:16:12",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA150",
-      "AMOUNT": 150,
-      "PHONE": "****063845",
-      "TRN": 799697,
-      "ST": "00",
-      "T_TIME": 8
-    },
-    {
-      "DATE": "2024/05/01",
-      "TIME": "13:16:07",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA30",
-      "AMOUNT": 30,
-      "PHONE": "****387321",
-      "TRN": 958765,
-      "ST": "00",
-      "T_TIME": 8
-    },
-    {
-      "DATE": "2024/05/01",
-      "TIME": "13:16:07",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA30",
-      "AMOUNT": 30,
-      "PHONE": "****166432",
-      "TRN": 803741,
-      "ST": "00",
-      "T_TIME": 6
-    },
-    {
-      "DATE": "2024/05/01",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****392380",
-      "TRN": 960390,
-      "ST": "00",
-      "T_TIME": 9
-    },
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:06",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "TAE030",
-      "AMOUNT": 30,
-      "PHONE": "****416182",
-      "TRN": 191828,
-      "ST": "00",
-      "T_TIME": 3
-    },
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:07",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA200",
-      "AMOUNT": 200,
-      "PHONE": "****504430",
-      "TRN": 626498,
-      "ST": "00",
-      "T_TIME": 1
-    },
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/05/10",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    },
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    },
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-    ,
-    {
-      "DATE": "2024/02/26",
-      "TIME": "13:16:05",
-      "OUT_IP": "189.240.98.226",
-      "IN_IP": "54.163.211.222",
-      "GEO_OUT": "MEXICO UNINET",
-      "GEO_IN": "EE.UU ASHBURN AMAZON",
-      "CARRIER": "TELCEL",
-      "PROD": "PA20",
-      "AMOUNT": 20,
-      "PHONE": "****744625",
-      "TRN": 831396,
-      "ST": "00",
-      "T_TIME": 2
-    }
-  ];
+  transactions: Transaction[] = [ /* ... datos proporcionados ... */ ];
   filteredTransactions: Transaction[] = [];
   pageSizeOptions = [10, 50, 100, 200];
   pageSize = 10;
@@ -741,9 +43,20 @@ export class OrdersComponent implements OnInit {
   endDate: string = '';
   showTotalRecordsMessage: boolean = false;
 
-  constructor(private http: HttpClient) { }
+  serviceTransactions: Transaction[] = [];
+  filteredServiceTransactions: Transaction[] = [];
+  servicePageSizeOptions = [10, 50, 100, 200];
+  servicePageSize = 10;
+  serviceCurrentPage = 0;
+  serviceTotalRecords = 0;
+  serviceTotalPages = 0;
+
+  showServiceTable: boolean = false;
+
+  constructor(private http: HttpClient, private cliente: ClienteService) { }
 
   ngOnInit(): void {
+    this.obtenerUsuarios();
     this.filteredTransactions = this.transactions;
     this.totalRecords = this.transactions.length;
     this.updateTotalPages();
@@ -751,6 +64,10 @@ export class OrdersComponent implements OnInit {
 
   updateTotalPages(): void {
     this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+  }
+
+  updateServiceTotalPages(): void {
+    this.serviceTotalPages = Math.ceil(this.serviceTotalRecords / this.servicePageSize);
   }
 
   performSearch(): void {
@@ -763,15 +80,37 @@ export class OrdersComponent implements OnInit {
     this.filterTransactions();
   }
 
+  onServicePageSizeChange(): void {
+    this.serviceCurrentPage = 0;
+    this.updateServiceTotalPages();
+    this.filterServiceTransactions();
+  }
+
   onNextPage(): void {
     if ((this.currentPage + 1) * this.pageSize < this.totalRecords) {
       this.currentPage++;
+      this.filterTransactions();
+    }
+  }
+
+  onServiceNextPage(): void {
+    if ((this.serviceCurrentPage + 1) * this.servicePageSize < this.serviceTotalRecords) {
+      this.serviceCurrentPage++;
+      this.filterServiceTransactions();
     }
   }
 
   onPreviousPage(): void {
     if (this.currentPage > 0) {
       this.currentPage--;
+      this.filterTransactions();
+    }
+  }
+
+  onServicePreviousPage(): void {
+    if (this.serviceCurrentPage > 0) {
+      this.serviceCurrentPage--;
+      this.filterServiceTransactions();
     }
   }
 
@@ -781,6 +120,14 @@ export class OrdersComponent implements OnInit {
 
   get endIndex(): number {
     return Math.min((this.currentPage + 1) * this.pageSize, this.totalRecords);
+  }
+
+  get serviceStartIndex(): number {
+    return this.serviceCurrentPage * this.servicePageSize;
+  }
+
+  get serviceEndIndex(): number {
+    return Math.min((this.serviceCurrentPage + 1) * this.servicePageSize, this.serviceTotalRecords);
   }
 
   filterByDateRange(): void {
@@ -815,6 +162,12 @@ export class OrdersComponent implements OnInit {
     this.showTotalRecordsMessage = !!this.startDate || !!this.endDate;
   }
 
+  filterServiceTransactions(): void {
+    const start = this.serviceStartIndex;
+    const end = this.serviceEndIndex;
+    this.filteredServiceTransactions = this.serviceTransactions.slice(start, end);
+  }
+
   exportToExcel(): void {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.filteredTransactions);
     const headerRange = XLSX.utils.decode_range(worksheet['!ref']);
@@ -846,12 +199,12 @@ export class OrdersComponent implements OnInit {
 
   async exportToPDF(): Promise<void> {
     const doc = new jsPDF('landscape');
-    const imgUrl = '../../../../assets/images/logoTECSA.png';
+    const imgUrl = '../../../../assets/images/tecsaRerporte.png';
     const imgData = await this.getBase64ImageFromURL(imgUrl);
 
     const imgX = 15;
     const imgY = 14;
-    const imgWidth = 20;
+    const imgWidth = 15;
     const imgHeight = 12;
 
     doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
@@ -911,5 +264,28 @@ export class OrdersComponent implements OnInit {
     doc.text('Tecsa', 14, doc.internal.pageSize.height - 10);
 
     doc.save('Transacciones.pdf');
+  }
+
+  selectedId: number | null = null;
+  selectedYear: number | null = null;
+  showInfo(id: any, fechaFactura: any): void {
+    const year = new Date(fechaFactura).getFullYear();
+    console.log(id, year);
+    this.cliente.obtenerTransacciones(id, year).subscribe((response: Transaction[]) => {
+      this.selectedId = id;
+      this.selectedYear = year;
+      this.serviceTransactions = response;
+      this.serviceTotalRecords = this.serviceTransactions.length;
+      this.updateServiceTotalPages();
+      this.filterServiceTransactions();
+      this.showServiceTable = true;
+    });
+  }
+
+  public informacion: any;
+  obtenerUsuarios(){    
+    this.cliente.obtenerUsuario().subscribe((response: any) => {
+      this.informacion = response.CatAfiliados[0].Operaciones;
+    });
   }
 }

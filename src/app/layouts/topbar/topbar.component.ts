@@ -136,22 +136,6 @@ logotipoReporte: string;
     }
   }
 
-  // obtenerClienteTecsa(){
-  //   this.cliente.obtenerClienteTecsa().subscribe(
-  //     (res: any) => {
-  //       this.imagenPerfil = res.LogotipoReporte;
-  //     }
-  //   );
-  // }
-
-  obtenerClienteEntorno(){
-    this.cliente.obtenerClienteEntorno().subscribe(
-      (res: any) => {
-        this.imagenPerfil = res.LogotipoReporte;
-      }
-    );
-  }
-
   private setFavicon(url: string) {
     let link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/x-icon';
