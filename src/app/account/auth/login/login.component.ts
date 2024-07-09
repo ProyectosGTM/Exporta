@@ -155,7 +155,7 @@ export class LoginComponent implements OnInit {
           this.obtenerCliente(result.idCliente);
         },1000)
       this.auth.setData(result);
-      this.router.navigate(['']);
+      this.router.navigate(['/ecommerce/orders']);
       Swal.fire({
         title: "¡Bienvenido!",
         text: `¡Hola ${result.nombre}!`,

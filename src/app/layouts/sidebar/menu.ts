@@ -1,21 +1,21 @@
 import { MenuItem } from './menu.model';
 
 export const MENU: MenuItem[] = [
-    {
-        id: 1,
-        label: 'MENUITEMS.MENU.TEXT',
-        isTitle: true
-    },
-    {
-        id: 2,
-        label: 'MENUITEMS.DASHBOARDS.TEXT',
-        icon: 'uil-home-alt',
-        badge: {
-            variant: 'primary',
-            text: '01', //'MENUITEMS.DASHBOARDS.BADGE',
-        },
-        link: '/',
-    },
+    // {
+    //     id: 1,
+    //     label: 'MENUITEMS.MENU.TEXT',
+    //     isTitle: true
+    // },
+    // {
+    //     id: 2,
+    //     label: 'MENUITEMS.DASHBOARDS.TEXT',
+    //     icon: 'uil-home-alt',
+    //     badge: {
+    //         variant: 'primary',
+    //         text: '01',
+    //     },
+    //     link: '/',
+    // },
     // {
     //     id: 3,
     //     isLayout: true
