@@ -180,10 +180,9 @@ logotipoReporte: string;
    */
   logout() {
     this.router.navigate(['/account/login']);
-
     setTimeout(()=>{
-      window.location.reload();
-    },700)
+      window.location.reload()
+    },800)
   }
 
   /**

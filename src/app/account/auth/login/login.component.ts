@@ -151,7 +151,9 @@ export class LoginComponent implements OnInit {
         return throwError(() => "")
       })
       ).subscribe((result: User) => {
-        this.obtenerCliente(result.idCliente);
+        setTimeout(()=> {
+          this.obtenerCliente(result.idCliente);
+        },1000)
       this.auth.setData(result);
       this.router.navigate(['']);
       Swal.fire({
@@ -184,7 +186,7 @@ export class LoginComponent implements OnInit {
   obtenerCliente(any){
     this.cliente.obtenerClienteTecsa(any).subscribe(
       (res: any) => {
-        this.NombreCliente = res.RFC;
+        this.NombreCliente = res.ApellidoPaterno;
         this.Logotipo = res.Logotipo;
         this.LogotipoReporte = res.LogotipoReporte;
         this.sharedDataService.setNombreCliente(this.NombreCliente);
