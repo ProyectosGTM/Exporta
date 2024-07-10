@@ -73,7 +73,7 @@ export class AuthenticationService extends BaseServicesService {
     this.authenticationChanged.next(false);
   
     // Navegar a la página de login
-    this.router.navigate(['/account/login']).then(() => {
+    this.router.navigate(['/login']).then(() => {
       // Recargar la página para asegurarse de que todos los datos estén realmente borrados
       window.location.reload();
     });
