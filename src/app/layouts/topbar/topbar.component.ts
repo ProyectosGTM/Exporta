@@ -156,10 +156,7 @@ export class TopbarComponent implements OnInit {
   }
 
   logout() {
-    this.router.navigate(['/account/login']);
-    setTimeout(() => {
-      window.location.reload()
-    }, 800)
+    this.authService.logout();
   }
 
   fullscreen() {

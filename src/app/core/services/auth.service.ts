@@ -65,9 +65,20 @@ export class AuthenticationService extends BaseServicesService {
   }
 
   public logout(): void {
-    this.cleanSession();
-    this.router.navigate(['/login']);
+    // Limpiar todos los datos de sessionStorage y localStorage
+    sessionStorage.clear();
+    localStorage.clear();
+    
+    // Emitir cambio en la autenticación
+    this.authenticationChanged.next(false);
+  
+    // Navegar a la página de login
+    this.router.navigate(['/account/login']).then(() => {
+      // Recargar la página para asegurarse de que todos los datos estén realmente borrados
+      window.location.reload();
+    });
   }
+  
 
   private setStorageToken(value: any): void {
     let _value = JSON.stringify(value);
@@ -128,68 +139,4 @@ export class AuthenticationService extends BaseServicesService {
       )
       .pipe(catchError(this.handleError));
   }
-
-  // public logOut() {
-  //   return this.http.post<User>(environment.API_SECURITY + `/api/bitacora/logout`, { logout: true });
-  // }
-
-
-  //----------------------------------------------------------------
-  /**
-   * Returns the current user
-   */
-//   public currentUser(): User {
-//     return getFirebaseBackend().getAuthenticatedUser();
-//   }
-
-//   /**
-//    * Performs the auth
-//    * @param email email of user
-//    * @param password password of user
-//    */
-//   login(email: string, password: string) {
-//     return getFirebaseBackend()
-//       .loginUser(email, password)
-//       .then((response: any) => {
-//         const user = response;
-//         return user;
-//       });
-//   }
-
-//   /**
-//    * Performs the register
-//    * @param email email
-//    * @param password password
-//    */
-//   register(email: string, password: string) {
-//     return getFirebaseBackend()
-//       .registerUser(email, password)
-//       .then((response: any) => {
-//         const user = response;
-//         return user;
-//       });
-//   }
-
-//   /**
-//    * Reset password
-//    * @param email email
-//    */
-//   resetPassword(email: string) {
-//     return getFirebaseBackend()
-//       .forgetPassword(email)
-//       .then((response: any) => {
-//         const message = response.data;
-//         return message;
-//       });
-//   }
-
-//   /**
-//    * Logout the user
-//    */
-// public logout(): void {
-//   this.bitacoraService.logOut().subscribe(()=>{
-//     this.cleanSession();
-//     this.router.navigate(['login']);
-//   })
-// }
 }

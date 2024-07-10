@@ -1,6 +1,7 @@
-import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { catchError, throwError } from 'rxjs';
+import { catchError, switchMap, map } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { Credentials } from '../../../entities/Credentials';
 import { User } from '../../../entities/User';
@@ -86,49 +87,66 @@ export class LoginComponent implements OnInit {
           icon: "error"
         });
         return throwError(() => "");
+      }),
+      switchMap((result: User) => {
+        this.auth.setData(result);
+        const nombreUsuario = result.nombre;
+        const apellidoUsuario = result.apellidoPaterno;
+
+        return this.obtenerCliente(result.idCliente).pipe(
+          switchMap(cliente => {
+            this.sharedDataService.setNombreCliente(cliente.ApellidoPaterno);
+            this.sharedDataService.setLogotipo(cliente.Logotipo);
+            this.sharedDataService.setLogotipoReporte(cliente.LogotipoReporte);
+            return this.obtenerUsuario(result.id).pipe(
+              map(usuario => ({
+                result,
+                nombreUsuario,
+                apellidoUsuario,
+                usuario
+              }))
+            );
+          })
+        );
       })
-    ).subscribe((result: User) => {
-      setTimeout(() => {
-        this.obtenerCliente(result.idCliente);
-        this.obtenerUsuario(result.id);
-      }, 1000);
-      this.auth.setData(result);
-      this.router.navigate(['/ecommerce/orders']);
-      Swal.fire({
-        title: "¡Bienvenido!",
-        text: `¡Hola ${result.nombre}!`,
-        icon: "success"
-      });
+    ).subscribe(
+      (data: any) => {
+        this.sharedDataService.setUsuario(data.usuario.Id);
+        this.router.navigate(['/ecommerce/orders']);
+        Swal.fire({
+          title: "¡Bienvenido!",
+          text: `¡Hola ${data.nombreUsuario}!`,
+          icon: "success"
+        });
 
-      const nombreUsuario = result.nombre;
-      const apellidoUsuario = result.apellidoPaterno;
+        this.toastr.success(`¡Hola ${data.nombreUsuario} ${data.apellidoUsuario}!`, 'Bienvenido');
 
-      this.toastr.success(`¡Hola ${nombreUsuario} ${apellidoUsuario}!`, 'Bienvenido');
-
-      this.loading = false;
-      this.textLogin = 'Iniciar Sesión';
-    });
-  }
-
-  obtenerUsuario(userId: any) {
-    this.cliente.obtenerUsuario(userId).subscribe(
-      (res: any) => {
-        const userId = res.Id;
-        this.sharedDataService.setUsuario(userId);
+        this.loading = false;
+        this.textLogin = 'Iniciar Sesión';
+      },
+      (error) => {
+        console.error('Error al autenticar', error);
+        this.loading = false;
+        this.textLogin = 'Iniciar Sesión';
       }
     );
   }
 
+  obtenerUsuario(userId: any) {
+    return this.cliente.obtenerUsuario(userId).pipe(
+      catchError(error => {
+        console.error('Error al obtener el usuario', error);
+        return throwError(error);
+      })
+    );
+  }
+
   obtenerCliente(clientId: any) {
-    this.cliente.obtenerClienteTecsa(clientId).subscribe(
-      (res: any) => {
-        const nombreCliente = res.ApellidoPaterno;
-        const logotipo = res.Logotipo;
-        const logotipoReporte = res.LogotipoReporte;
-        this.sharedDataService.setNombreCliente(nombreCliente);
-        this.sharedDataService.setLogotipo(logotipo);
-        this.sharedDataService.setLogotipoReporte(logotipoReporte);
-      }
+    return this.cliente.obtenerClienteTecsa(clientId).pipe(
+      catchError(error => {
+        console.error('Error al obtener el cliente', error);
+        return throwError(error);
+      })
     );
   }
 
@@ -136,12 +154,8 @@ export class LoginComponent implements OnInit {
     this.router.navigateByUrl('/account/reset-password')
   }
 
-  type = 'password'
+  type = 'password';
   myFunctionPasswordCurrent() {
-    if (this.type === "password") {
-      this.type = "text";
-    } else {
-      this.type = "password";
-    }
+    this.type = this.type === "password" ? "text" : "password";
   }
 }
