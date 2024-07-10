@@ -1,5 +1,14 @@
+<div id="loading" class="loading-overlay" *ngIf="isLoading">
+  <div class="loading-spinner"></div>
+</div>
+
+<div id="loading" class="loading-overlay" *ngIf="isLoadingGrid">
+  <div class="loading-spinner"></div>
+</div>
+
+
 <div class="container-fluid">
-  <app-page-title title="Transacciones"></app-page-title>
+  <app-page-title title="Operaciones"></app-page-title>
 
   <div class="row">
     <div class="col-lg-12">
@@ -9,27 +18,25 @@
             <div class="col-sm-12 col-md-6">
               <div class="dataTables_length">
                 <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Inicio:
-                  <input type="date" class="form-control" [(ngModel)]="startDate" (change)="filterByDateRange()">
+                  <input type="date" class="form-control" [(ngModel)]="informacionStartDate"
+                    (change)="filterInformacionByDateRange()">
                 </label>
                 <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Fin:
-                  <input type="date" class="form-control" [(ngModel)]="endDate" (change)="filterByDateRange()">
+                  <input type="date" class="form-control" [(ngModel)]="informacionEndDate"
+                    (change)="filterInformacionByDateRange()">
                 </label>
-                <span [@fadeInUp] *ngIf="showTotalRecordsMessage" class="d-inline-flex align-items-center" style="margin-left: 15px;">
-                  Total de registros por fecha: {{ filteredTransactions.length }}
+                <span [@fadeInUp] *ngIf="showTotalRecordsMessage" class="d-inline-flex align-items-center"
+                  style="margin-left: 15px;">
+                  Total de registros por fecha: {{ filteredInformacion.length }}
                 </span>
               </div>
             </div>
             <div class="col-sm-12 col-md-6">
               <div id="tickets-table_filter" class="dataTables_filter text-md-end">
                 <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Buscar:&nbsp;&nbsp;
-                  <input type="text" class="form-control" [(ngModel)]="searchTerm" (input)="performSearch()" placeholder="Buscar...">
+                  <input type="text" class="form-control" [(ngModel)]="informacionSearchTerm"
+                    (input)="performInformacionSearch()" placeholder="Buscar...">
                 </label>
-                <button type="button" class="btn btn-primary" style="margin-left: 15px;" (click)="exportToPDF()">
-                  Descargar PDF <i class="uil uil-arrow-right ml-2"></i>
-                </button>
-                <button type="button" class="btn btn-success" style="margin-left: 15px;" (click)="exportToExcel()">
-                  <i class="uil uil-check me-2"></i> Descargar Excel
-                </button>
               </div>
             </div>
           </div>
@@ -41,8 +48,9 @@
                 <div class="col-lg-12">
                   <div class="card">
                     <div class="card-body">
-                      <div class="table-responsive content-cards">
-                        <table class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
+                      <div class="table-responsive content-cards" style="max-height: 430px;">
+                        <table
+                          class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
                           <thead>
                             <tr>
                               <th>ID</th>
@@ -52,20 +60,38 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <tr *ngFor="let data of informacion; let i = index">
-                              <td>{{ i + 1 + startIndex }}</td>
-                              <td>{{ data.FechaFactura | date: 'dd-MM-yyyy h:mm a' }}</td>
+                            <tr *ngFor="let data of filteredInformacion; let i = index">
+                              <td>{{ i + 1 + informacionStartIndex }}</td>
+                              <td>{{ data.FechaFactura | date: 'dd-MM-yyyy' }}</td>
                               <td>{{ data.FolioFactura }}</td>
                               <td>
-                                <button type="button" 
-                                        (click)="showInfo(data.Id, data.FechaFactura)" 
-                                        class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
+                                <button type="button" (click)="showInfo(data.Id, data.FechaFactura)"
+                                  class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
                                   View Details
                                 </button>
                               </td>
                             </tr>
                           </tbody>
                         </table>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center mt-3">
+                        <label class="d-inline-flex align-items-center">Mostrar
+                          <select name="informacionPageSize" [(ngModel)]="informacionPageSize"
+                            class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm"
+                            (change)="onInformacionPageSizeChange()">
+                            <option *ngFor="let option of informacionPageSizeOptions" [ngValue]="option">{{ option }}
+                            </option>
+                          </select>
+                        </label>
+                        <div class="pagination-controls ms-auto">
+                          <button class="btn btn-secondary" [disabled]="informacionCurrentPage === 0"
+                            (click)="onInformacionPreviousPage()">Anterior</button>&nbsp;&nbsp;
+                          <span>Página {{ informacionCurrentPage + 1 }} de {{ informacionTotalPages }} ({{
+                            informacionTotalRecords }} items)</span>&nbsp;&nbsp;
+                          <button class="btn btn-secondary"
+                            [disabled]="informacionCurrentPage === informacionTotalPages - 1"
+                            (click)="onInformacionNextPage()">Siguiente</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -75,16 +101,52 @@
           </div>
 
           <!-- Segunda tabla (serviceTransactions) -->
+          <!-- Segunda tabla (serviceTransactions) -->
           <div *ngIf="showServiceTable" class="table-responsive mb-4 col-12 col-lg-12">
             <div class="container-fluid">
               <div class="row">
                 <div class="col-lg-12">
                   <div class="card">
                     <div class="card-body">
+                      <h3>Transacciones</h3>
+                      <div class="row mb-md-2">
+                        <div class="col-sm-12 col-md-6">
+                          <div class="dataTables_length">
+                            <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Inicio:
+                              <input type="date" class="form-control" [(ngModel)]="serviceStartDate"
+                                (change)="filterServiceTransactionsByDateRange()">
+                            </label>
+                            <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Fin:
+                              <input type="date" class="form-control" [(ngModel)]="serviceEndDate"
+                                (change)="filterServiceTransactionsByDateRange()">
+                            </label>
+                            <span [@fadeInUp] *ngIf="showTotalRecordsMessage" class="d-inline-flex align-items-center"
+                              style="margin-left: 15px;">
+                              Total de registros por fecha: {{ filteredServiceTransactions.length }}
+                            </span>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                          <div id="tickets-table_filter" class="dataTables_filter text-md-end">
+                            <label class="d-inline-flex align-items-center"
+                              style="margin-left: 15px;">Buscar:&nbsp;&nbsp;
+                              <input type="text" class="form-control" [(ngModel)]="serviceSearchTerm"
+                                (input)="performServiceSearch()" placeholder="Buscar...">
+                            </label>
+                            <button type="button" class="btn btn-primary" style="margin-left: 15px;"
+                              (click)="exportToPDF()">
+                              Descargar PDF <i class="uil uil-arrow-right ml-2"></i>
+                            </button>
+                            <button type="button" class="btn btn-success" style="margin-left: 15px;"
+                              (click)="exportToExcel()">
+                              <i class="uil uil-check me-2"></i> Descargar Excel
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                       <div id="tableContainer" class="table-responsive content-cards">
-                        <!-- <h3>Id: {{ selectedId }}</h3> 
-                        <h3>Año: {{ selectedYear }}</h3> -->
-                        <table class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
+                        <table
+                          class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
                           <thead>
                             <tr>
                               <th>#</th>
@@ -120,19 +182,32 @@
                               <td>{{ transaction.ST }}</td>
                               <td>{{ transaction.T_TIME }}</td>
                             </tr>
+                            <tr>
+                              <td style="background-color: #1F4E78; color: white;" colspan="9" class="text-end">
+                                <strong>UTAE : </strong></td>
+                              <td style="background-color: #1F4E78; color: white;"><strong>{{ totalAmount }}</strong>
+                              </td>
+                              <td style="background-color: #1F4E78; color: white;" colspan="4"></td>
+                            </tr>
                           </tbody>
                         </table>
                       </div>
                       <div class="d-flex justify-content-between align-items-center mt-3">
                         <label class="d-inline-flex align-items-center">Mostrar
-                          <select name="servicePageSize" [(ngModel)]="servicePageSize" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm" (change)="onServicePageSizeChange()">
-                            <option *ngFor="let option of servicePageSizeOptions" [ngValue]="option">{{ option }}</option>
+                          <select name="servicePageSize" [(ngModel)]="servicePageSize"
+                            class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm"
+                            (change)="onServicePageSizeChange()">
+                            <option *ngFor="let option of servicePageSizeOptions" [ngValue]="option">{{ option }}
+                            </option>
                           </select>
                         </label>
                         <div class="pagination-controls ms-auto">
-                          <button class="btn btn-secondary" [disabled]="serviceCurrentPage === 0" (click)="onServicePreviousPage()">Anterior</button>&nbsp;&nbsp;
-                          <span>Página {{ serviceCurrentPage + 1 }} de {{ serviceTotalPages }} ({{ serviceTotalRecords }} items)</span>&nbsp;&nbsp;
-                          <button class="btn btn-secondary" [disabled]="serviceCurrentPage === serviceTotalPages - 1" (click)="onServiceNextPage()">Siguiente</button>
+                          <button class="btn btn-secondary" [disabled]="serviceCurrentPage === 0"
+                            (click)="onServicePreviousPage()">Anterior</button>&nbsp;&nbsp;
+                          <span>Página {{ serviceCurrentPage + 1 }} de {{ serviceTotalPages }} ({{ serviceTotalRecords
+                            }} items)</span>&nbsp;&nbsp;
+                          <button class="btn btn-secondary" [disabled]="serviceCurrentPage === serviceTotalPages - 1"
+                            (click)="onServiceNextPage()">Siguiente</button>
                         </div>
                       </div>
                     </div>
@@ -141,7 +216,6 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

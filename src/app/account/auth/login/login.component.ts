@@ -1,14 +1,10 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators,FormBuilder, FormGroup } from '@angular/forms';
-
-import { catchError, finalize, Observable, Subject, throwError } from 'rxjs';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { catchError, throwError } from 'rxjs';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { Credentials } from '../../../entities/Credentials';
 import { User } from '../../../entities/User';
 import { ActivatedRoute, Router } from '@angular/router';
-// import { ToastrService } from 'ngx-toastr';
-
-import { environment } from '../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { fadeInRightAnimation } from 'src/app/core/animations/fade-in-right.animation';
@@ -24,35 +20,29 @@ import { SharedDataService } from 'src/app/shared/services/shared-data.service';
   styleUrls: ['./login.component.scss'],
   animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
-
-/**
- * Login component
- */
 export class LoginComponent implements OnInit {
 
   loginForm: UntypedFormGroup;
   public credentials: Credentials;
   public textLogin: string = 'Iniciar Sesión';
-  public idUsuario;
   submitted = false;
   error = '';
   returnUrl: string;
-  public loading: boolean = false
-  public passwordType: string = "password"
+  public loading: boolean = false;
+  public passwordType: string = "password";
 
-
-  // set the currenr year
   year: number = new Date().getFullYear();
 
-  // tslint:disable-next-line: max-line-length
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private auth: AuthenticationService,
     private cliente: ClienteService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
     private sharedDataService: SharedDataService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
     AOS.init();
@@ -60,13 +50,86 @@ export class LoginComponent implements OnInit {
     this.initForm();
     document.body.setAttribute('class', 'authentication-bg');
 
-    
-
-    // reset login status
-    // this.authenticationService.logout();
-    // get return url from route parameters or default to '/'
-    // tslint:disable-next-line: no-string-literal
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  }
+
+  initForm() {
+    this.loginForm = this.fb.group({
+      username: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
+    });
+  }
+
+  ngOnDestroy() { 
+    document.body.classList.remove('authentication-bg');
+  }
+
+  get f() { return this.loginForm.controls; }
+
+  onSubmit() {
+    this.loading = true;
+    this.textLogin = 'Cargando...';
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+
+    this.credentials = this.loginForm.value;
+
+    this.auth.authenticate(this.credentials).pipe(
+      catchError((error) => {
+        this.loading = false;
+        this.textLogin = 'Iniciar Sesión';
+        Swal.fire({
+          title: "Ops!",
+          text: `Usuarios y/o contraseña incorrectos.`,
+          icon: "error"
+        });
+        return throwError(() => "");
+      })
+    ).subscribe((result: User) => {
+      setTimeout(() => {
+        this.obtenerCliente(result.idCliente);
+        this.obtenerUsuario(result.id);
+      }, 1000);
+      this.auth.setData(result);
+      this.router.navigate(['/ecommerce/orders']);
+      Swal.fire({
+        title: "¡Bienvenido!",
+        text: `¡Hola ${result.nombre}!`,
+        icon: "success"
+      });
+
+      const nombreUsuario = result.nombre;
+      const apellidoUsuario = result.apellidoPaterno;
+
+      this.toastr.success(`¡Hola ${nombreUsuario} ${apellidoUsuario}!`, 'Bienvenido');
+
+      this.loading = false;
+      this.textLogin = 'Iniciar Sesión';
+    });
+  }
+
+  obtenerUsuario(userId: any) {
+    this.cliente.obtenerUsuario(userId).subscribe(
+      (res: any) => {
+        const userId = res.Id;
+        this.sharedDataService.setUsuario(userId);
+      }
+    );
+  }
+
+  obtenerCliente(clientId: any) {
+    this.cliente.obtenerClienteTecsa(clientId).subscribe(
+      (res: any) => {
+        const nombreCliente = res.ApellidoPaterno;
+        const logotipo = res.Logotipo;
+        const logotipoReporte = res.LogotipoReporte;
+        this.sharedDataService.setNombreCliente(nombreCliente);
+        this.sharedDataService.setLogotipo(logotipo);
+        this.sharedDataService.setLogotipoReporte(logotipoReporte);
+      }
+    );
   }
 
   cambiarContraseñas(){
@@ -81,150 +144,4 @@ export class LoginComponent implements OnInit {
       this.type = "password";
     }
   }
-
-  initForm() {
-    this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
-      // email: ['admin@themesbrand.com', [Validators.required, Validators.email]],
-      // password: ['123456', [Validators.required]],
-    });
-  }
-
-  ngOnDestroy() { 
-    document.body.classList.remove('authentication-bg')
-  }
-
-  // convenience getter for easy access to form fields
-  get f() { return this.loginForm.controls; }
-
-  /**
-   * Form submit
-   */
-  // onSubmit() {
-  //   this.submitted = true;
-
-  //   // stop here if form is invalid
-  //   if (this.loginForm.invalid) {
-  //     return;
-  //   } else {
-  //     if (environment.defaultauth === 'firebase') {
-  //       this.auth.login(this.f.email.value, this.f.password.value).then((res: any) => {
-  //         document.body.removeAttribute('class');
-  //         this.router.navigate(['/']);
-  //       })
-  //         .catch(error => {
-  //           this.error = error ? error : '';
-  //         });
-  //     } else {
-  //       // this.authFackservice.login(this.f.email.value, this.f.password.value)
-  //       //   .pipe(first())
-  //       //   .subscribe(
-  //       //     data => {
-  //       //       this.router.navigate(['/']);
-  //       //     },
-  //       //     error => {
-  //       //       this.error = error ? error : '';
-  //       //     });
-  //     }
-  //   }
-  // }
-  onSubmit() {
-    this.loading = true;
-    this.textLogin = 'Cargando...';
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth' // Para un desplazamiento suave
-    });
-    // this.loading = true;
-    this.credentials = this.loginForm.value;
-    
-    this.auth.authenticate(this.credentials).pipe(
-      catchError((error) => {
-        this.loading = false;
-        this.textLogin = 'Iniciar Sesión';
-        Swal.fire({
-          title: "Ops!",
-          text: `Usuarios y/o constraseña incorrectos.`,
-          icon: "error"
-        });
-        return throwError(() => "")
-      })
-      ).subscribe((result: User) => {
-        setTimeout(()=> {
-          this.obtenerCliente(result.idCliente);
-        },1000)
-      this.auth.setData(result);
-      this.router.navigate(['/ecommerce/orders']);
-      Swal.fire({
-        title: "¡Bienvenido!",
-        text: `¡Hola ${result.nombre}!`,
-        icon: "success"
-      });
-  
-      const nombreUsuario = result.nombre;
-      const apellidoUsuario = result.apellidoPaterno;
-  
-      this.toastr.success(`¡Hola ${nombreUsuario} ${apellidoUsuario}!`, 'Bienvenido');
-  
-      this.loading = false;
-      this.textLogin = 'Iniciar Sesión';
-    });
-    // this.auth.authenticate(this.credentials).subscribe(
-    //   (result: User) => {
-    //     this.auth.setData(result);
-    //     this.router.navigate(['']);
-    //   },
-    //   err=>{
-    //     console.log(err);
-    //     // this.toastr.error('Usuario o contraseña incorrectos')
-    //   })
-  }
-  NombreCliente: any;
-  Logotipo: any;
-  LogotipoReporte:any
-  obtenerCliente(any){
-    this.cliente.obtenerClienteTecsa(any).subscribe(
-      (res: any) => {
-        this.NombreCliente = res.ApellidoPaterno;
-        this.Logotipo = res.Logotipo;
-        this.LogotipoReporte = res.LogotipoReporte;
-        this.sharedDataService.setNombreCliente(this.NombreCliente);
-        this.sharedDataService.setLogotipo(this.Logotipo);
-        this.sharedDataService.setLogotipoReporte(this.LogotipoReporte);
-      }
-    );
-  }
-  
-
-// onSubmit(){
-//   const data = {
-//     "id": '7',
-//     "nombre": "luis enrique",
-//     "email": "luisnm1@gmail.com",
-//     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTAxOTY5MjEsImV4cCI6MTcxMDIwMDUyMX0.73QOGXDkxbXS7oSjWxSMyt-LKg0xalqC_o3jVGGQD2U",
-//     "permisos": [
-//         {
-//             "IdPermiso": 3
-//         },
-//         {
-//             "IdPermiso": 4
-//         },
-//         {
-//             "IdPermiso": 5
-//         },
-//         {
-//             "IdPermiso": 8
-//         },
-//         {
-//             "IdPermiso": 6
-//         },
-//         {
-//             "IdPermiso": 7
-//         }
-//     ]
-// };
-//   this.auth.setData(data);
-//   this.router.navigate(['']);
-// }
 }

@@ -1,15 +1,12 @@
 import { Component, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
-
 import { AuthenticationService } from '../../core/services/auth.service';
 import { AuthfakeauthenticationService } from '../../core/services/authfake.service';
 import { environment } from '../../../environments/environment';
-
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageService } from '../../core/services/language.service';
 import { TranslateService } from '@ngx-translate/core';
-
 import { Title } from '@angular/platform-browser';
 import { ClienteService } from 'src/app/shared/services/clientes.service';
 import { SharedDataService } from 'src/app/shared/services/shared-data.service';
@@ -19,10 +16,6 @@ import { SharedDataService } from 'src/app/shared/services/shared-data.service';
   templateUrl: './topbar.component.html',
   styleUrls: ['./topbar.component.scss']
 })
-
-/**
- * Topbar component
- */
 export class TopbarComponent implements OnInit {
 
   element;
@@ -32,7 +25,7 @@ export class TopbarComponent implements OnInit {
   countryName: any;
   valueset;
 
-  public imagenPerfil:string;
+  public imagenPerfil: string;
   public nombre: string;
   public apellidoPaterno: string;
 
@@ -43,7 +36,7 @@ export class TopbarComponent implements OnInit {
     public languageService: LanguageService,
     public translate: TranslateService,
     private titleService: Title,
-    private user:AuthenticationService,
+    private user: AuthenticationService,
     private cliente: ClienteService,
     private sharedDataService: SharedDataService,
     public _cookiesService: CookieService) {
@@ -62,11 +55,14 @@ export class TopbarComponent implements OnInit {
   @Output() settingsButtonClicked = new EventEmitter();
   @Output() mobileMenuButtonClicked = new EventEmitter();
   nombreCliente: string;
-logotipoReporte: string;
+  logotipoReporte: string;
+  idUsuario: string;
 
   ngOnInit(): void {
-    this.nombreCliente = this.sharedDataService.getNombreClienteFromStorage(); // Obtener valor inicial de localStorage
-    this.logotipoReporte = this.sharedDataService.getLogotipoReporteFromStorage(); // Obtener valor inicial de localStorage
+    this.nombreCliente = this.sharedDataService.getNombreClienteFromStorage();
+    this.logotipoReporte = this.sharedDataService.getLogotipoReporteFromStorage();
+    this.idUsuario = this.sharedDataService.getIdFromStorage();
+
     this.sharedDataService.nombreCliente$.subscribe(
       nombre => {
         this.nombreCliente = nombre;
@@ -75,6 +71,12 @@ logotipoReporte: string;
     this.sharedDataService.logotipoReporte$.subscribe(
       logotipo => {
         this.logotipoReporte = logotipo;
+      }
+    );
+    this.sharedDataService.id$.subscribe(
+      id => {
+        this.idUsuario = id;
+        this.obtenerUsuario(id); // Llamar al servicio cuando se recibe el ID
       }
     );
 
@@ -96,43 +98,43 @@ logotipoReporte: string;
     }
   }
 
-  /**
-   * Language set
-   * @param text 
-   * @param lang 
-   * @param flag 
-   */
   setLanguage(text: string, lang: string, flag: string) {
     this.countryName = text;
     this.flagvalue = flag;
     this.cookieValue = lang;
     this.languageService.setLanguage(lang);
   }
-  
+
+  obtenerUsuario(userId: string) {
+    this.cliente.obtenerUsuario(userId).subscribe(
+      (res: any) => {
+        console.log('Información del usuario:', res);
+        // Puedes hacer algo con la información del usuario aquí
+      }
+    );
+  }
+
   private setUserProfile(user: any) {
     this.imagenPerfil = user.imagenPerfil;
     this.nombre = user.nombre;
 
     switch (user.idCliente) {
-        case 3:
-            // this.obtenerClienteEntorno();
-            this.nombre = 'Entorno';
-            this.titleService.setTitle('Entorno');
-            this.setFavicon('assets/images/logoKonnecta.png');
-            break;
-        case 2:
-            // this.obtenerClienteTecsa();
-            this.nombre = 'Tecsa';
-            this.titleService.setTitle('Tecsa');
-            this.setFavicon('assets/images/tecsalogo.ico');
-            break;
-        default:
-            // Valores por defecto si idCliente no es 1 ni 2
-            this.nombre = 'Cliente Desconocido';
-            this.imagenPerfil = 'assets/images/profile/default.jpg';
-            this.titleService.setTitle('Cliente Desconocido');
-            this.setFavicon('assets/images/icons/default-favicon.ico');
-            break;
+      case 3:
+        this.titleService.setTitle('Entorno');
+        this.setFavicon('assets/images/logoKonnecta.png');
+        this.nombre = 'Entorno';
+        break;
+      case 2:
+        this.nombre = 'Tecsa';
+        this.titleService.setTitle('Tecsa');
+        this.setFavicon('assets/images/tecsalogo.ico');
+        break;
+      default:
+        this.nombre = 'Cliente Desconocido';
+        this.imagenPerfil = 'assets/images/profile/default.jpg';
+        this.titleService.setTitle('Cliente Desconocido');
+        this.setFavicon('assets/images/icons/default-favicon.ico');
+        break;
     }
   }
 
@@ -142,36 +144,24 @@ logotipoReporte: string;
     link.rel = 'shortcut icon';
     link.href = url;
     document.getElementsByTagName('head')[0].appendChild(link);
-  }  
+  }
 
-  /**
-   * Toggles the right sidebar
-   */
   toggleRightSidebar() {
     this.settingsButtonClicked.emit();
   }
 
-  /**
-   * Toggle the menu bar when having mobile screen
-   */
   toggleMobileMenu(event: any) {
     event.preventDefault();
     this.mobileMenuButtonClicked.emit();
   }
 
-  /**
-   * Logout the user
-   */
   logout() {
     this.router.navigate(['/account/login']);
-    setTimeout(()=>{
+    setTimeout(() => {
       window.location.reload()
-    },800)
+    }, 800)
   }
 
-  /**
-   * Fullscreen method
-   */
   fullscreen() {
     document.body.classList.toggle('fullscreen-enable');
     if (
@@ -180,26 +170,20 @@ logotipoReporte: string;
       if (this.element.requestFullscreen) {
         this.element.requestFullscreen();
       } else if (this.element.mozRequestFullScreen) {
-        /* Firefox */
         this.element.mozRequestFullScreen();
       } else if (this.element.webkitRequestFullscreen) {
-        /* Chrome, Safari and Opera */
         this.element.webkitRequestFullscreen();
       } else if (this.element.msRequestFullscreen) {
-        /* IE/Edge */
         this.element.msRequestFullscreen();
       }
     } else {
       if (this.document.exitFullscreen) {
         this.document.exitFullscreen();
       } else if (this.document.mozCancelFullScreen) {
-        /* Firefox */
         this.document.mozCancelFullScreen();
       } else if (this.document.webkitExitFullscreen) {
-        /* Chrome, Safari and Opera */
         this.document.webkitExitFullscreen();
       } else if (this.document.msExitFullscreen) {
-        /* IE/Edge */
         this.document.msExitFullscreen();
       }
     }

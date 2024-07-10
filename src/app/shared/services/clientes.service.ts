@@ -9,16 +9,16 @@ import { environment } from '../../../environments/environment';
 export class ClienteService {
 
   constructor(private http: HttpClient) { }
-  
-	obtenerClienteTecsa(idCliente): Observable<any> {
-		return this.http.get<any>(environment.API_SECURITY + '/api/clientes/' + idCliente);
-	}
 
-    obtenerUsuario(): Observable<any> {
-		return this.http.get<any>(environment.API_SECURITY + '/api/usuarios/' + 12);
-	}
+  obtenerClienteTecsa(idCliente: string): Observable<any> {
+    return this.http.get<any>(`${environment.API_SECURITY}/api/clientes/${idCliente}`);
+  }
 
-	obtenerTransacciones(id: number, year: number): Observable<any> {
-		return this.http.get<any>(`${environment.API_SECURITY}/api/transacciones/${id}?year=${year}`);
-	}
+  obtenerUsuario(idUsuario: string): Observable<any> {
+    return this.http.get<any>(`${environment.API_SECURITY}/api/usuarios/${idUsuario}`);
+  }
+
+  obtenerTransacciones(id: number, year: number): Observable<any> {
+    return this.http.get<any>(`${environment.API_SECURITY}/api/transacciones/${id}?year=${year}`);
+  }
 }

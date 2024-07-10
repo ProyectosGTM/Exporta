@@ -592,44 +592,44 @@ export const MENU: MenuItem[] = [
     // }
     {
         id: 109,
-        label: 'Trabajo',
-        isTitle: true
+         label: 'Trabajo',
+         isTitle: true
     },
     {
-        id: 110,
-        label: 'MENUITEMS.PRUEBA.TEXT',
-        icon: 'uil-money-withdraw',
-        link: '/ecommerce/orders',
-    },
-    {
-        id: 117,
-        label: 'Administración',
-        isTitle: true
-    },
-    {
-        id: 118,
-        label: 'Módulos',
-        icon: 'uil-box',
-        link: '/modulos/lista-modulos',
-    },
-    {
-        id: 118,
-        label: 'Permisos',
-        icon: 'uil-list-ul',
-        link: '/permisos/lista-permisos',
-    },
-    {
-        id: 118,
-        label: 'Roles',
-        icon: 'uil-gold',
-        link: '/roles/lista-roles',
-    },
-    {
-        id: 118,
-        label: 'Usuarios',
-        icon: 'uil-users-alt',
-        link: '/usuarios/lista-usuarios',
-    },
+         id: 110,
+         label: 'MENUITEMS.PRUEBA.TEXT',
+         icon: 'uil-money-withdraw',
+         link: '/ecommerce/orders',
+     },
+    // {
+    //     id: 117,
+    //     label: 'Administración',
+    //     isTitle: true
+    // },
+    // {
+    //     id: 118,
+    //     label: 'Módulos',
+    //     icon: 'uil-box',
+    //     link: '/modulos/lista-modulos',
+    // },
+    // {
+    //     id: 118,
+    //     label: 'Permisos',
+    //     icon: 'uil-list-ul',
+    //     link: '/permisos/lista-permisos',
+    // },
+    // {
+    //     id: 118,
+    //     label: 'Roles',
+    //     icon: 'uil-gold',
+    //     link: '/roles/lista-roles',
+    // },
+    // {
+    //     id: 118,
+    //     label: 'Usuarios',
+    //     icon: 'uil-users-alt',
+    //     link: '/usuarios/lista-usuarios',
+    // },
     // {
     //     id: 111,
     //     label: 'MENUITEMS.PRUEBADOS.TEXT',
