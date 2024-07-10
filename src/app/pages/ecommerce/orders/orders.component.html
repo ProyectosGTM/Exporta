@@ -133,13 +133,9 @@
                               <input type="text" class="form-control" [(ngModel)]="serviceSearchTerm"
                                 (input)="performServiceSearch()" placeholder="Buscar...">
                             </label>
-                            <button type="button" disabled class="btn btn-primary" style="margin-left: 15px;"
-                              (click)="exportToPDF()">
-                              Descargar PDF <i class="uil uil-arrow-right ml-2"></i>
-                            </button>
                             <button type="button" class="btn btn-success" style="margin-left: 15px;"
                               (click)="exportToExcel()">
-                              <i class="uil uil-check me-2"></i> Descargar Excel
+                              <i class="uil uil-file-download-alt me-2"></i> Descargar Excel
                             </button>
                           </div>
                         </div>
