@@ -31,4 +31,8 @@ export class ClienteService {
   obtenerTransacciones(id: number, year: number): Observable<any> {
     return this.http.get<any>(`${environment.API_SECURITY}/api/transacciones/${id}?year=${year}`);
   }
+
+  obtenerTransaccionesOK(id: number, year: number): Observable<any> {
+    return this.http.get<any>(`${environment.API_SECURITY}/api/transaccionesok/${id}?year=${year}`);
+  }
 }
