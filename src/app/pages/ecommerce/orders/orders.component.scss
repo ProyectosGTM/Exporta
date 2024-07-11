@@ -19,7 +19,25 @@
 th, td, tr {
   text-align: center;
 }
+.row {
+  display: flex;
+  align-items: center;
+}
 
+.row .title {
+  margin-right: 10px; /* Ajusta el margen según sea necesario */
+}
+
+.transacciones{
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.respuesta{
+  margin-left: 15px;
+  font-size: 25px;
+  font-weight: 400;
+}
 
 .loading-overlay {
   position: fixed;

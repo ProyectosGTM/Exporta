@@ -64,20 +64,34 @@ export class AuthenticationService extends BaseServicesService {
     this.cleanSession();
   }
 
-  public logout(): void {
-    // Limpiar todos los datos de sessionStorage y localStorage
-    sessionStorage.clear();
-    localStorage.clear();
-    
-    // Emitir cambio en la autenticación
-    this.authenticationChanged.next(false);
-  
-    // Navegar a la página de login
-    this.router.navigate(['/login']).then(() => {
-      // Recargar la página para asegurarse de que todos los datos estén realmente borrados
-      window.location.reload();
-    });
-  }
+  public async logout(): Promise<void> {
+    try {
+        // Verificar datos antes de limpiar
+        console.log('Datos en sessionStorage antes de limpiar:', sessionStorage);
+        console.log('Datos en localStorage antes de limpiar:', localStorage);
+
+        // Limpiar todos los datos de sessionStorage y localStorage
+        sessionStorage.clear();
+        localStorage.clear();
+        
+        // Verificar datos después de limpiar
+        console.log('Datos en sessionStorage después de limpiar:', sessionStorage);
+        console.log('Datos en localStorage después de limpiar:', localStorage);
+
+        // Emitir cambio en la autenticación
+        this.authenticationChanged.next(false);
+      
+        // Navegar a la página de login
+        await this.router.navigate(['/login']);
+        
+        // Recargar la página para asegurarse de que todos los datos estén realmente borrados
+        window.location.reload();
+    } catch (error) {
+        console.error('Error during logout:', error);
+    }
+}
+
+
   
 
   private setStorageToken(value: any): void {

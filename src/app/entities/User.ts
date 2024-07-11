@@ -8,6 +8,6 @@ export class User {
     nombreCompleto?: string;
     permisos: any[];
     email:string;
-    idCliente?:number;
+    idCliente?:any;
     imagenPerfil: string;
 }

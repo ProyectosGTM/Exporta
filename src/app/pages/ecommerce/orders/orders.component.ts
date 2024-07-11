@@ -110,12 +110,12 @@ export class OrdersComponent implements OnInit {
       console.log('TipoOperacionNombre en OrdersComponent:', tipoOperacionNombre);
     });
 
-    this.sharedDataService.id$.subscribe(
-      id => {
-        this.idUsuario = id;
-        this.obtenerUsuario(id);
-      }
-    );
+    // this.sharedDataService.id$.subscribe(
+    //   id => {
+    //     this.idUsuario = id;
+    //     this.obtenerUsuario(id);
+    //   }
+    // );
     this.obtenerUsuarios();
   }
 
@@ -393,118 +393,134 @@ export class OrdersComponent implements OnInit {
 
   private getBase64ImageFromURL(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.http.get(url, { responseType: 'blob' }).subscribe(blob => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          resolve(reader.result as string);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
+        this.http.get(url, { responseType: 'blob' }).subscribe({
+            next: (blob) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    resolve(reader.result as string);
+                };
+                reader.onerror = (error) => {
+                    console.error('Error al leer el archivo de imagen:', error);
+                    reject('No se pudo convertir la imagen a base64');
+                };
+                reader.readAsDataURL(blob);
+            },
+            error: (error) => {
+                console.error('Error al obtener la imagen desde la URL:', error);
+                reject('No se pudo obtener la imagen desde la URL');
+            }
+        });
+    });
+}
+
+
+async exportToPDF(): Promise<void> {
+  try {
+      console.log('Logotipo URL:', this.logotipoReporte);
+      const imgData = await this.getBase64ImageFromURL(this.logotipoReporte);
+      console.log('Imagen cargada correctamente:', imgData);
+
+      const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
+          this.isLoadingPDF = false;
+          const transactionDate = new Date(transaction.DATE);
+          const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
+          const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
+
+          let matchesDateRange = true;
+          if (start && end) {
+              matchesDateRange = transactionDate >= start && transactionDate <= end;
+          } else if (start) {
+              matchesDateRange = transactionDate >= start;
+          } else if (end) {
+              matchesDateRange = transactionDate <= end;
+          }
+
+          let matchesSearchTerm = Object.values(transaction).some(val =>
+              val.toString().toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
+          );
+
+          return matchesDateRange && matchesSearchTerm;
       });
-    });
-  }
 
-  async exportToPDF(): Promise<void> {
-    console.log('Logotipo URL:', this.logotipoReporte);
-    const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
-      this.isLoadingPDF = false;
-      const transactionDate = new Date(transaction.DATE);
-      const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
-      const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
-  
-      let matchesDateRange = true;
-      if (start && end) {
-        matchesDateRange = transactionDate >= start && transactionDate <= end;
-      } else if (start) {
-        matchesDateRange = transactionDate >= start;
-      } else if (end) {
-        matchesDateRange = transactionDate <= end;
-      }
-  
-      let matchesSearchTerm = Object.values(transaction).some(val =>
-        val.toString().toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
-      );
-  
-      return matchesDateRange && matchesSearchTerm;
-    });
-  
-    const doc = new jsPDF('landscape');
-    const imgData = await this.getBase64ImageFromURL(this.logotipoReporte); // Usar la variable logotipoReporte
-  
-    const imgX = 15;
-    const imgY = 14;
-    const imgWidth = 15;
-    const imgHeight = 12;
-  
-    doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
-  
-    const lineX = imgX + imgWidth + 5;
-    const lineY1 = imgY;
-    const lineY2 = imgY + imgHeight;
-  
-    doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(0.5);
-    doc.line(lineX, lineY1, lineX, lineY2);
-  
-    const textX = lineX + 5;
-    const textYStart = 13;
-    const textLineHeight = 5;
-  
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(10);
-    doc.text('Konnecta System 7.0', textX, textYStart);
-    doc.text(`CLIENT : ${this.clienteNombre}`, textX, textYStart + textLineHeight);
-    doc.text(`AFFILIATE NAME : ${this.afiliadoNombre}`, textX, textYStart + 2 * textLineHeight);
-    doc.text(`SEND TO : ${this.enviadoNombre}`, textX, textYStart + 3 * textLineHeight);
-    doc.text('TYPE : MX PIPE', 200, 23);
-  
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    const formattedTime = currentDate.toLocaleTimeString('es-ES');
-    const dateTimeText = `${formattedDate}, ${formattedTime}`;
-  
-    doc.text(dateTimeText, 200, 28);
-  
-    (doc as any).autoTable({
-      head: [['#', 'DATE', 'TIME', 'OUT IP', 'IN IP', 'GEO OUT', 'GEO IN', 'CARRIER', 'PRODUCT', 'AMOUNT', 'PHONE', 'TRN', 'STATUS', 'T TIME']],
-      body: allFilteredTransactions.map((transaction, index) => [
-        index + 1,
-        transaction.DATE,
-        transaction.TIME,
-        transaction.OUT_IP,
-        transaction.IN_IP,
-        transaction.GEO_OUT,
-        transaction.GEO_IN,
-        transaction.CARRIER,
-        transaction.PROD,
-        transaction.AMOUNT,
-        transaction.PHONE,
-        transaction.TRN,
-        transaction.ST,
-        transaction.T_TIME,
-      ]),
-      startY: 30,
-      styles: { fontSize: 8, font: 'courier', cellPadding: 1.5, lineHeight: 1 },
-      headStyles: { fillColor: [31, 78, 120], textColor: [255, 255, 255], halign: 'center', font: 'courier', fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [255, 255, 255] },
-    });
-  
-    doc.setFontSize(10);
-    doc.text('Tecsa', 14, doc.internal.pageSize.height - 10);
-  
-    doc.save('Transacciones.pdf');
-  }
+      const doc = new jsPDF('landscape');
+      const imgX = 15;
+      const imgY = 14;
+      const imgWidth = 15;
+      const imgHeight = 12;
 
-  selectedId: number | null = null;
-  selectedYear: number | null = null;
+      doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
+
+      const lineX = imgX + imgWidth + 5;
+      const lineY1 = imgY;
+      const lineY2 = imgY + imgHeight;
+
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.5);
+      doc.line(lineX, lineY1, lineX, lineY2);
+
+      const textX = lineX + 5;
+      const textYStart = 13;
+      const textLineHeight = 5;
+
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(10);
+      doc.text('Konnecta System 7.0', textX, textYStart);
+      doc.text(`CLIENT: ${this.clienteNombre}/${this.afiliadoNombreCorto} `, textX, textYStart + textLineHeight);
+      doc.text(`NAME: ${this.afiliadoNombre}`, textX, textYStart + 2 * textLineHeight);
+      doc.text(`SEND TO: ${this.enviadoNombre}`, textX, textYStart + 3 * textLineHeight);
+      doc.text(`TYPE: ${this.tipoOperacionNombre}`, 200, 23);
+
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const formattedTime = currentDate.toLocaleTimeString('es-ES');
+      const dateTimeText = `${formattedDate}, ${formattedTime}`;
+
+      doc.text(dateTimeText, 200, 28);
+
+      (doc as any).autoTable({
+          head: [['#', 'DATE', 'TIME', 'OUT IP', 'IN IP', 'GEO OUT', 'GEO IN', 'CARRIER', 'PRODUCT', 'AMOUNT', 'PHONE', 'TRN', 'STATUS', 'T TIME']],
+          body: allFilteredTransactions.map((transaction, index) => [
+              index + 1,
+              transaction.DATE,
+              transaction.TIME,
+              transaction.OUT_IP,
+              transaction.IN_IP,
+              transaction.GEO_OUT,
+              transaction.GEO_IN,
+              transaction.CARRIER,
+              transaction.PROD,
+              transaction.AMOUNT,
+              transaction.PHONE,
+              transaction.TRN,
+              transaction.ST,
+              transaction.T_TIME,
+          ]),
+          startY: 30,
+          styles: { fontSize: 8, font: 'courier', cellPadding: 1.5, lineHeight: 1 },
+          headStyles: { fillColor: [31, 78, 120], textColor: [255, 255, 255], halign: 'center', font: 'courier', fontStyle: 'bold' },
+          alternateRowStyles: { fillColor: [255, 255, 255] },
+      });
+
+      doc.setFontSize(10);
+      doc.text('Tecsa', 14, doc.internal.pageSize.height - 10);
+
+      doc.save('Transacciones.pdf');
+  } catch (error) {
+      console.error('Error al generar el PDF:', error);
+  }
+}
+
+
+selectedId: any;
+selectedYear: number;
   showInfo(id: any, fechaFactura: any): void {
     this.isLoadingGrid = true;
     const year = new Date(fechaFactura).getFullYear();
     console.log(id, year);
+    this.selectedId = id;
+    this.selectedYear = year;
     this.cliente.obtenerTransacciones(id, year).subscribe((response: Transaction[]) => {
       this.isLoadingGrid = false;
-      this.selectedId = id;
-      this.selectedYear = year;
       this.serviceTransactions = response;
       this.serviceTotalRecords = this.serviceTransactions.length;
       this.updateServiceTotalPages();
@@ -517,4 +533,5 @@ export class OrdersComponent implements OnInit {
       }, 0);
     });
   }
+  
 }

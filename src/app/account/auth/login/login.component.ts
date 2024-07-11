@@ -100,7 +100,7 @@ export class LoginComponent implements OnInit {
             return this.obtenerUsuario(result.id).pipe(
               switchMap(usuario => {
                 this.sharedDataService.setUsuario(usuario.Id);
-                return this.obtenerOperaciones(result.id); // Añade esta línea para obtener las operaciones
+                return this.obtenerOperaciones(result.idCliente); // Añade esta línea para obtener las operaciones
               }),
               map(operaciones => {
                 console.log('Operaciones obtenidas:', operaciones); // Verifica que se obtienen los datos correctos

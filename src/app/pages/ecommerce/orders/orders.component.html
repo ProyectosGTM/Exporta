@@ -13,11 +13,10 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="card">
-        <h2> {{nombreCorto}} </h2> {{nombre}} <img class="rounded-circle header-profile-user" [src]="logotipoReporte" alt="">
         <div class="card-body">
           <div class="row mb-md-2">
             <div class="col-sm-12 col-md-6">
-              <div>
+              <!-- <div>
                 <h2>Orders Component</h2>
                 <p>Cliente: {{ clienteNombre }}</p>
                 <p>Afiliado Nombre: {{ afiliadoNombre }}</p>
@@ -25,12 +24,7 @@
                 <p>Afiliado Nombre Corto: {{ afiliadoNombreCorto }}</p>
                 <p>Tipo de Operación: {{ tipoOperacionNombre }}</p>
                 <p>Logotipo Reporte: <img [src]="logotipoReporte" alt="Logotipo Reporte" style="height: 50px;"></p>
-                <!-- El resto del contenido del template -->
-              </div>
-              
-              
-              
-              
+              </div> -->
               <div class="dataTables_length">
                 <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Inicio:
                   <input type="date" class="form-control" [(ngModel)]="informacionStartDate"
@@ -123,7 +117,14 @@
                 <div class="col-lg-12">
                   <div class="card">
                     <div class="card-body">
-                      <h3>Transacciones</h3> 
+                      <div class="col-sm-12 col-md-6">
+                        <div class="dataTables_length">
+                          <div style="margin-right: 10px;">
+                            <span class="transacciones">Transacciones:</span>
+                            <span class="respuesta">ID: {{ selectedId }}   -   Año: {{ selectedYear }}</span>
+                          </div>
+                        </div>
+                      </div>
                       <div class="row mb-md-2">
                         <div class="col-sm-12 col-md-6">
                           <div class="dataTables_length">
