@@ -22,7 +22,6 @@ import { SharedDataService } from 'src/app/shared/services/shared-data.service';
   animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
 export class LoginComponent implements OnInit {
-
   loginForm: UntypedFormGroup;
   public credentials: Credentials;
   public textLogin: string = 'Iniciar Sesión';
@@ -74,9 +73,9 @@ export class LoginComponent implements OnInit {
       top: 0,
       behavior: 'smooth'
     });
-
+  
     this.credentials = this.loginForm.value;
-
+  
     this.auth.authenticate(this.credentials).pipe(
       catchError((error) => {
         this.loading = false;
@@ -92,37 +91,50 @@ export class LoginComponent implements OnInit {
         this.auth.setData(result);
         const nombreUsuario = result.nombre;
         const apellidoUsuario = result.apellidoPaterno;
-
+  
         return this.obtenerCliente(result.idCliente).pipe(
           switchMap(cliente => {
             this.sharedDataService.setNombreCliente(cliente.ApellidoPaterno);
             this.sharedDataService.setLogotipo(cliente.Logotipo);
             this.sharedDataService.setLogotipoReporte(cliente.LogotipoReporte);
             return this.obtenerUsuario(result.id).pipe(
-              map(usuario => ({
-                result,
-                nombreUsuario,
-                apellidoUsuario,
-                usuario
-              }))
+              switchMap(usuario => {
+                this.sharedDataService.setUsuario(usuario.Id);
+                return this.obtenerOperaciones(result.id); // Añade esta línea para obtener las operaciones
+              }),
+              map(operaciones => {
+                console.log('Operaciones obtenidas:', operaciones); // Verifica que se obtienen los datos correctos
+                this.sharedDataService.setAfiliadoNombre(operaciones.AfiliadoNombre);
+                this.sharedDataService.setEnviadoNombre(operaciones.EnviadoNombre);
+                this.sharedDataService.setAfiliadoNombreCorto(operaciones.AfiliadoNombreCorto);
+                this.sharedDataService.setTipoOperacionNombre(operaciones.TipoOperacionNombre);
+                return {
+                  result,
+                  nombreUsuario,
+                  apellidoUsuario,
+                  operaciones
+                };
+              })
             );
           })
         );
       })
     ).subscribe(
       (data: any) => {
-        this.sharedDataService.setUsuario(data.usuario.Id);
         this.router.navigate(['/ecommerce/orders']);
         Swal.fire({
           title: "¡Bienvenido!",
           text: `¡Hola ${data.nombreUsuario}!`,
           icon: "success"
         });
-
+  
         this.toastr.success(`¡Hola ${data.nombreUsuario} ${data.apellidoUsuario}!`, 'Bienvenido');
-
+  
         this.loading = false;
         this.textLogin = 'Iniciar Sesión';
+  
+        // Mostrar el JSON de las operaciones obtenidas en el console.log
+        console.log('Operaciones obtenidas en suscripción:', JSON.stringify(data.operaciones, null, 2));
       },
       (error) => {
         console.error('Error al autenticar', error);
@@ -145,6 +157,15 @@ export class LoginComponent implements OnInit {
     return this.cliente.obtenerClienteTecsa(clientId).pipe(
       catchError(error => {
         console.error('Error al obtener el cliente', error);
+        return throwError(error);
+      })
+    );
+  }
+
+  obtenerOperaciones(idOp: string) {
+    return this.cliente.obtenerOperaciones(idOp).pipe(
+      catchError(error => {
+        console.error('Error al obtener operaciones', error);
         return throwError(error);
       })
     );

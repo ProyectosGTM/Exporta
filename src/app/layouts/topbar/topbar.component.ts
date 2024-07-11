@@ -28,6 +28,7 @@ export class TopbarComponent implements OnInit {
   public imagenPerfil: string;
   public nombre: string;
   public apellidoPaterno: string;
+  public afiliadoNombre: string; // Añadir esta línea
 
   constructor(@Inject(DOCUMENT) private document: any,
     private router: Router,
@@ -62,6 +63,7 @@ export class TopbarComponent implements OnInit {
     this.nombreCliente = this.sharedDataService.getNombreClienteFromStorage();
     this.logotipoReporte = this.sharedDataService.getLogotipoReporteFromStorage();
     this.idUsuario = this.sharedDataService.getIdFromStorage();
+    this.afiliadoNombre = this.sharedDataService.getAfiliadoNombreFromStorage(); // Añadir esta línea
 
     this.sharedDataService.nombreCliente$.subscribe(
       nombre => {
@@ -77,6 +79,11 @@ export class TopbarComponent implements OnInit {
       id => {
         this.idUsuario = id;
         this.obtenerUsuario(id); // Llamar al servicio cuando se recibe el ID
+      }
+    );
+    this.sharedDataService.afiliadoNombre$.subscribe(
+      afiliadoNombre => {
+        this.afiliadoNombre = afiliadoNombre;
       }
     );
 

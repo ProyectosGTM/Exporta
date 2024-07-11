@@ -13,9 +13,24 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="card">
+        <h2> {{nombreCorto}} </h2> {{nombre}} <img class="rounded-circle header-profile-user" [src]="logotipoReporte" alt="">
         <div class="card-body">
           <div class="row mb-md-2">
             <div class="col-sm-12 col-md-6">
+              <div>
+                <h2>Orders Component</h2>
+                <p>Cliente: {{ clienteNombre }}</p>
+                <p>Afiliado Nombre: {{ afiliadoNombre }}</p>
+                <p>Enviado Nombre: {{ enviadoNombre }}</p>
+                <p>Afiliado Nombre Corto: {{ afiliadoNombreCorto }}</p>
+                <p>Tipo de Operación: {{ tipoOperacionNombre }}</p>
+                <p>Logotipo Reporte: <img [src]="logotipoReporte" alt="Logotipo Reporte" style="height: 50px;"></p>
+                <!-- El resto del contenido del template -->
+              </div>
+              
+              
+              
+              
               <div class="dataTables_length">
                 <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Inicio:
                   <input type="date" class="form-control" [(ngModel)]="informacionStartDate"
@@ -108,7 +123,7 @@
                 <div class="col-lg-12">
                   <div class="card">
                     <div class="card-body">
-                      <h3>Transacciones</h3>
+                      <h3>Transacciones</h3> 
                       <div class="row mb-md-2">
                         <div class="col-sm-12 col-md-6">
                           <div class="dataTables_length">
@@ -133,9 +148,13 @@
                               <input type="text" class="form-control" [(ngModel)]="serviceSearchTerm"
                                 (input)="performServiceSearch()" placeholder="Buscar...">
                             </label>
+                            <button type="button" class="btn btn-primary" style="margin-left: 15px;"
+                              (click)="exportToPDF()">
+                              Descargar PDF <i class="uil uil-arrow-right ml-2"></i>
+                            </button>
                             <button type="button" class="btn btn-success" style="margin-left: 15px;"
                               (click)="exportToExcel()">
-                              <i class="uil uil-file-download-alt me-2"></i> Descargar Excel
+                              <i class="uil uil-check me-2"></i> Descargar Excel
                             </button>
                           </div>
                         </div>

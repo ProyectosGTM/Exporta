@@ -74,12 +74,16 @@ export class OrdersComponent implements OnInit {
 
   clienteNombre: string;
   logotipo: string;
+  idUsuario: string;
   logotipoReporte: string;
+  afiliadoNombre: string;
+  enviadoNombre: string;
+  afiliadoNombreCorto: string;
+  tipoOperacionNombre: string;
 
   constructor(private http: HttpClient, private cliente: ClienteService, private sharedDataService: SharedDataService) { }
 
   ngOnInit(): void {
-
     this.sharedDataService.nombreCliente$.subscribe(nombre => {
       this.clienteNombre = nombre;
     });
@@ -89,6 +93,29 @@ export class OrdersComponent implements OnInit {
     this.sharedDataService.logotipoReporte$.subscribe(logotipoReporte => {
       this.logotipoReporte = logotipoReporte;
     });
+    this.sharedDataService.afiliadoNombre$.subscribe(afiliadoNombre => {
+      this.afiliadoNombre = afiliadoNombre;
+      console.log('AfiliadoNombre en OrdersComponent:', afiliadoNombre);
+    });
+    this.sharedDataService.enviadoNombre$.subscribe(enviadoNombre => {
+      this.enviadoNombre = enviadoNombre;
+      console.log('EnviadoNombre en OrdersComponent:', enviadoNombre);
+    });
+    this.sharedDataService.afiliadoNombreCorto$.subscribe(afiliadoNombreCorto => {
+      this.afiliadoNombreCorto = afiliadoNombreCorto;
+      console.log('AfiliadoNombreCorto en OrdersComponent:', afiliadoNombreCorto);
+    });
+    this.sharedDataService.tipoOperacionNombre$.subscribe(tipoOperacionNombre => {
+      this.tipoOperacionNombre = tipoOperacionNombre;
+      console.log('TipoOperacionNombre en OrdersComponent:', tipoOperacionNombre);
+    });
+
+    this.sharedDataService.id$.subscribe(
+      id => {
+        this.idUsuario = id;
+        this.obtenerUsuario(id);
+      }
+    );
     this.obtenerUsuarios();
   }
 
@@ -102,6 +129,18 @@ export class OrdersComponent implements OnInit {
       this.informacionTotalRecords = this.informacion.length;
       this.updateInformacionTotalPages();
     });
+  }
+
+  public nombre: string;
+  public nombreCorto: string;
+  obtenerUsuario(userId: string) {
+    this.cliente.obtenerUsuario(userId).subscribe(
+      (res: any) => {
+        console.log('Información del usuario:', res);
+        this.nombreCorto = res.Nombre;
+        this.nombre = res.afiliados[0].Nombre
+      }
+    );
   }
 
   updateTotalPages(): void {
@@ -310,7 +349,6 @@ export class OrdersComponent implements OnInit {
     const endIdx = this.serviceEndIndex;
     this.filteredServiceTransactions = filteredTransactions.slice(startIdx, endIdx);
   }
-  
 
   exportToExcel(): void {
     const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
@@ -352,10 +390,6 @@ export class OrdersComponent implements OnInit {
     const workbook: XLSX.WorkBook = { Sheets: { 'Data': worksheet }, SheetNames: ['Data'] };
     XLSX.writeFile(workbook, 'ServiceTransactions.xlsx');
   }
-  
-  
-  
-  
 
   private getBase64ImageFromURL(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -371,7 +405,7 @@ export class OrdersComponent implements OnInit {
   }
 
   async exportToPDF(): Promise<void> {
-    console.log('Logotipo URL:', this.logotipoReporte); // Añade este console.log
+    console.log('Logotipo URL:', this.logotipoReporte);
     const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
       this.isLoadingPDF = false;
       const transactionDate = new Date(transaction.DATE);
@@ -395,8 +429,7 @@ export class OrdersComponent implements OnInit {
     });
   
     const doc = new jsPDF('landscape');
-    const imgUrl = '../../../../assets/images/tecsaRerporte.png';
-    const imgData = await this.getBase64ImageFromURL(imgUrl);
+    const imgData = await this.getBase64ImageFromURL(this.logotipoReporte); // Usar la variable logotipoReporte
   
     const imgX = 15;
     const imgY = 14;
@@ -421,8 +454,8 @@ export class OrdersComponent implements OnInit {
     doc.setFontSize(10);
     doc.text('Konnecta System 7.0', textX, textYStart);
     doc.text(`CLIENT : ${this.clienteNombre}`, textX, textYStart + textLineHeight);
-    doc.text('NAME : INGFRAC DISEÑO Y CONSTRUCCIÓN SA DE CV', textX, textYStart + 2 * textLineHeight);
-    doc.text('SEND TO : STARCCLOUD CONNECT LLC', textX, textYStart + 3 * textLineHeight);
+    doc.text(`AFFILIATE NAME : ${this.afiliadoNombre}`, textX, textYStart + 2 * textLineHeight);
+    doc.text(`SEND TO : ${this.enviadoNombre}`, textX, textYStart + 3 * textLineHeight);
     doc.text('TYPE : MX PIPE', 200, 23);
   
     const currentDate = new Date();
@@ -461,8 +494,6 @@ export class OrdersComponent implements OnInit {
   
     doc.save('Transacciones.pdf');
   }
-  
-  
 
   selectedId: number | null = null;
   selectedYear: number | null = null;
@@ -486,5 +517,4 @@ export class OrdersComponent implements OnInit {
       }, 0);
     });
   }
-  
 }
