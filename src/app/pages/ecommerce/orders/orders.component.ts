@@ -546,6 +546,6 @@ selectedYear: number;
   //       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   //     }, 0);
   //   });
-  // }
+  // } obtener transacciones exitosas en botón, quitar botón excel, quitar tecsa en pdf, imagen en pdf, revisar ruta login, date y time en mayuscula
   
 }
