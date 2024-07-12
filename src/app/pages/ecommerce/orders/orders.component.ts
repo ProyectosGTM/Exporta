@@ -508,7 +508,7 @@ showInfo(id: any, fechaFactura: any, factura: string): void {
   this.selectedInvoice = factura;
   const selectedOperacion = this.informacion.find(op => op.Id === id);
     if (selectedOperacion) {
-      this.unidadesTAE = selectedOperacion.UnidadesTAE;
+      this.unidadesTAE = selectedOperacion.CantidadTotal;
       console.log('Unidades TAE:', this.unidadesTAE);
     }
   this.cliente.obtenerTransacciones(id, year).subscribe((response: Transaction[]) => {
