@@ -67,7 +67,7 @@ export class OrdersComponent implements OnInit {
   informacionSearchTerm: string = '';
   informacionStartDate: string = '';
   informacionEndDate: string = '';
-  totalAmount: number = 0;
+  unidadesTAE: string;
   isLoading: boolean = false;
   isLoadingGrid: boolean = false;
   isLoadingPDF: boolean = false;
@@ -110,12 +110,6 @@ export class OrdersComponent implements OnInit {
       console.log('TipoOperacionNombre en OrdersComponent:', tipoOperacionNombre);
     });
 
-    // this.sharedDataService.id$.subscribe(
-    //   id => {
-    //     this.idUsuario = id;
-    //     this.obtenerUsuario(id);
-    //   }
-    // );
     this.obtenerUsuarios();
   }
 
@@ -138,7 +132,7 @@ export class OrdersComponent implements OnInit {
       (res: any) => {
         console.log('Información del usuario:', res);
         this.nombreCorto = res.Nombre;
-        this.nombre = res.afiliados[0].Nombre
+        this.nombre = res.afiliados[0].Nombre;
       }
     );
   }
@@ -309,10 +303,8 @@ export class OrdersComponent implements OnInit {
       let matchesSearchTerm = Object.values(data).some(val =>
         val.toString().toLowerCase().includes(this.informacionSearchTerm.toLowerCase())
       );
-
       return matchesDateRange && matchesSearchTerm;
     });
-
     this.informacionTotalRecords = this.filteredInformacion.length;
     this.updateInformacionTotalPages();
     const startIdx = this.informacionStartIndex;
@@ -325,7 +317,6 @@ export class OrdersComponent implements OnInit {
       const transactionDate = new Date(transaction.DATE);
       const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
       const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
-  
       let matchesDateRange = true;
       if (start && end) {
         matchesDateRange = transactionDate >= start && transactionDate <= end;
@@ -334,16 +325,12 @@ export class OrdersComponent implements OnInit {
       } else if (end) {
         matchesDateRange = transactionDate <= end;
       }
-  
       let matchesSearchTerm = Object.values(transaction).some(val =>
         val.toString().toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
       );
-  
       return matchesDateRange && matchesSearchTerm;
     });
-  
     this.serviceTotalRecords = filteredTransactions.length;
-    this.totalAmount = filteredTransactions.reduce((sum, transaction) => sum + transaction.AMOUNT, 0);
     this.updateServiceTotalPages();
     const startIdx = this.serviceStartIndex;
     const endIdx = this.serviceEndIndex;
@@ -364,19 +351,13 @@ export class OrdersComponent implements OnInit {
       } else if (end) {
         matchesDateRange = transactionDate <= end;
       }
-  
       let matchesSearchTerm = Object.values(transaction).some(val =>
         val.toString().toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
       );
-  
       return matchesDateRange && matchesSearchTerm;
     });
-  
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(allFilteredTransactions);
-    
-    // Add a row at the end with the total count of records in the first cell
     XLSX.utils.sheet_add_aoa(worksheet, [['Total de registros', allFilteredTransactions.length]], { origin: -1 });
-  
     const headerRange = XLSX.utils.decode_range(worksheet['!ref']);
     const headerCols = [];
     for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
@@ -413,11 +394,9 @@ export class OrdersComponent implements OnInit {
     });
 }
 
-
 async exportToPDF(): Promise<void> {
   console.log('Logotipo URL:', this.logotipoReporte);
   const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
-    this.isLoadingPDF = false;
     const transactionDate = new Date(transaction.DATE);
     const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
     const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
@@ -443,9 +422,9 @@ async exportToPDF(): Promise<void> {
   const imgData = await this.getBase64ImageFromURL(imgUrl);
 
   const imgX = 15;
-  const imgY = 14;
+  const imgY = 12;
   const imgWidth = 15;
-  const imgHeight = 12;
+  const imgHeight = 14;
 
   doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
 
@@ -500,52 +479,67 @@ async exportToPDF(): Promise<void> {
     alternateRowStyles: { fillColor: [255, 255, 255] },
   });
 
-  doc.setFontSize(10);
-  doc.text('Tecsa', 14, doc.internal.pageSize.height - 10);
+  const finalY = (doc as any).lastAutoTable.finalY || 30;
+  const tableWidth = doc.internal.pageSize.width - 40;
+
+  // Draw background rectangle
+  doc.setFillColor(31, 78, 120); // Azul
+  doc.rect(19, finalY + 0, tableWidth, 10, 'F');
+
+  // Add UTAE text
+  doc.setTextColor(255, 255, 255); // Blanco
+  doc.text('UTAE:', 190, finalY + 6);
+  doc.text(this.unidadesTAE, 202, finalY + 6);
 
   doc.save('Transacciones.pdf');
 }
 
 
+
 selectedId: any;
 selectedYear: number;
-  showInfo(id: any, fechaFactura: any): void {
-    this.isLoadingGrid = true;
-    const year = new Date(fechaFactura).getFullYear();
+selectedInvoice: string;
+showInfo(id: any, fechaFactura: any, factura: string): void {
+  this.isLoadingGrid = true;
+  const year = new Date(fechaFactura).getFullYear();
+  console.log(id, year);
+  this.selectedId = id;
+  this.selectedYear = year;
+  this.selectedInvoice = factura;
+  const selectedOperacion = this.informacion.find(op => op.Id === id);
+    if (selectedOperacion) {
+      this.unidadesTAE = selectedOperacion.UnidadesTAE;
+      console.log('Unidades TAE:', this.unidadesTAE);
+    }
+  this.cliente.obtenerTransacciones(id, year).subscribe((response: Transaction[]) => {
+    this.isLoadingGrid = false;
+    this.serviceTransactions = response;
+    this.serviceTotalRecords = this.serviceTransactions.length;
+    this.updateServiceTotalPages();
+    this.filterServiceTransactions();
+    this.showServiceTable = true;
+    // Desliza hacia abajo hasta el final de la página
+    setTimeout(() => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 0);
+  });
+}
+
+  serviceTransactionsOK: any[] = [];
+  showServiceTableOK: boolean = false;
+  obtenerTransaccionesOK(id: number, year: number): void {
     console.log(id, year);
-    this.selectedId = id;
-    this.selectedYear = year;
-    this.cliente.obtenerTransacciones(id, year).subscribe((response: Transaction[]) => {
+    this.isLoadingGrid = true;
+    this.cliente.obtenerTransaccionesOK(id, year).subscribe((response: any) => {
       this.isLoadingGrid = false;
       this.serviceTransactions = response;
       this.serviceTotalRecords = this.serviceTransactions.length;
       this.updateServiceTotalPages();
       this.filterServiceTransactions();
       this.showServiceTable = true;
-  
-      // Desliza hacia abajo hasta el final de la página
       setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       }, 0);
     });
   }
-
-  // serviceTransactionsOK: any[] = [];
-  // showServiceTableOK: boolean = false;
-  // obtenerTransaccionesOK(id: number, year: number): void {
-  //   console.log(id, year);
-  //   this.isLoadingGrid = true;
-  //   this.cliente.obtenerTransaccionesOK(id, year).subscribe((response: any) => {
-  //     this.isLoadingGrid = false;
-  //     this.serviceTransactions = response;
-  //     this.serviceTotalRecords = this.serviceTransactions.length;
-  //     this.updateServiceTotalPages();
-  //     this.filterServiceTransactions();
-  //     this.showServiceTable = true;
-  //     setTimeout(() => {
-  //       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-  //     }, 0);
-  //   });
-  // } obtener transacciones exitosas en botón, quitar botón excel, quitar tecsa en pdf, imagen en pdf, revisar ruta login, date y time en mayuscula
-  
 }

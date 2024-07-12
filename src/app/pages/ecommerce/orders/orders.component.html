@@ -16,15 +16,6 @@
         <div class="card-body">
           <div class="row mb-md-2">
             <div class="col-sm-12 col-md-6">
-              <!-- <div>
-                <h2>Orders Component</h2>
-                <p>Cliente: {{ clienteNombre }}</p>
-                <p>Afiliado Nombre: {{ afiliadoNombre }}</p>
-                <p>Enviado Nombre: {{ enviadoNombre }}</p>
-                <p>Afiliado Nombre Corto: {{ afiliadoNombreCorto }}</p>
-                <p>Tipo de Operación: {{ tipoOperacionNombre }}</p>
-                <p>Logotipo Reporte: <img [src]="logotipoReporte" alt="Logotipo Reporte" style="height: 50px;"></p>
-              </div> -->
               <div class="dataTables_length">
                 <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Inicio:
                   <input type="date" class="form-control" [(ngModel)]="informacionStartDate"
@@ -74,9 +65,9 @@
                               <td>{{ data.FechaFactura | date: 'dd-MM-yyyy' }}</td>
                               <td>{{ data.FolioFactura }}</td>
                               <td>
-                                <button type="button" (click)="showInfo(data.Id, data.FechaFactura)"
+                                <button type="button" (click)="showInfo(data.Id, data.FechaFactura, data.FolioFactura)"
                                   class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
-                                  View Details
+                                  Ver información
                                 </button>
                               </td>
                             </tr>
@@ -110,24 +101,24 @@
           </div>
 
           <!-- Segunda tabla (serviceTransactions) -->
-          <!-- Segunda tabla (serviceTransactions) -->
           <div *ngIf="showServiceTable" class="table-responsive mb-4 col-12 col-lg-12">
             <div class="container-fluid">
               <div class="row">
                 <div class="col-lg-12">
                   <div class="card">
                     <div class="card-body">
-                      <div class="col-sm-12 col-md-6" style="display: flex; align-items: center;">
+                      <div class="col-sm-12 col-md-12" style="display: flex; align-items: center;">
                         <div class="dataTables_length">
                           <div style="margin-right: 10px;">
                             <span class="transacciones">Transacciones:</span>
-                            <span class="respuesta">ID: {{ selectedId }}   -   Año: {{ selectedYear }}</span>
-                            <button type="button"  class="btn btn-warning" style="margin-left: 15px; margin-top: -5px;">
-                              <i class="uil uil-check me-2"></i> Obtener Datos Correctos
+                            <span class="respuesta">Factura: {{ selectedInvoice }}</span>
+                            <button type="button" (click)="obtenerTransaccionesOK(selectedId, selectedYear)" class="btn btn-warning" style="margin-left: 15px; margin-top: -5px;">
+                              <i class="uil uil-check me-2"></i> Obtener Transacciones Exitosas
                             </button>
                           </div>
                         </div>
                       </div>
+                      
                       <div class="row mb-md-2">
                         <div class="col-sm-12 col-md-6">
                           <div class="dataTables_length">
@@ -156,10 +147,6 @@
                               (click)="exportToPDF()">
                               Descargar PDF <i class="uil uil-arrow-right ml-2"></i>
                             </button>
-                            <button type="button" class="btn btn-success" style="margin-left: 15px;"
-                              (click)="exportToExcel()">
-                              <i class="uil uil-check me-2"></i> Descargar Excel
-                            </button>
                           </div>
                         </div>
                       </div>
@@ -169,8 +156,8 @@
                           <thead>
                             <tr>
                               <th>#</th>
-                              <th>Date</th>
-                              <th>Time</th>
+                              <th>DATE</th>
+                              <th>TIME</th>
                               <th>OUT IP</th>
                               <th>IN IP</th>
                               <th>GEO OUT</th>
@@ -204,7 +191,7 @@
                             <tr>
                               <td style="background-color: #1F4E78; color: white;" colspan="9" class="text-end">
                                 <strong>UTAE : </strong></td>
-                              <td style="background-color: #1F4E78; color: white;"><strong>{{ totalAmount }}</strong>
+                              <td style="background-color: #1F4E78; color: white;"><strong>{{ unidadesTAE }}</strong>
                               </td>
                               <td style="background-color: #1F4E78; color: white;" colspan="4"></td>
                             </tr>
@@ -235,6 +222,7 @@
               </div>
             </div>
           </div>
+          
         </div>
       </div>
     </div>
