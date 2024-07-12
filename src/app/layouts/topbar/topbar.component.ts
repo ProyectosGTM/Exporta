@@ -163,6 +163,7 @@ export class TopbarComponent implements OnInit {
   }
 
   logout() {
+    this.router.navigate(['/account/login']);
     this.authService.logout();
   }
 

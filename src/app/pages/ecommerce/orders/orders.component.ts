@@ -482,6 +482,9 @@ async exportToPDF(): Promise<void> {
   const finalY = (doc as any).lastAutoTable.finalY || 30;
   const tableWidth = doc.internal.pageSize.width - 40;
 
+  // Formatear unidadesTAE
+  const formattedUnidadesTAE = parseFloat(this.unidadesTAE).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
   // Draw background rectangle
   doc.setFillColor(31, 78, 120); // Azul
   doc.rect(19, finalY + 0, tableWidth, 10, 'F');
@@ -489,10 +492,11 @@ async exportToPDF(): Promise<void> {
   // Add UTAE text
   doc.setTextColor(255, 255, 255); // Blanco
   doc.text('UTAE:', 190, finalY + 6);
-  doc.text(this.unidadesTAE, 202, finalY + 6);
+  doc.text(formattedUnidadesTAE, 202, finalY + 6);
 
   doc.save('Transacciones.pdf');
 }
+
 
 
 

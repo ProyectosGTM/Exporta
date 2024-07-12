@@ -80,12 +80,6 @@ export class AuthenticationService extends BaseServicesService {
 
         // Emitir cambio en la autenticación
         this.authenticationChanged.next(false);
-      
-        // Navegar a la página de login
-        await this.router.navigate(['/account/login']);
-        
-        // Recargar la página para asegurarse de que todos los datos estén realmente borrados
-        window.location.reload();
     } catch (error) {
         console.error('Error during logout:', error);
     }
