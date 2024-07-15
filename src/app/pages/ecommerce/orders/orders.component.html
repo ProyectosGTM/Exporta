@@ -107,52 +107,41 @@
                 <div class="col-lg-12">
                   <div class="card">
                     <div class="card-body">
-                      <div class="col-sm-12 col-md-12" style="display: flex; align-items: center;">
-                        <div class="dataTables_length">
-                          <div style="margin-right: 10px;">
-                            <span class="transacciones">Transacciones:</span>
-                            <span class="respuesta">Factura: {{ selectedInvoice }}</span>
-                            <button type="button" (click)="obtenerTransaccionesOK(selectedId, selectedYear)" class="btn btn-warning" style="margin-left: 15px; margin-top: -5px;">
-                              <i class="uil uil-check me-2"></i> Obtener Transacciones Exitosas
+                      <div class="d-flex flex-wrap align-items-center mb-3">
+                        <div class="me-3">
+                          <span class="transacciones">Transacciones:</span>
+                          <span class="respuesta">Factura: {{ selectedInvoice }}</span>
+                        </div>
+                        <button type="button" (click)="obtenerTransaccionesOK(selectedId, selectedYear)" class="btn btn-warning ms-3 mt-2 mt-lg-0">
+                          <i class="uil uil-check me-2"></i> Obtener Transacciones Exitosas
+                        </button>
+                      </div>
+                      
+                      <div class="row mb-3">
+                        <div class="col-12 col-md-6 mb-3 mb-md-0">
+                          <div class="d-flex flex-wrap align-items-center">
+                            <label class="d-flex align-items-center me-3">Inicio:
+                              <input type="date" class="form-control ms-2" [(ngModel)]="serviceStartDate" (change)="filterServiceTransactionsByDateRange()">
+                            </label>
+                            <label class="d-flex align-items-center">Fin:
+                              <input type="date" class="form-control ms-2" [(ngModel)]="serviceEndDate" (change)="filterServiceTransactionsByDateRange()">
+                            </label>
+                          </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <div class="d-flex flex-wrap justify-content-md-end align-items-center">
+                            <label class="d-flex align-items-center me-3">Buscar:
+                              <input type="text" class="form-control ms-2" [(ngModel)]="serviceSearchTerm" (input)="performServiceSearch()" placeholder="Buscar...">
+                            </label>
+                            <button type="button" class="btn btn-primary mt-2 mt-md-0" (click)="exportToPDF()">
+                              Descargar PDF <i class="uil uil-arrow-right ms-2"></i>
                             </button>
                           </div>
                         </div>
                       </div>
                       
-                      <div class="row mb-md-2">
-                        <div class="col-sm-12 col-md-6">
-                          <div class="dataTables_length">
-                            <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Inicio:
-                              <input type="date" class="form-control" [(ngModel)]="serviceStartDate"
-                                (change)="filterServiceTransactionsByDateRange()">
-                            </label>
-                            <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Fin:
-                              <input type="date" class="form-control" [(ngModel)]="serviceEndDate"
-                                (change)="filterServiceTransactionsByDateRange()">
-                            </label>
-                            <span [@fadeInUp] *ngIf="showTotalRecordsMessage" class="d-inline-flex align-items-center"
-                              style="margin-left: 15px;">
-                              Total de registros por fecha: {{ filteredServiceTransactions.length }}
-                            </span>
-                          </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                          <div id="tickets-table_filter" class="dataTables_filter text-md-end">
-                            <label class="d-inline-flex align-items-center"
-                              style="margin-left: 15px;">Buscar:&nbsp;&nbsp;
-                              <input type="text" class="form-control" [(ngModel)]="serviceSearchTerm"
-                                (input)="performServiceSearch()" placeholder="Buscar...">
-                            </label>
-                            <button type="button" class="btn btn-primary" style="margin-left: 15px;"
-                              (click)="exportToPDF()">
-                              Descargar PDF <i class="uil uil-arrow-right ml-2"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
                       <div id="tableContainer" class="table-responsive content-cards">
-                        <table
-                          class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
+                        <table class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
                           <thead>
                             <tr>
                               <th>#</th>
@@ -190,38 +179,34 @@
                             </tr>
                             <tr>
                               <td style="background-color: #1F4E78; color: white;" colspan="9" class="text-end">
-                                <strong>UTAE : </strong></td>
-                              <td style="background-color: #1F4E78; color: white;"><strong>{{ unidadesTAE | number:'1.2-2' }}</strong>
-                              </td>
+                                <strong>UTAE :</strong></td>
+                              <td style="background-color: #1F4E78; color: white;"><strong>{{ unidadesTAE | number:'1.2-2' }}</strong></td>
                               <td style="background-color: #1F4E78; color: white;" colspan="4"></td>
                             </tr>
                           </tbody>
                         </table>
                       </div>
-                      <div class="d-flex justify-content-between align-items-center mt-3">
-                        <label class="d-inline-flex align-items-center">Mostrar
-                          <select name="servicePageSize" [(ngModel)]="servicePageSize"
-                            class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm"
-                            (change)="onServicePageSizeChange()">
-                            <option *ngFor="let option of servicePageSizeOptions" [ngValue]="option">{{ option }}
-                            </option>
+                      
+                      <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+                        <label class="d-flex align-items-center mb-2 mb-md-0">Mostrar
+                          <select name="servicePageSize" [(ngModel)]="servicePageSize" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm ms-2" (change)="onServicePageSizeChange()">
+                            <option *ngFor="let option of servicePageSizeOptions" [ngValue]="option">{{ option }}</option>
                           </select>
                         </label>
-                        <div class="pagination-controls ms-auto">
-                          <button class="btn btn-secondary" [disabled]="serviceCurrentPage === 0"
-                            (click)="onServicePreviousPage()">Anterior</button>&nbsp;&nbsp;
-                          <span>Página {{ serviceCurrentPage + 1 }} de {{ serviceTotalPages }} ({{ serviceTotalRecords
-                            }} items)</span>&nbsp;&nbsp;
-                          <button class="btn btn-secondary" [disabled]="serviceCurrentPage === serviceTotalPages - 1"
-                            (click)="onServiceNextPage()">Siguiente</button>
+                        <div class="pagination-controls ms-auto mb-2 mb-md-0">
+                          <button class="btn btn-secondary me-2" [disabled]="serviceCurrentPage === 0" (click)="onServicePreviousPage()">Anterior</button>
+                          <span>Página {{ serviceCurrentPage + 1 }} de {{ serviceTotalPages }} ({{ serviceTotalRecords }} items)</span>
+                          <button class="btn btn-secondary ms-2" [disabled]="serviceCurrentPage === serviceTotalPages - 1" (click)="onServiceNextPage()">Siguiente</button>
                         </div>
                       </div>
+                      
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          
           
         </div>
       </div>
