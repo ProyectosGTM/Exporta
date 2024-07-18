@@ -115,7 +115,7 @@ export class TopbarComponent implements OnInit {
   obtenerUsuario(userId: string) {
     this.cliente.obtenerUsuario(userId).subscribe(
       (res: any) => {
-        console.log('Información del usuario:', res);
+        // console.log('Información del usuario:', res);
         // Puedes hacer algo con la información del usuario aquí
       }
     );

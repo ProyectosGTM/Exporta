@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: '', component: DefaultComponent },
   { path: 'calendar', component: CalendarComponent },
   { path: 'chat', component: ChatComponent },
-  { path:'file-manager',component:FileManagerComponent},
+  { path: 'file-manager',component:FileManagerComponent},
   { path: 'dashboards', loadChildren: () => import('./dashboards/dashboards.module').then(m => m.DashboardsModule) },
   { path: 'ecommerce', loadChildren: () => import('./ecommerce/ecommerce.module').then(m => m.EcommerceModule) },
   { path: 'email', loadChildren: () => import('./email/email.module').then(m => m.EmailModule) },

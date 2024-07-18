@@ -95,19 +95,19 @@ export class OrdersComponent implements OnInit {
     });
     this.sharedDataService.afiliadoNombre$.subscribe(afiliadoNombre => {
       this.afiliadoNombre = afiliadoNombre;
-      console.log('AfiliadoNombre en OrdersComponent:', afiliadoNombre);
+      // console.log('AfiliadoNombre en OrdersComponent:', afiliadoNombre);
     });
     this.sharedDataService.enviadoNombre$.subscribe(enviadoNombre => {
       this.enviadoNombre = enviadoNombre;
-      console.log('EnviadoNombre en OrdersComponent:', enviadoNombre);
+      // console.log('EnviadoNombre en OrdersComponent:', enviadoNombre);
     });
     this.sharedDataService.afiliadoNombreCorto$.subscribe(afiliadoNombreCorto => {
       this.afiliadoNombreCorto = afiliadoNombreCorto;
-      console.log('AfiliadoNombreCorto en OrdersComponent:', afiliadoNombreCorto);
+      // console.log('AfiliadoNombreCorto en OrdersComponent:', afiliadoNombreCorto);
     });
     this.sharedDataService.tipoOperacionNombre$.subscribe(tipoOperacionNombre => {
       this.tipoOperacionNombre = tipoOperacionNombre;
-      console.log('TipoOperacionNombre en OrdersComponent:', tipoOperacionNombre);
+      // console.log('TipoOperacionNombre en OrdersComponent:', tipoOperacionNombre);
     });
 
     this.obtenerUsuarios();
@@ -130,7 +130,7 @@ export class OrdersComponent implements OnInit {
   obtenerUsuario(userId: string) {
     this.cliente.obtenerUsuario(userId).subscribe(
       (res: any) => {
-        console.log('Información del usuario:', res);
+        // console.log('Información del usuario:', res);
         this.nombreCorto = res.Nombre;
         this.nombre = res.afiliados[0].Nombre;
       }
@@ -395,7 +395,7 @@ export class OrdersComponent implements OnInit {
 }
 
 async exportToPDF(): Promise<void> {
-  console.log('Logotipo URL:', this.logotipoReporte);
+  // console.log('Logotipo URL:', this.logotipoReporte);
   const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
     const transactionDate = new Date(transaction.DATE);
     const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
