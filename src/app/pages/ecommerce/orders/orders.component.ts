@@ -113,17 +113,34 @@ export class OrdersComponent implements OnInit {
     this.obtenerUsuarios();
   }
 
-  obtenerUsuarios() {
-    this.isLoading = true;
-    const idUsuario = this.sharedDataService.getIdFromStorage();
-    this.cliente.obtenerUsuario(idUsuario).subscribe((response: any) => {
-      this.isLoading = false;
+  public validarTotal: boolean;
+
+obtenerUsuarios() {
+  this.validarTotal = true; // Mostrar alerta por defecto hasta tener datos válidos
+  this.isLoading = true;
+  const idUsuario = this.sharedDataService.getIdFromStorage();
+  
+  this.cliente.obtenerUsuario(idUsuario).subscribe((response: any) => {
+    this.isLoading = false;
+    
+    // Validar si la respuesta o la propiedad operaciones es null o vacío
+    if (!response || !response.afiliados || !response.afiliados[0].operaciones || response.afiliados[0].operaciones.length === 0) {
+      this.validarTotal = true; // Mantenemos la alerta visible
+    } else {
+      this.validarTotal = false; // Ocultar la alerta si hay datos válidos
       this.informacion = response.afiliados[0].operaciones;
       this.filteredInformacion = this.informacion.slice(0, this.informacionPageSize);
       this.informacionTotalRecords = this.informacion.length;
       this.updateInformacionTotalPages();
-    });
-  }
+    }
+  }, error => {
+    // Manejo de errores
+    this.isLoading = false;
+    this.validarTotal = true; // Mostrar la alerta si hay un error en la respuesta del servicio
+    console.error('Error al obtener usuario:', error);
+  });
+}
+
 
   public nombre: string;
   public nombreCorto: string;
@@ -494,11 +511,8 @@ async exportToPDF(): Promise<void> {
   doc.text('UTAE:', 190, finalY + 6);
   doc.text(formattedUnidadesTAE, 202, finalY + 6);
 
-  doc.save('Transacciones.pdf');
+  doc.save(`Transacciones - ${this.selectedInvoice}.pdf` );
 }
-
-
-
 
 selectedId: any;
 selectedYear: number;

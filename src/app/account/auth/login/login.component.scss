@@ -1,9 +1,78 @@
-.contenedor {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.buttonSubmit{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+    margin-left: auto;
+	gap: 0.5rem;
 }
+
+.greens{
+	color: #0387ff;
+}
+
+.blueButton{
+    background-color: #0387ff;
+    color: white;
+} 
+
+/* Selecciona el indicador de carga y cambia el color del borde */
+#small-indicator .dx-loadindicator-icon {
+    border-color: white !important; /* Cambia el color del borde a blanco */
+}
+
+/* Para cambiar el color de la animación (círculo interior) */
+#small-indicator .dx-loadindicator-segment {
+    background-color: white !important; /* Cambia el color del fondo a blanco */
+}
+
+.eyeButton{
+    position: absolute;
+    cursor: pointer;
+    right: 33px;
+    top: 230px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+	transition: 0.3s ease-in-out all;
+    align-items: center;
+    border-radius: 50%;
+    background-color: none;
+    ::ng-deep svg{
+        display: flex;
+    }
+    & > * {
+        pointer-events: none;
+    }
+}
+.eyeButton:hover{
+    background-color: rgb(184, 184, 184);
+}
+
+h5{
+    color: white;
+}
+
+p{
+    color: white;
+}
+
+.tamaños{
+    width: 30%;
+    height: 25%;
+}
+
+.text-white{
+    color: white;
+}
+.text-gray{
+    color: #adadad;
+}
+
+.background-login{
+    background-color: #23252f; border: #23252f;
+}
+
 
 .text-muted{
   color: #d5e2f9;
@@ -14,33 +83,37 @@
 }
 body {
   background-size: 100% 100%;
-  background-color: #d5e2f9;
+  background-color: #3f4762;
   font-family: "Varela Round", sans-serif;
   line-height: 1.5;
   margin: 0;
   min-block-size: 100vh;
 }
 
-.cards {
+.justigy{
   display: flex;
-  flex-wrap: wrap;
-}
-
-.col {
-  flex: 0 0 auto;
-  margin: 10px; /* Ajusta el espacio entre las imágenes según sea necesario */
-}
-
-.custom-img {
-  width: 600px; /* Ancho deseado */
-  height: 180px; /* Alto deseado */
-}
-
-.descrip{
-  display: flex;
-  justify-content: center;
   align-items: center;
-  text-align: center;
+  justify-content: center;
+}
+
+
+.btn-new{
+  background-color: #036dfd;
+  color: rgb(255, 255, 255);
+  transition: 0.2s ease-in-out all;
+}
+
+.btn-new:hover{
+  background-color: #0049af;
+  color: white;
+  transition: 0.2s ease-in-out all;
+}
+
+.btn-new:disabled{
+  background-color: #92bfff;
+  color: white;
+  transition: 0.2s ease-in-out all;
+  border: none;
 }
 
 .loader {
@@ -62,27 +135,3 @@ body {
       transform: rotate(360deg);
   }
   } 
-
-  .eyeButton{
-    position: absolute;
-    cursor: pointer;
-    right: 55px;
-    top: 64%;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-	transition: 0.3s ease-in-out all;
-    align-items: center;
-    border-radius: 50%;
-    background-color: none;
-    ::ng-deep svg{
-        display: flex;
-    }
-    & > * {
-        pointer-events: none;
-    }
-}
-.eyeButton:hover{
-    background-color: rgb(184, 184, 184);
-}

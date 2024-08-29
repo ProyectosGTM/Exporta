@@ -65,6 +65,9 @@ export class TopbarComponent implements OnInit {
     this.idUsuario = this.sharedDataService.getIdFromStorage();
     this.afiliadoNombre = this.sharedDataService.getAfiliadoNombreFromStorage(); // Añadir esta línea
 
+    this.updatePageTitle();
+    this.updateFavicon();
+
     this.sharedDataService.nombreCliente$.subscribe(
       nombre => {
         this.nombreCliente = nombre;
@@ -121,38 +124,6 @@ export class TopbarComponent implements OnInit {
     );
   }
 
-  private setUserProfile(user: any) {
-    this.imagenPerfil = user.imagenPerfil;
-    this.nombre = user.nombre;
-
-    switch (user.idCliente) {
-      case 3:
-        this.titleService.setTitle('Entorno');
-        this.setFavicon('assets/images/logoKonnecta.png');
-        this.nombre = 'Entorno';
-        break;
-      case 2:
-        this.nombre = 'Tecsa';
-        this.titleService.setTitle('Tecsa');
-        this.setFavicon('assets/images/tecsalogo.ico');
-        break;
-      default:
-        this.nombre = 'Cliente Desconocido';
-        this.imagenPerfil = 'assets/images/profile/default.jpg';
-        this.titleService.setTitle('Cliente Desconocido');
-        this.setFavicon('assets/images/icons/default-favicon.ico');
-        break;
-    }
-  }
-
-  private setFavicon(url: string) {
-    let link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
-    link.type = 'image/x-icon';
-    link.rel = 'shortcut icon';
-    link.href = url;
-    document.getElementsByTagName('head')[0].appendChild(link);
-  }
-
   toggleRightSidebar() {
     this.settingsButtonClicked.emit();
   }
@@ -160,6 +131,18 @@ export class TopbarComponent implements OnInit {
   toggleMobileMenu(event: any) {
     event.preventDefault();
     this.mobileMenuButtonClicked.emit();
+  }
+
+  updatePageTitle() {
+    this.titleService.setTitle(`Konecta - ${this.nombreCliente}`);
+  }
+
+  updateFavicon() {
+    const link: HTMLLinkElement = this.document.querySelector("link[rel*='icon']") || this.document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = this.logotipoReporte;
+    this.document.getElementsByTagName('head')[0].appendChild(link);
   }
 
   logout() {

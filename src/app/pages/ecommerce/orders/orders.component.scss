@@ -45,7 +45,7 @@ th, td, tr {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.6); // Opacidad reducida para un fondo más claro
+  background: rgba(110, 111, 173, 0.6); // Opacidad reducida para un fondo más claro
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,6 +72,29 @@ th, td, tr {
   align-items: center;
   margin-top: 20px;
 }
+
+.alert {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background-color: #0a1a2b;
+  color: #9bb1c7;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border-left: 4px solid #007bff;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+.alert-icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.alert-text {
+  font-weight: normal;
+}
+
 
 .phone-container {
   text-align: center;

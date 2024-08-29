@@ -13,6 +13,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptService } from './login/intercept.service';
 import { AuthenticationService } from '../../core/services/auth.service';
 import { AuthGuard } from './login/Guard/auth.guard';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [LoginComponent, SignupComponent, PasswordresetComponent],
@@ -20,6 +21,7 @@ import { AuthGuard } from './login/Guard/auth.guard';
     CommonModule,
     ReactiveFormsModule,
     NgbAlertModule,
+    ToastrModule.forRoot(), // Asegúrate de que está configurado aquí
     UIModule,
     AuthRoutingModule,
   ],
