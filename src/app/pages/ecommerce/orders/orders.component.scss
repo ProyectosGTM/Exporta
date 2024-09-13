@@ -52,6 +52,14 @@ th, td, tr {
   z-index: 9999;
 }
 
+.btn-primary{
+  transition: 0.2s ease-in-out all;
+}
+
+.btn-primary:disabled {
+  transition: 0.2s ease-in-out all;
+}
+
 .loading-spinner {
   border: 16px solid #f3f3f3;
   border-top: 16px solid #3498db;
