@@ -15,14 +15,14 @@
     color: white;
 }
 
-/* Selecciona el indicador de carga y cambia el color del borde */
+
 #small-indicator .dx-loadindicator-icon {
-    border-color: white !important; /* Cambia el color del borde a blanco */
+    border-color: white !important;
 }
 
-/* Para cambiar el color de la animación (círculo interior) */
+
 #small-indicator .dx-loadindicator-segment {
-    background-color: white !important; /* Cambia el color del fondo a blanco */
+    background-color: white !important;
 }
 
 .eyeButton{
