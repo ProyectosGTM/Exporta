@@ -412,8 +412,10 @@ obtenerUsuarios() {
 }
 
 async exportToPDF(): Promise<void> {
+  this.isLoadingPDF = true;
   // console.log('Logotipo URL:', this.logotipoReporte);
   const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
+    this.isLoadingPDF = false;
     const transactionDate = new Date(transaction.DATE);
     const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
     const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
@@ -463,14 +465,14 @@ async exportToPDF(): Promise<void> {
   doc.text(`CLIENT: ${this.clienteNombre}/${this.afiliadoNombreCorto} `, textX, textYStart + textLineHeight);
   doc.text(`NAME: ${this.afiliadoNombre}`, textX, textYStart + 2 * textLineHeight);
   doc.text(`SEND TO: ${this.enviadoNombre}`, textX, textYStart + 3 * textLineHeight);
-  doc.text(`TYPE: ${this.tipoOperacionNombre}`, 200, 23);
+  doc.text(`TYPE: ${this.tipoOperacionNombre}`, 190, 23);
 
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const formattedTime = currentDate.toLocaleTimeString('es-ES');
   const dateTimeText = `${formattedDate}, ${formattedTime}`;
 
-  doc.text(dateTimeText, 200, 28);
+  doc.text(dateTimeText, 190, 28);
 
   (doc as any).autoTable({
     head: [['#', 'DATE', 'TIME', 'OUT IP', 'IN IP', 'GEO OUT', 'GEO IN', 'CARRIER', 'PRODUCT', 'AMOUNT', 'PHONE', 'TRN', 'STATUS', 'T TIME']],
