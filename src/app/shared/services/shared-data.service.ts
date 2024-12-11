@@ -18,14 +18,9 @@ export class SharedDataService {
   private logotipoReporteSource = new BehaviorSubject<string>(this.getLogotipoReporteFromStorage());
   logotipoReporte$ = this.logotipoReporteSource.asObservable();
 
-  private afiliadoNombreSource = new BehaviorSubject<string>(this.getAfiliadoNombreFromStorage());
-  afiliadoNombre$ = this.afiliadoNombreSource.asObservable();
 
   private enviadoNombreSource = new BehaviorSubject<string>(this.getEnviadoNombreFromStorage());
   enviadoNombre$ = this.enviadoNombreSource.asObservable();
-
-  private afiliadoNombreCortoSource = new BehaviorSubject<string>(this.getAfiliadoNombreCortoFromStorage());
-  afiliadoNombreCorto$ = this.afiliadoNombreCortoSource.asObservable();
 
   private tipoOperacionNombreSource = new BehaviorSubject<string>(this.getTipoOperacionNombreFromStorage());
   tipoOperacionNombre$ = this.tipoOperacionNombreSource.asObservable();
@@ -50,20 +45,14 @@ export class SharedDataService {
     localStorage.setItem('logotipoReporte', logotipoReporte);
   }
 
-  setAfiliadoNombre(afiliadoNombre: string) {
-    this.afiliadoNombreSource.next(afiliadoNombre);
-    localStorage.setItem('afiliadoNombre', afiliadoNombre);
-  }
+
 
   setEnviadoNombre(enviadoNombre: string) {
     this.enviadoNombreSource.next(enviadoNombre);
     localStorage.setItem('enviadoNombre', enviadoNombre);
   }
 
-  setAfiliadoNombreCorto(afiliadoNombreCorto: string) {
-    this.afiliadoNombreCortoSource.next(afiliadoNombreCorto);
-    localStorage.setItem('afiliadoNombreCorto', afiliadoNombreCorto);
-  }
+
 
   setTipoOperacionNombre(tipoOperacionNombre: string) {
     this.tipoOperacionNombreSource.next(tipoOperacionNombre);
@@ -86,19 +75,62 @@ export class SharedDataService {
     return localStorage.getItem('logotipoReporte');
   }
 
-  getAfiliadoNombreFromStorage(): string {
-    return localStorage.getItem('afiliadoNombre');
-  }
-
   getEnviadoNombreFromStorage(): string {
     return localStorage.getItem('enviadoNombre');
-  }
-
-  getAfiliadoNombreCortoFromStorage(): string {
-    return localStorage.getItem('afiliadoNombreCorto');
   }
 
   getTipoOperacionNombreFromStorage(): string {
     return localStorage.getItem('tipoOperacionNombre');
   }
+
+  private idRolSource = new BehaviorSubject<number>(null);
+idRol$ = this.idRolSource.asObservable();
+
+private nombreUsuarioSource = new BehaviorSubject<string>(null);
+nombreUsuario$ = this.nombreUsuarioSource.asObservable();
+
+setIdRol(idRol: number) {
+  this.idRolSource.next(idRol);
+  localStorage.setItem('idRol', idRol.toString());
+}
+
+setNombreUsuario(nombre: string) {
+  this.nombreUsuarioSource.next(nombre);
+  localStorage.setItem('nombreUsuario', nombre);
+}
+
+getIdRolFromStorage(): any {
+  return localStorage.getItem('idRol');
+}
+
+getNombreUsuarioFromStorage(): string {
+  return localStorage.getItem('nombreUsuario');
+}
+
+
+private afiliadoNombreSource = new BehaviorSubject<string>(this.getAfiliadoNombreFromStorage());
+afiliadoNombre$ = this.afiliadoNombreSource.asObservable();
+
+private afiliadoNombreCortoSource = new BehaviorSubject<string>(this.getAfiliadoNombreCortoFromStorage());
+afiliadoNombreCorto$ = this.afiliadoNombreCortoSource.asObservable();
+
+setAfiliadoNombre(nombre: string) {
+  this.afiliadoNombreSource.next(nombre);
+  localStorage.setItem('afiliadoNombre', nombre);
+}
+
+setAfiliadoNombreCorto(nombreCorto: string) {
+  this.afiliadoNombreCortoSource.next(nombreCorto);
+  localStorage.setItem('afiliadoNombreCorto', nombreCorto);
+}
+
+getAfiliadoNombreFromStorage(): string {
+  return localStorage.getItem('afiliadoNombre') || null;
+}
+
+getAfiliadoNombreCortoFromStorage(): string {
+  return localStorage.getItem('afiliadoNombreCorto') || null;
+}
+
+
 }

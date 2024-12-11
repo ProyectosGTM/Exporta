@@ -93,25 +93,43 @@ export class OrdersComponent implements OnInit {
     this.sharedDataService.logotipoReporte$.subscribe(logotipoReporte => {
       this.logotipoReporte = logotipoReporte;
     });
-    this.sharedDataService.afiliadoNombre$.subscribe(afiliadoNombre => {
-      this.afiliadoNombre = afiliadoNombre;
-      // console.log('AfiliadoNombre en OrdersComponent:', afiliadoNombre);
-    });
     this.sharedDataService.enviadoNombre$.subscribe(enviadoNombre => {
       this.enviadoNombre = enviadoNombre;
       // console.log('EnviadoNombre en OrdersComponent:', enviadoNombre);
-    });
-    this.sharedDataService.afiliadoNombreCorto$.subscribe(afiliadoNombreCorto => {
-      this.afiliadoNombreCorto = afiliadoNombreCorto;
-      // console.log('AfiliadoNombreCorto en OrdersComponent:', afiliadoNombreCorto);
     });
     this.sharedDataService.tipoOperacionNombre$.subscribe(tipoOperacionNombre => {
       this.tipoOperacionNombre = tipoOperacionNombre;
       // console.log('TipoOperacionNombre en OrdersComponent:', tipoOperacionNombre);
     });
 
+    this.sharedDataService.idRol$.subscribe(idRol => {
+      console.log('IdRol recibido:', idRol);
+      this.idRol = idRol;
+      // Puedes asignarlo a una propiedad del componente para usarlo en la vista
+    });
+  
+    this.sharedDataService.nombreUsuario$.subscribe(nombre => {
+      console.log('Nombre recibido:', nombre);
+      // Asignar el nombre del usuario para usarlo en la vista
+      this.nombreUsuario = nombre;
+    });
+
+    this.sharedDataService.afiliadoNombre$.subscribe(nombre => {
+      this.afiliadoNombre = nombre;
+      console.log('Nombre recuperado:', nombre);
+    });
+  
+    this.sharedDataService.afiliadoNombreCorto$.subscribe(nombreCorto => {
+      this.afiliadoNombreCorto = nombreCorto;
+      console.log('Nombre Corto recuperado:', nombreCorto);
+    });
+
     this.obtenerUsuarios();
   }
+  public nombreUsuario: string;
+public idRol: number;
+
+
 
   public validarTotal: boolean;
 
@@ -412,10 +430,9 @@ obtenerUsuarios() {
 }
 
 async exportToPDF(): Promise<void> {
-  this.isLoadingPDF = true;
-  // console.log('Logotipo URL:', this.logotipoReporte);
-  const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
-    this.isLoadingPDF = false;
+  this.isLoadingPDF = true; // Mostrar la vista de cargando
+  try {
+    const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
     const transactionDate = new Date(transaction.DATE);
     const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
     const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
@@ -501,20 +518,23 @@ async exportToPDF(): Promise<void> {
   const finalY = (doc as any).lastAutoTable.finalY || 30;
   const tableWidth = doc.internal.pageSize.width - 40;
 
-  // Formatear unidadesTAE
   const formattedUnidadesTAE = parseFloat(this.unidadesTAE).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  // Draw background rectangle
   doc.setFillColor(31, 78, 120); // Azul
   doc.rect(19, finalY + 0, tableWidth, 10, 'F');
 
-  // Add UTAE text
   doc.setTextColor(255, 255, 255); // Blanco
   doc.text('UTAE:', 190, finalY + 6);
   doc.text(formattedUnidadesTAE, 202, finalY + 6);
 
   doc.save(`Transacciones - ${this.selectedInvoice}.pdf` );
+  } catch (error) {
+    console.error('Error generando el PDF:', error);
+  } finally {
+    this.isLoadingPDF = false; // Ocultar la vista de cargando
+  }
 }
+
 
 selectedId: any;
 selectedYear: number;

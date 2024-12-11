@@ -100,13 +100,19 @@ export class LoginComponent implements OnInit {
             return this.obtenerUsuario(result.id).pipe(
               switchMap(usuario => {
                 this.sharedDataService.setUsuario(usuario.Id);
-                return this.obtenerOperaciones(result.idCliente); // Añade esta línea para obtener las operaciones
+                if (usuario && usuario.afiliados && usuario.afiliados.length > 0) {
+                  const afiliado = usuario.afiliados[0];
+                  this.sharedDataService.setAfiliadoNombre(afiliado.Nombre);
+                  this.sharedDataService.setAfiliadoNombreCorto(afiliado.NombreCorto);
+            
+                  console.log('Nombre almacenado:', afiliado.Nombre); 
+                  console.log('Nombre Corto almacenado:', afiliado.NombreCorto);
+                }
+                return this.obtenerOperaciones(result.idCliente); 
               }),
               map(operaciones => {
-                console.log('Operaciones obtenidas:', operaciones); // Verifica que se obtienen los datos correctos
-                this.sharedDataService.setAfiliadoNombre(operaciones.AfiliadoNombre);
+                console.log('Operaciones obtenidas:', operaciones); 
                 this.sharedDataService.setEnviadoNombre(operaciones.EnviadoNombre);
-                this.sharedDataService.setAfiliadoNombreCorto(operaciones.AfiliadoNombreCorto);
                 this.sharedDataService.setTipoOperacionNombre(operaciones.TipoOperacionNombre);
                 return {
                   result,
@@ -132,8 +138,6 @@ export class LoginComponent implements OnInit {
   
         this.loading = false;
         this.textLogin = 'Iniciar Sesión';
-  
-        // Mostrar el JSON de las operaciones obtenidas en el console.log
         console.log('Operaciones obtenidas en suscripción:', JSON.stringify(data.operaciones, null, 2));
       },
       (error) => {
