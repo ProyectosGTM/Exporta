@@ -8,7 +8,7 @@ import { FileManagerComponent } from './file-manager/file-manager.component';
 
 const routes: Routes = [
   // { path: '', redirectTo: 'dashboard' },
-  { path: '', component: DefaultComponent },
+  { path: '', redirectTo: 'ecommerce/orders', pathMatch: 'full' },
   { path: 'calendar', component: CalendarComponent },
   { path: 'chat', component: ChatComponent },
   { path: 'file-manager',component:FileManagerComponent},
