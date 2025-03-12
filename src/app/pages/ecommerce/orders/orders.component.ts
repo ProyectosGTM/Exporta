@@ -32,7 +32,7 @@ interface Transaction {
   animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
 export class OrdersComponent implements OnInit {
-  transactions: Transaction[] = [ /* ... datos proporcionados ... */ ];
+  transactions: Transaction[] = [];
   filteredTransactions: Transaction[] = [];
   pageSizeOptions = [10, 50, 100, 200];
   pageSize = 10;
@@ -43,6 +43,10 @@ export class OrdersComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
   showTotalRecordsMessage: boolean = false;
+
+  selectedId: any;
+  selectedYear: number;
+  selectedInvoice: string;
 
   serviceTransactions: Transaction[] = [];
   filteredServiceTransactions: Transaction[] = [];
@@ -95,69 +99,68 @@ export class OrdersComponent implements OnInit {
     });
     this.sharedDataService.enviadoNombre$.subscribe(enviadoNombre => {
       this.enviadoNombre = enviadoNombre;
-      // console.log('EnviadoNombre en OrdersComponent:', enviadoNombre);
+      
     });
     this.sharedDataService.tipoOperacionNombre$.subscribe(tipoOperacionNombre => {
       this.tipoOperacionNombre = tipoOperacionNombre;
-      // console.log('TipoOperacionNombre en OrdersComponent:', tipoOperacionNombre);
+      
     });
 
     this.sharedDataService.idRol$.subscribe(idRol => {
-      console.log('IdRol recibido:', idRol);
+      // console.log('IdRol recibido:', idRol);
       this.idRol = idRol;
-      // Puedes asignarlo a una propiedad del componente para usarlo en la vista
+      
     });
-  
+
     this.sharedDataService.nombreUsuario$.subscribe(nombre => {
-      console.log('Nombre recibido:', nombre);
-      // Asignar el nombre del usuario para usarlo en la vista
+      // console.log('Nombre recibido:', nombre);
+      
       this.nombreUsuario = nombre;
     });
 
     this.sharedDataService.afiliadoNombre$.subscribe(nombre => {
       this.afiliadoNombre = nombre;
-      console.log('Nombre recuperado:', nombre);
+      // console.log('Nombre recuperado:', nombre);
     });
-  
+
     this.sharedDataService.afiliadoNombreCorto$.subscribe(nombreCorto => {
       this.afiliadoNombreCorto = nombreCorto;
-      console.log('Nombre Corto recuperado:', nombreCorto);
+      // console.log('Nombre Corto recuperado:', nombreCorto);
     });
 
     this.obtenerUsuarios();
   }
   public nombreUsuario: string;
-public idRol: number;
+  public idRol: number;
 
 
 
   public validarTotal: boolean;
 
-obtenerUsuarios() {
-  this.validarTotal = true; // Mostrar alerta por defecto hasta tener datos válidos
-  this.isLoading = true;
-  const idUsuario = this.sharedDataService.getIdFromStorage();
-  
-  this.cliente.obtenerUsuario(idUsuario).subscribe((response: any) => {
-    this.isLoading = false;
-    
-    // Validar si la respuesta o la propiedad operaciones es null o vacío
-    if (!response || !response.afiliados || !response.afiliados[0].operaciones || response.afiliados[0].operaciones.length === 0) {
-      this.validarTotal = true; // Mantenemos la alerta visible
-    } else {
-      this.validarTotal = false; // Ocultar la alerta si hay datos válidos
-      this.informacion = response.afiliados[0].operaciones;
-      this.filteredInformacion = this.informacion.slice(0, this.informacionPageSize);
-      this.informacionTotalRecords = this.informacion.length;
-      this.updateInformacionTotalPages();
-    }
-  }, error => {
-    // Manejo de errores
-    this.isLoading = false;
-    this.validarTotal = true; // Mostrar la alerta si hay un error en la respuesta del servicio
-    console.error('Error al obtener usuario:', error);
-  });
-}
+  obtenerUsuarios() {
+    this.validarTotal = true;
+    this.isLoading = true;
+    const idUsuario = this.sharedDataService.getIdFromStorage();
+
+    this.cliente.obtenerUsuario(idUsuario).subscribe((response: any) => {
+      this.isLoading = false;
+
+      if (!response || !response.afiliados || !response.afiliados[0].operaciones || response.afiliados[0].operaciones.length === 0) {
+        this.validarTotal = true;
+      } else {
+        this.validarTotal = false;
+        this.informacion = response.afiliados[0].operaciones;
+        this.filteredInformacion = this.informacion.slice(0, this.informacionPageSize);
+        this.informacionTotalRecords = this.informacion.length;
+        this.updateInformacionTotalPages();
+      }
+    }, error => {
+      
+      this.isLoading = false;
+      this.validarTotal = true;
+      // console.error('Error al obtener usuario:', error);
+    });
+  }
 
 
   public nombre: string;
@@ -165,7 +168,7 @@ obtenerUsuarios() {
   obtenerUsuario(userId: string) {
     this.cliente.obtenerUsuario(userId).subscribe(
       (res: any) => {
-        // console.log('Información del usuario:', res);
+        
         this.nombreCorto = res.Nombre;
         this.nombre = res.afiliados[0].Nombre;
       }
@@ -377,7 +380,7 @@ obtenerUsuarios() {
       const transactionDate = new Date(transaction.DATE);
       const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
       const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
-  
+
       let matchesDateRange = true;
       if (start && end) {
         matchesDateRange = transactionDate >= start && transactionDate <= end;
@@ -409,174 +412,185 @@ obtenerUsuarios() {
 
   private getBase64ImageFromURL(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
-        this.http.get(url, { responseType: 'blob' }).subscribe({
-            next: (blob) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    resolve(reader.result as string);
-                };
-                reader.onerror = (error) => {
-                    console.error('Error al leer el archivo de imagen:', error);
-                    reject('No se pudo convertir la imagen a base64');
-                };
-                reader.readAsDataURL(blob);
-            },
-            error: (error) => {
-                console.error('Error al obtener la imagen desde la URL:', error);
-                reject('No se pudo obtener la imagen desde la URL');
-            }
-        });
+      this.http.get(url, { responseType: 'blob' }).subscribe({
+        next: (blob) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve(reader.result as string);
+          };
+          reader.onerror = (error) => {
+            // console.error('Error al leer el archivo de imagen:', error);
+            reject('No se pudo convertir la imagen a base64');
+          };
+          reader.readAsDataURL(blob);
+        },
+        error: (error) => {
+          // console.error('Error al obtener la imagen desde la URL:', error);
+          reject('No se pudo obtener la imagen desde la URL');
+        }
+      });
     });
-}
-
-async exportToPDF(): Promise<void> {
-  this.isLoadingPDF = true; // Mostrar la vista de cargando
-  try {
-    const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
-    const transactionDate = new Date(transaction.DATE);
-    const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
-    const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
-
-    let matchesDateRange = true;
-    if (start && end) {
-      matchesDateRange = transactionDate >= start && transactionDate <= end;
-    } else if (start) {
-      matchesDateRange = transactionDate >= start;
-    } else if (end) {
-      matchesDateRange = transactionDate <= end;
-    }
-
-    let matchesSearchTerm = Object.values(transaction).some(val =>
-      val.toString().toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
-    );
-
-    return matchesDateRange && matchesSearchTerm;
-  });
-
-  const doc = new jsPDF('landscape');
-  const imgUrl = '../../../../assets/images/logoKonnecta.png';
-  const imgData = await this.getBase64ImageFromURL(imgUrl);
-
-  const imgX = 15;
-  const imgY = 12;
-  const imgWidth = 15;
-  const imgHeight = 14;
-
-  doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
-
-  const lineX = imgX + imgWidth + 5;
-  const lineY1 = imgY;
-  const lineY2 = imgY + imgHeight;
-
-  doc.setDrawColor(0, 0, 0);
-  doc.setLineWidth(0.5);
-  doc.line(lineX, lineY1, lineX, lineY2);
-
-  const textX = lineX + 5;
-  const textYStart = 13;
-  const textLineHeight = 5;
-
-  doc.setFont('courier', 'bold');
-  doc.setFontSize(10);
-  doc.text('Konnecta System 7.0', textX, textYStart);
-  doc.text(`CLIENT: ${this.clienteNombre}/${this.afiliadoNombreCorto} `, textX, textYStart + textLineHeight);
-  doc.text(`NAME: ${this.afiliadoNombre}`, textX, textYStart + 2 * textLineHeight);
-  doc.text(`SEND TO: ${this.enviadoNombre}`, textX, textYStart + 3 * textLineHeight);
-  doc.text(`TYPE: ${this.tipoOperacionNombre}`, 190, 23);
-
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  const formattedTime = currentDate.toLocaleTimeString('es-ES');
-  const dateTimeText = `${formattedDate}, ${formattedTime}`;
-
-  doc.text(dateTimeText, 190, 28);
-
-  (doc as any).autoTable({
-    head: [['#', 'DATE', 'TIME', 'OUT IP', 'IN IP', 'GEO OUT', 'GEO IN', 'CARRIER', 'PRODUCT', 'AMOUNT', 'PHONE', 'TRN', 'STATUS', 'T TIME']],
-    body: allFilteredTransactions.map((transaction, index) => [
-      index + 1,
-      transaction.DATE,
-      transaction.TIME,
-      transaction.OUT_IP,
-      transaction.IN_IP,
-      transaction.GEO_OUT,
-      transaction.GEO_IN,
-      transaction.CARRIER,
-      transaction.PROD,
-      transaction.AMOUNT,
-      transaction.PHONE,
-      transaction.TRN,
-      transaction.ST,
-      transaction.T_TIME,
-    ]),
-    startY: 30,
-    styles: { fontSize: 8, font: 'courier', cellPadding: 1.5, lineHeight: 1 },
-    headStyles: { fillColor: [31, 78, 120], textColor: [255, 255, 255], halign: 'center', font: 'courier', fontStyle: 'bold' },
-    alternateRowStyles: { fillColor: [255, 255, 255] },
-  });
-
-  const finalY = (doc as any).lastAutoTable.finalY || 30;
-  const tableWidth = doc.internal.pageSize.width - 40;
-
-  const formattedUnidadesTAE = parseFloat(this.unidadesTAE).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-  doc.setFillColor(31, 78, 120); // Azul
-  doc.rect(19, finalY + 0, tableWidth, 10, 'F');
-
-  doc.setTextColor(255, 255, 255); // Blanco
-  doc.text('UTAE:', 190, finalY + 6);
-  doc.text(formattedUnidadesTAE, 202, finalY + 6);
-
-  doc.save(`Transacciones - ${this.selectedInvoice}.pdf` );
-  } catch (error) {
-    console.error('Error generando el PDF:', error);
-  } finally {
-    this.isLoadingPDF = false; // Ocultar la vista de cargando
   }
-}
 
+  async exportToPDF(): Promise<void> {
+    this.isLoadingPDF = true;
+    try {
+      const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
+        const transactionDate = new Date(transaction.DATE);
+        const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
+        const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
 
-selectedId: any;
-selectedYear: number;
-selectedInvoice: string;
-showInfo(id: any, fechaFactura: any, factura: string): void {
-  this.isLoadingGrid = true;
-  const year = new Date(fechaFactura).getFullYear();
-  console.log(id, year);
-  this.selectedId = id;
-  this.selectedYear = year;
-  this.selectedInvoice = factura;
-  const selectedOperacion = this.informacion.find(op => op.Id === id);
+        let matchesDateRange = true;
+        if (start && end) {
+          matchesDateRange = transactionDate >= start && transactionDate <= end;
+        } else if (start) {
+          matchesDateRange = transactionDate >= start;
+        } else if (end) {
+          matchesDateRange = transactionDate <= end;
+        }
+
+        let matchesSearchTerm = Object.values(transaction).some(val =>
+          val.toString().toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
+        );
+
+        return matchesDateRange && matchesSearchTerm;
+      });
+
+      const doc = new jsPDF('landscape');
+      const imgUrl = '../../../../assets/images/logoKonnecta.png';
+      const imgData = await this.getBase64ImageFromURL(imgUrl);
+
+      const imgX = 15;
+      const imgY = 12;
+      const imgWidth = 15;
+      const imgHeight = 14;
+
+      doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
+
+      const lineX = imgX + imgWidth + 5;
+      const lineY1 = imgY;
+      const lineY2 = imgY + imgHeight;
+
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.5);
+      doc.line(lineX, lineY1, lineX, lineY2);
+
+      const textX = lineX + 5;
+      const textYStart = 13;
+      const textLineHeight = 5;
+
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(10);
+      doc.text('Konnecta System 7.0', textX, textYStart);
+      doc.text(`CLIENT: ${this.clienteNombre}/${this.afiliadoNombreCorto} `, textX, textYStart + textLineHeight);
+      doc.text(`NAME: ${this.afiliadoNombre}`, textX, textYStart + 2 * textLineHeight);
+      doc.text(`SEND TO: ${this.enviadoNombre}`, textX, textYStart + 3 * textLineHeight);
+      doc.text(`TYPE: ${this.tipoOperacionNombre}`, 190, 23);
+
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const formattedTime = currentDate.toLocaleTimeString('es-ES');
+      const dateTimeText = `${formattedDate}, ${formattedTime}`;
+
+      doc.text(dateTimeText, 190, 28);
+
+      (doc as any).autoTable({
+        head: [['#', 'DATE', 'TIME', 'OUT IP', 'IN IP', 'GEO OUT', 'GEO IN', 'CARRIER', 'PRODUCT', 'AMOUNT', 'PHONE', 'TRN', 'STATUS', 'T TIME']],
+        body: allFilteredTransactions.map((transaction, index) => [
+          index + 1,
+          transaction.DATE,
+          transaction.TIME,
+          transaction.OUT_IP,
+          transaction.IN_IP,
+          transaction.GEO_OUT,
+          transaction.GEO_IN,
+          transaction.CARRIER,
+          transaction.PROD,
+          transaction.AMOUNT,
+          transaction.PHONE,
+          transaction.TRN,
+          transaction.ST,
+          transaction.T_TIME,
+        ]),
+        startY: 30,
+        styles: { fontSize: 8, font: 'courier', cellPadding: 1.5, lineHeight: 1 },
+        headStyles: { fillColor: [31, 78, 120], textColor: [255, 255, 255], halign: 'center', font: 'courier', fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [255, 255, 255] },
+      });
+
+      const finalY = (doc as any).lastAutoTable.finalY || 30;
+      const tableWidth = doc.internal.pageSize.width - 40;
+
+      const formattedUnidadesTAE = parseFloat(this.unidadesTAE).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      doc.setFillColor(31, 78, 120); 
+      doc.rect(19, finalY + 0, tableWidth, 10, 'F');
+
+      doc.setTextColor(255, 255, 255); 
+      doc.text('UTAE:', 190, finalY + 6);
+      doc.text(formattedUnidadesTAE, 202, finalY + 6);
+
+      doc.save(`Transacciones - ${this.selectedInvoice}.pdf`);
+    } catch (error) {
+      // console.error('Error generando el PDF:', error);
+    } finally {
+      this.isLoadingPDF = false;
+    }
+  }
+
+  showInfo(id: any, fechaFactura: any, factura: string): void {
+    this.isLoadingGrid = true;
+    const year = new Date(fechaFactura).getFullYear();
+    
+    // Limpia los datos anteriores antes de cargar los nuevos
+    this.serviceTransactions = []; 
+    this.filteredServiceTransactions = [];
+  
+    this.selectedId = id;
+    this.selectedYear = year;
+    this.selectedInvoice = factura;
+  
+    const selectedOperacion = this.informacion.find(op => op.Id === id);
     if (selectedOperacion) {
       this.unidadesTAE = selectedOperacion.CantidadTotal;
-      console.log('Unidades TAE:', this.unidadesTAE);
     }
-  this.cliente.obtenerTransacciones(id, year).subscribe((response: Transaction[]) => {
-    this.isLoadingGrid = false;
-    this.serviceTransactions = response;
-    this.serviceTotalRecords = this.serviceTransactions.length;
-    this.updateServiceTotalPages();
-    this.filterServiceTransactions();
-    this.showServiceTable = true;
-    // Desliza hacia abajo hasta el final de la página
-    setTimeout(() => {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }, 0);
-  });
-}
-
-  serviceTransactionsOK: any[] = [];
-  showServiceTableOK: boolean = false;
-  obtenerTransaccionesOK(id: number, year: number): void {
-    console.log(id, year);
-    this.isLoadingGrid = true;
-    this.cliente.obtenerTransaccionesOK(id, year).subscribe((response: any) => {
+  
+    this.cliente.obtenerTransacciones(id, year).subscribe((response: Transaction[]) => {
       this.isLoadingGrid = false;
+  
       this.serviceTransactions = response;
       this.serviceTotalRecords = this.serviceTransactions.length;
       this.updateServiceTotalPages();
       this.filterServiceTransactions();
+  
       this.showServiceTable = true;
+  
+      // Hacer scroll hasta la tabla de transacciones
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 0);
+    });
+  }
+
+  serviceTransactionsOK: any[] = [];
+  showServiceTableOK: boolean = false;
+  obtenerTransaccionesOK(id: number, year: number): void {
+    this.isLoadingGrid = true;
+  
+    // Limpia los datos anteriores antes de cargar los nuevos
+    this.serviceTransactions = []; 
+    this.filteredServiceTransactions = [];
+  
+    this.cliente.obtenerTransaccionesOK(id, year).subscribe((response: any) => {
+      this.isLoadingGrid = false;
+  
+      this.serviceTransactions = response;
+      this.serviceTotalRecords = this.serviceTransactions.length;
+      this.updateServiceTotalPages();
+      this.filterServiceTransactions();
+  
+      this.showServiceTable = true;
+  
       setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       }, 0);
