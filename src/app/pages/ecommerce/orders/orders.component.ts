@@ -8,6 +8,7 @@ import { fadeInUpAnimation } from 'src/app/core/animations/fade-in-up.animation'
 import { scaleInAnimation } from 'src/app/core/animations/scale-in.animation';
 import { ClienteService } from 'src/app/shared/services/clientes.service';
 import { SharedDataService } from 'src/app/shared/services/shared-data.service';
+import { Location } from '@angular/common';
 
 interface Transaction {
   DATE: string;
@@ -32,6 +33,13 @@ interface Transaction {
   animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
 export class OrdersComponent implements OnInit {
+  public nombre: string;
+  public nombreCorto: string;
+  public nombreUsuario: string;
+  public idRol: number;
+  public validarTotal: boolean;
+  serviceTransactionsOK: any[] = [];
+  showServiceTableOK: boolean = false;
   transactions: Transaction[] = [];
   filteredTransactions: Transaction[] = [];
   pageSizeOptions = [10, 50, 100, 200];
@@ -85,9 +93,15 @@ export class OrdersComponent implements OnInit {
   afiliadoNombreCorto: string;
   tipoOperacionNombre: string;
 
-  constructor(private http: HttpClient, private cliente: ClienteService, private sharedDataService: SharedDataService) { }
+  constructor(
+    private http: HttpClient, 
+    private cliente: ClienteService, 
+    private sharedDataService: SharedDataService,
+    private location: Location
+  ) { }
 
   ngOnInit(): void {
+    this.location.replaceState('');
     this.sharedDataService.nombreCliente$.subscribe(nombre => {
       this.clienteNombre = nombre;
     });
@@ -99,22 +113,22 @@ export class OrdersComponent implements OnInit {
     });
     this.sharedDataService.enviadoNombre$.subscribe(enviadoNombre => {
       this.enviadoNombre = enviadoNombre;
-      
+
     });
     this.sharedDataService.tipoOperacionNombre$.subscribe(tipoOperacionNombre => {
       this.tipoOperacionNombre = tipoOperacionNombre;
-      
+
     });
 
     this.sharedDataService.idRol$.subscribe(idRol => {
       // console.log('IdRol recibido:', idRol);
       this.idRol = idRol;
-      
+
     });
 
     this.sharedDataService.nombreUsuario$.subscribe(nombre => {
       // console.log('Nombre recibido:', nombre);
-      
+
       this.nombreUsuario = nombre;
     });
 
@@ -127,24 +141,16 @@ export class OrdersComponent implements OnInit {
       this.afiliadoNombreCorto = nombreCorto;
       // console.log('Nombre Corto recuperado:', nombreCorto);
     });
-
     this.obtenerUsuarios();
   }
-  public nombreUsuario: string;
-  public idRol: number;
-
-
-
-  public validarTotal: boolean;
+  
 
   obtenerUsuarios() {
     this.validarTotal = true;
     this.isLoading = true;
     const idUsuario = this.sharedDataService.getIdFromStorage();
-
     this.cliente.obtenerUsuario(idUsuario).subscribe((response: any) => {
       this.isLoading = false;
-
       if (!response || !response.afiliados || !response.afiliados[0].operaciones || response.afiliados[0].operaciones.length === 0) {
         this.validarTotal = true;
       } else {
@@ -155,20 +161,15 @@ export class OrdersComponent implements OnInit {
         this.updateInformacionTotalPages();
       }
     }, error => {
-      
       this.isLoading = false;
       this.validarTotal = true;
       // console.error('Error al obtener usuario:', error);
     });
   }
 
-
-  public nombre: string;
-  public nombreCorto: string;
   obtenerUsuario(userId: string) {
     this.cliente.obtenerUsuario(userId).subscribe(
       (res: any) => {
-        
         this.nombreCorto = res.Nombre;
         this.nombre = res.afiliados[0].Nombre;
       }
@@ -337,7 +338,6 @@ export class OrdersComponent implements OnInit {
       } else if (end) {
         matchesDateRange = dataDate <= end;
       }
-
       let matchesSearchTerm = Object.values(data).some(val =>
         val.toString().toLowerCase().includes(this.informacionSearchTerm.toLowerCase())
       );
@@ -380,7 +380,6 @@ export class OrdersComponent implements OnInit {
       const transactionDate = new Date(transaction.DATE);
       const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
       const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
-
       let matchesDateRange = true;
       if (start && end) {
         matchesDateRange = transactionDate >= start && transactionDate <= end;
@@ -523,10 +522,10 @@ export class OrdersComponent implements OnInit {
 
       const formattedUnidadesTAE = parseFloat(this.unidadesTAE).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-      doc.setFillColor(31, 78, 120); 
+      doc.setFillColor(31, 78, 120);
       doc.rect(19, finalY + 0, tableWidth, 10, 'F');
 
-      doc.setTextColor(255, 255, 255); 
+      doc.setTextColor(255, 255, 255);
       doc.text('UTAE:', 190, finalY + 6);
       doc.text(formattedUnidadesTAE, 202, finalY + 6);
 
@@ -541,56 +540,43 @@ export class OrdersComponent implements OnInit {
   showInfo(id: any, fechaFactura: any, factura: string): void {
     this.isLoadingGrid = true;
     const year = new Date(fechaFactura).getFullYear();
-    
-    // Limpia los datos anteriores antes de cargar los nuevos
-    this.serviceTransactions = []; 
+    this.serviceTransactions = [];
     this.filteredServiceTransactions = [];
-  
     this.selectedId = id;
     this.selectedYear = year;
     this.selectedInvoice = factura;
-  
+
     const selectedOperacion = this.informacion.find(op => op.Id === id);
     if (selectedOperacion) {
       this.unidadesTAE = selectedOperacion.CantidadTotal;
     }
-  
+
     this.cliente.obtenerTransacciones(id, year).subscribe((response: Transaction[]) => {
       this.isLoadingGrid = false;
-  
+
       this.serviceTransactions = response;
       this.serviceTotalRecords = this.serviceTransactions.length;
       this.updateServiceTotalPages();
       this.filterServiceTransactions();
-  
       this.showServiceTable = true;
-  
-      // Hacer scroll hasta la tabla de transacciones
       setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       }, 0);
     });
   }
 
-  serviceTransactionsOK: any[] = [];
-  showServiceTableOK: boolean = false;
+  
   obtenerTransaccionesOK(id: number, year: number): void {
     this.isLoadingGrid = true;
-  
-    // Limpia los datos anteriores antes de cargar los nuevos
-    this.serviceTransactions = []; 
+    this.serviceTransactions = [];
     this.filteredServiceTransactions = [];
-  
     this.cliente.obtenerTransaccionesOK(id, year).subscribe((response: any) => {
       this.isLoadingGrid = false;
-  
       this.serviceTransactions = response;
       this.serviceTotalRecords = this.serviceTransactions.length;
       this.updateServiceTotalPages();
       this.filterServiceTransactions();
-  
       this.showServiceTable = true;
-  
       setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       }, 0);
