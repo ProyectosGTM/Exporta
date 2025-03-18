@@ -9,6 +9,7 @@ import { scaleInAnimation } from 'src/app/core/animations/scale-in.animation';
 import { ClienteService } from 'src/app/shared/services/clientes.service';
 import { SharedDataService } from 'src/app/shared/services/shared-data.service';
 import { Location } from '@angular/common';
+import CustomStore from 'devextreme/data/custom_store';
 
 interface Transaction {
   DATE: string;
@@ -43,7 +44,7 @@ export class OrdersComponent implements OnInit {
   transactions: Transaction[] = [];
   filteredTransactions: Transaction[] = [];
   pageSizeOptions = [10, 50, 100, 200];
-  pageSize = 10;
+  pageSize = 60;
   currentPage = 0;
   totalRecords = 0;
   totalPages = 0;
@@ -93,12 +94,19 @@ export class OrdersComponent implements OnInit {
   afiliadoNombreCorto: string;
   tipoOperacionNombre: string;
 
+  public mensajeAgrupar: string = "Arrastre un encabezado de columna aquí para agrupar por esa columna";
+	public showFilterRow: boolean;
+	public showHeaderFilter: boolean;
+
   constructor(
     private http: HttpClient, 
     private cliente: ClienteService, 
     private sharedDataService: SharedDataService,
     private location: Location
-  ) { }
+  ) {
+    this.showFilterRow = true;
+    this.showHeaderFilter = true;
+   }
 
   ngOnInit(): void {
     this.location.replaceState('');
@@ -259,6 +267,19 @@ export class OrdersComponent implements OnInit {
       this.filterServiceTransactions();
     }
   }
+
+  formatCustomDate = (date: Date): string => {
+    if (!date) return '';
+    const day = date.getDate();
+    const month = this.months[date.getMonth()];
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  private months = [
+    'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+  ];
 
   get startIndex(): number {
     return this.currentPage * this.pageSize;
@@ -537,10 +558,17 @@ export class OrdersComponent implements OnInit {
     }
   }
 
+
+  public cantidadTotalFactura: number;
+  public paginaActual: number = 1; 
+  public cantidadTotalRegistros: number
+
+  //Este codigo sirve bien
+
   showInfo(id: any, fechaFactura: any, factura: string): void {
     this.isLoadingGrid = true;
     const year = new Date(fechaFactura).getFullYear();
-    this.serviceTransactions = [];
+    this.serviceTransactions = []; 
     this.filteredServiceTransactions = [];
     this.selectedId = id;
     this.selectedYear = year;
@@ -548,13 +576,75 @@ export class OrdersComponent implements OnInit {
 
     const selectedOperacion = this.informacion.find(op => op.Id === id);
     if (selectedOperacion) {
-      this.unidadesTAE = selectedOperacion.CantidadTotal;
+        this.unidadesTAE = selectedOperacion.CantidadTotal;
+        this.cantidadTotalFactura = Math.floor(parseFloat(selectedOperacion.CantidadTotal));
+
+        // 🔹 Nueva propiedad que almacena la suma de CantidadRegistros y CantidadRegistrosError
+        this.cantidadTotalRegistros = selectedOperacion.CantidadRegistros + selectedOperacion.CantidadRegistrosError;
+
+        // 🔹 Mostrar información en la consola
+        console.log("📌 Cantidad Total de la Factura (entero):", this.cantidadTotalFactura);
+        console.log("🔹 Cantidad de Registros:", selectedOperacion.CantidadRegistros);
+        console.log("⚠️ Registros con Error:", selectedOperacion.CantidadRegistrosError);
+        console.log("🟢 Cantidad Total de Registros (Correctos + Errores):", this.cantidadTotalRegistros);
     }
 
-    this.cliente.obtenerTransacciones(id, year).subscribe((response: Transaction[]) => {
-      this.isLoadingGrid = false;
+    // Llamada al servicio asegurando que se extraigan los datos correctos
+    this.cliente.obtenerTransacciones(id, year, 1, this.cantidadTotalRegistros).subscribe({
+      next: (response: any) => {  
+          this.isLoadingGrid = false;
+  
+          console.log("📥 Respuesta completa de la API:", response);
+  
+          if (response.data) {
+              console.log("📊 Datos dentro de 'data':", response.data);
+              this.serviceTransactions = response.data;
+              this.filteredServiceTransactions = response.data;
+              console.log("✅ Transacciones asignadas:", this.serviceTransactions);
+          } else {
+              console.warn("⚠️ La API no devolvió un array en 'data', asignando array vacío.");
+              this.serviceTransactions = [];
+              this.filteredServiceTransactions = [];
+          }
+  
+          this.serviceTotalRecords = this.serviceTransactions.length;
+          this.updateServiceTotalPages();
+          this.showServiceTable = true;
+  
+          setTimeout(() => {
+              window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+          }, 0);
+      },
+      error: (error) => {
+          this.isLoadingGrid = false;
+          console.error("❌ Error obteniendo transacciones:", error);
+      }
+  });
+}
 
-      this.serviceTransactions = response;
+  onPageIndexChanged(e: any) {
+    const pageIndex = e.component.pageIndex(); // Obtiene la nueva página seleccionada (basada en 0)
+    this.paginaActual = pageIndex + 1; // Ajustamos para que empiece en 1
+    console.log(`📢 Página cambiada a: ${this.paginaActual}`);
+
+    e.component.refresh(); // Refresca la tabla y dispara `setupDataSource()`
+}
+
+
+  getIndex(rowIndex: number): number {
+    return rowIndex + 1; 
+  }
+
+  public dataSource: any; 
+
+
+  obtenerTransaccionesOK(id: number, year: number): void {
+    this.isLoadingGrid = true;
+    this.serviceTransactions = [];
+    this.filteredServiceTransactions = [];
+    this.cliente.obtenerTransaccionesOK(id, year, 1, this.cantidadTotalRegistros).subscribe((response: any) => {
+      this.isLoadingGrid = false;
+      this.serviceTransactions = response.data;
       this.serviceTotalRecords = this.serviceTransactions.length;
       this.updateServiceTotalPages();
       this.filterServiceTransactions();
@@ -566,20 +656,4 @@ export class OrdersComponent implements OnInit {
   }
 
   
-  obtenerTransaccionesOK(id: number, year: number): void {
-    this.isLoadingGrid = true;
-    this.serviceTransactions = [];
-    this.filteredServiceTransactions = [];
-    this.cliente.obtenerTransaccionesOK(id, year).subscribe((response: any) => {
-      this.isLoadingGrid = false;
-      this.serviceTransactions = response;
-      this.serviceTotalRecords = this.serviceTransactions.length;
-      this.updateServiceTotalPages();
-      this.filterServiceTransactions();
-      this.showServiceTable = true;
-      setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      }, 0);
-    });
-  }
 }

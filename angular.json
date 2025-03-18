@@ -36,7 +36,7 @@
             ],
             "styles": [
               "node_modules/devextreme/dist/css/dx.common.css",
-              "node_modules/devextreme/dist/css/dx.light.css",
+              "node_modules/devextreme/dist/css/dx.material.teal.dark.compact.css",
               "node_modules/chartist/dist/index.css",
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
               "node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
@@ -117,11 +117,12 @@
             ],
             "styles": [
               "node_modules/devextreme/dist/css/dx.common.css",
-              "node_modules/devextreme/dist/css/dx.light.css",
+              "node_modules/devextreme/dist/css/dx.material.teal.dark.compact.css",
               "src/styles.scss",
               "node_modules/aos/dist/aos.css"
             ],
             "scripts": [
+              "node_modules/stream-browserify/index.js",
               "node_modules/devextreme/localization/messages/es.json",
               "node_modules/aos/dist/aos.js"
             ]

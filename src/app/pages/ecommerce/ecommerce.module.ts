@@ -22,6 +22,7 @@ import { AddproductComponent } from './addproduct/addproduct.component';
 import { CustomersComponent } from './customers/customers.component';
 import { OrdersComponent } from './orders/orders.component';
 import { NgbdSortableHeader } from './orders/sortable.directive'
+import { DxDataGridModule, DxDateBoxModule } from 'devextreme-angular';
 
 const config: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -47,7 +48,9 @@ const config: DropzoneConfigInterface = {
     NgbTooltipModule,
     NgbAccordionModule,
     NgbTypeaheadModule,
-    NgbCollapseModule
+    NgbCollapseModule,
+    DxDataGridModule,
+    DxDateBoxModule
   ],
   providers: [
     {

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -28,11 +28,17 @@ export class ClienteService {
   }
   
 
-  obtenerTransacciones(id: number, year: number): Observable<any> {
-    return this.http.get<any>(`${environment.API_SECURITY}/api/transacciones/${id}?year=${year}`);
-  }
+  obtenerTransacciones(id: number, year: number, page: number, pageSize: number): Observable<any> {
+    return this.http.get<any>(
+        `${environment.API_SECURITY}/api/transacciones/paginated/${id}?year=${year}&page=${page}&pageSize=${pageSize}`
+    );
+}
 
-  obtenerTransaccionesOK(id: number, year: number): Observable<any> {
-    return this.http.get<any>(`${environment.API_SECURITY}/api/transaccionesok/${id}?year=${year}`);
+
+
+obtenerTransaccionesOK(id: number, year: number, page: number, pageSize: number): Observable<any> {
+    return this.http.get<any>(
+      `${environment.API_SECURITY}/api/transaccionesok/paginated/${id}?year=${year}&page=${page}&pageSize=${pageSize}`
+  );
   }
 }

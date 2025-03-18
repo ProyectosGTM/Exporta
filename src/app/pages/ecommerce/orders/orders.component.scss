@@ -148,3 +148,9 @@ th, td, tr {
 .badge-primary div {
   margin-bottom: 0.5em;
 }
+
+
+::ng-deep .dx-datagrid-summary-item {
+  background-color: #1F4E78;
+  color: rgb(255 255 255 / 70%);
+}
