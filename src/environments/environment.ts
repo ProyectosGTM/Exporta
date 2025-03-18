@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   stripe_token: 'STRIPE_TOKEN',
   paypal_token: 'PAYPAL_TOKEN',
-  API_SECURITY: 'http://216.238.84.225:3006',
+  API_SECURITY: 'https://konnectasystem7.ddns.net',
 };
 // http://216.238.84.225:3006
 /*
