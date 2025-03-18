@@ -34,6 +34,10 @@ interface Transaction {
   animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
 export class OrdersComponent implements OnInit {
+  public dataSource: any;
+  public cantidadTotalFactura: number;
+  public paginaActual: number = 1;
+  public cantidadTotalRegistros: number
   public nombre: string;
   public nombreCorto: string;
   public nombreUsuario: string;
@@ -52,11 +56,9 @@ export class OrdersComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
   showTotalRecordsMessage: boolean = false;
-
   selectedId: any;
   selectedYear: number;
   selectedInvoice: string;
-
   serviceTransactions: Transaction[] = [];
   filteredServiceTransactions: Transaction[] = [];
   servicePageSizeOptions = [10, 50, 100, 200];
@@ -67,7 +69,6 @@ export class OrdersComponent implements OnInit {
   serviceSearchTerm: string = '';
   serviceStartDate: string = '';
   serviceEndDate: string = '';
-
   showServiceTable: boolean = false;
   informacion: any[] = [];
   informacionDos: any;
@@ -84,7 +85,6 @@ export class OrdersComponent implements OnInit {
   isLoading: boolean = false;
   isLoadingGrid: boolean = false;
   isLoadingPDF: boolean = false;
-
   clienteNombre: string;
   logotipo: string;
   idUsuario: string;
@@ -95,18 +95,18 @@ export class OrdersComponent implements OnInit {
   tipoOperacionNombre: string;
 
   public mensajeAgrupar: string = "Arrastre un encabezado de columna aquí para agrupar por esa columna";
-	public showFilterRow: boolean;
-	public showHeaderFilter: boolean;
+  public showFilterRow: boolean;
+  public showHeaderFilter: boolean;
 
   constructor(
-    private http: HttpClient, 
-    private cliente: ClienteService, 
+    private http: HttpClient,
+    private cliente: ClienteService,
     private sharedDataService: SharedDataService,
     private location: Location
   ) {
     this.showFilterRow = true;
     this.showHeaderFilter = true;
-   }
+  }
 
   ngOnInit(): void {
     this.location.replaceState('');
@@ -129,29 +129,22 @@ export class OrdersComponent implements OnInit {
     });
 
     this.sharedDataService.idRol$.subscribe(idRol => {
-      // console.log('IdRol recibido:', idRol);
       this.idRol = idRol;
-
     });
 
     this.sharedDataService.nombreUsuario$.subscribe(nombre => {
-      // console.log('Nombre recibido:', nombre);
-
       this.nombreUsuario = nombre;
     });
 
     this.sharedDataService.afiliadoNombre$.subscribe(nombre => {
       this.afiliadoNombre = nombre;
-      // console.log('Nombre recuperado:', nombre);
     });
 
     this.sharedDataService.afiliadoNombreCorto$.subscribe(nombreCorto => {
       this.afiliadoNombreCorto = nombreCorto;
-      // console.log('Nombre Corto recuperado:', nombreCorto);
     });
     this.obtenerUsuarios();
   }
-  
 
   obtenerUsuarios() {
     this.validarTotal = true;
@@ -372,29 +365,36 @@ export class OrdersComponent implements OnInit {
   }
 
   filterServiceTransactions(): void {
-    const filteredTransactions = this.serviceTransactions.filter(transaction => {
-      const transactionDate = new Date(transaction.DATE);
-      const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
-      const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
-      let matchesDateRange = true;
-      if (start && end) {
-        matchesDateRange = transactionDate >= start && transactionDate <= end;
-      } else if (start) {
-        matchesDateRange = transactionDate >= start;
-      } else if (end) {
-        matchesDateRange = transactionDate <= end;
-      }
-      let matchesSearchTerm = Object.values(transaction).some(val =>
-        val.toString().toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
-      );
-      return matchesDateRange && matchesSearchTerm;
+    if (!this.serviceStartDate && !this.serviceEndDate) {
+        this.filteredServiceTransactions = [...this.serviceTransactions];
+        return;
+    }
+
+    const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
+    const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
+
+    if (end) {
+      end.setHours(23, 59, 59, 999);
+    }
+
+    this.filteredServiceTransactions = this.serviceTransactions.filter(transaction => {
+        const transactionDate = new Date(transaction.DATE);
+
+        const startDateOnly = start ? new Date(start.getFullYear(), start.getMonth(), start.getDate()) : null;
+        const endDateOnly = end ? new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999) : null;
+        const transactionDateOnly = new Date(transactionDate.getFullYear(), transactionDate.getMonth(), transactionDate.getDate());
+
+        let matchesStartDate = startDateOnly ? transactionDateOnly >= startDateOnly : true;
+        let matchesEndDate = endDateOnly ? transactionDateOnly <= endDateOnly : true;
+
+        return matchesStartDate && matchesEndDate;
     });
-    this.serviceTotalRecords = filteredTransactions.length;
+
+    this.serviceTotalRecords = this.filteredServiceTransactions.length;
     this.updateServiceTotalPages();
-    const startIdx = this.serviceStartIndex;
-    const endIdx = this.serviceEndIndex;
-    this.filteredServiceTransactions = filteredTransactions.slice(startIdx, endIdx);
   }
+
+
 
   exportToExcel(): void {
     const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
@@ -439,7 +439,6 @@ export class OrdersComponent implements OnInit {
             resolve(reader.result as string);
           };
           reader.onerror = (error) => {
-            // console.error('Error al leer el archivo de imagen:', error);
             reject('No se pudo convertir la imagen a base64');
           };
           reader.readAsDataURL(blob);
@@ -558,13 +557,6 @@ export class OrdersComponent implements OnInit {
     }
   }
 
-
-  public cantidadTotalFactura: number;
-  public paginaActual: number = 1; 
-  public cantidadTotalRegistros: number
-
-  //Este codigo sirve bien
-
   showInfo(id: any, fechaFactura: any, factura: string): void {
     this.isLoadingGrid = true;
     const year = new Date(fechaFactura).getFullYear();
@@ -578,65 +570,59 @@ export class OrdersComponent implements OnInit {
     if (selectedOperacion) {
         this.unidadesTAE = selectedOperacion.CantidadTotal;
         this.cantidadTotalFactura = Math.floor(parseFloat(selectedOperacion.CantidadTotal));
-
-        // 🔹 Nueva propiedad que almacena la suma de CantidadRegistros y CantidadRegistrosError
         this.cantidadTotalRegistros = selectedOperacion.CantidadRegistros + selectedOperacion.CantidadRegistrosError;
 
-        // 🔹 Mostrar información en la consola
-        console.log("📌 Cantidad Total de la Factura (entero):", this.cantidadTotalFactura);
-        console.log("🔹 Cantidad de Registros:", selectedOperacion.CantidadRegistros);
-        console.log("⚠️ Registros con Error:", selectedOperacion.CantidadRegistrosError);
-        console.log("🟢 Cantidad Total de Registros (Correctos + Errores):", this.cantidadTotalRegistros);
+      console.log("📌 Cantidad Total de la Factura (entero):", this.cantidadTotalFactura);
+      console.log("🔹 Cantidad de Registros:", selectedOperacion.CantidadRegistros);
+      console.log("⚠️ Registros con Error:", selectedOperacion.CantidadRegistrosError);
+      console.log("🟢 Cantidad Total de Registros (Correctos + Errores):", this.cantidadTotalRegistros);
     }
 
-    // Llamada al servicio asegurando que se extraigan los datos correctos
     this.cliente.obtenerTransacciones(id, year, 1, this.cantidadTotalRegistros).subscribe({
-      next: (response: any) => {  
-          this.isLoadingGrid = false;
-  
-          console.log("📥 Respuesta completa de la API:", response);
-  
-          if (response.data) {
-              console.log("📊 Datos dentro de 'data':", response.data);
-              this.serviceTransactions = response.data;
-              this.filteredServiceTransactions = response.data;
-              console.log("✅ Transacciones asignadas:", this.serviceTransactions);
-          } else {
-              console.warn("⚠️ La API no devolvió un array en 'data', asignando array vacío.");
-              this.serviceTransactions = [];
-              this.filteredServiceTransactions = [];
-          }
-  
-          this.serviceTotalRecords = this.serviceTransactions.length;
-          this.updateServiceTotalPages();
-          this.showServiceTable = true;
-  
-          setTimeout(() => {
-              window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-          }, 0);
+      next: (response: any) => {
+        this.isLoadingGrid = false;
+
+        console.log("📥 Respuesta completa de la API:", response);
+
+        if (response.data) {
+          console.log("📊 Datos dentro de 'data':", response.data);
+          this.serviceTransactions = response.data;
+          this.filteredServiceTransactions = [...this.serviceTransactions];
+          console.log("✅ Transacciones asignadas:", this.serviceTransactions);
+        } else {
+          console.warn("⚠️ La API no devolvió un array en 'data', asignando array vacío.");
+          this.serviceTransactions = [];
+          this.filteredServiceTransactions = [];
+        }
+
+        this.serviceTotalRecords = this.filteredServiceTransactions.length;
+        this.updateServiceTotalPages();
+        this.showServiceTable = true;
+
+        this.filterServiceTransactionsByDateRange();
+
+        setTimeout(() => {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }, 0);
       },
       error: (error) => {
-          this.isLoadingGrid = false;
-          console.error("❌ Error obteniendo transacciones:", error);
+        this.isLoadingGrid = false;
+        console.error("❌ Error obteniendo transacciones:", error);
       }
-  });
-}
-
-  onPageIndexChanged(e: any) {
-    const pageIndex = e.component.pageIndex(); // Obtiene la nueva página seleccionada (basada en 0)
-    this.paginaActual = pageIndex + 1; // Ajustamos para que empiece en 1
-    console.log(`📢 Página cambiada a: ${this.paginaActual}`);
-
-    e.component.refresh(); // Refresca la tabla y dispara `setupDataSource()`
-}
-
-
-  getIndex(rowIndex: number): number {
-    return rowIndex + 1; 
+    });
   }
 
-  public dataSource: any; 
+  onPageIndexChanged(e: any) {
+    const pageIndex = e.component.pageIndex();
+    this.paginaActual = pageIndex + 1;
+    console.log(`📢 Página cambiada a: ${this.paginaActual}`);
 
+    e.component.refresh();
+  }
+
+  getIndex(rowIndex: number): number {
+    return rowIndex + 1;
+  }
 
   obtenerTransaccionesOK(id: number, year: number): void {
     this.isLoadingGrid = true;
@@ -655,5 +641,4 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  
 }
