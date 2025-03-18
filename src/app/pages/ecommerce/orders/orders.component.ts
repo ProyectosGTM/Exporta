@@ -557,6 +557,17 @@ export class OrdersComponent implements OnInit {
     }
   }
 
+  onPageChange(event: any): void {
+    if (event.fullName === "paging.pageIndex") {
+      const gridElement = document.getElementById("gridContainers");
+      
+      if (gridElement) {
+        gridElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }
+  
+
   showInfo(id: any, fechaFactura: any, factura: string): void {
     this.isLoadingGrid = true;
     const year = new Date(fechaFactura).getFullYear();
