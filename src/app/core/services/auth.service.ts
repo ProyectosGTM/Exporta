@@ -108,14 +108,14 @@ export class AuthenticationService extends BaseServicesService {
 
   updateUsuario(id: string, form: any): Observable<any> {
     return this.http.put<any>(
-      `${environment.API_SECURITY}/api/controlusuarios/${id}`,
+      `http://216.238.84.225:3006/api/controlusuarios/${id}`,
       form
     );
   }
 
   getUsuarioControl(id: string): Observable<any> {
     return this.http.get<any>(
-      `${environment.API_SECURITY}/api/controlusuarios/${id}`
+      `http://216.238.84.225:3006//api/controlusuarios/${id}`
     );
   }
   private setStoragePermissions(permissions: Array<string>): void {
@@ -143,7 +143,7 @@ export class AuthenticationService extends BaseServicesService {
   }
 
   public authenticate(body: Credentials): Observable<User> {
-    return this.http.post<User>(environment.API_SECURITY + "/api/login",
+    return this.http.post<User>('http://216.238.84.225:3006' + "/api/login",
         body
       )
       .pipe(catchError(this.handleError));

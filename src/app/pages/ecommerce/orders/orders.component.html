@@ -128,11 +128,13 @@
                         class="btn btn-warning">
                         <i class="uil uil-check"></i> Obtener Transacciones Exitosas
                       </button>
-                      <button type="button" class="btn btn-primary" (click)="exportToPDF()">
-                        Descargar PDF <i class="uil uil-arrow-right"></i>
-                      </button>
+                      <button type="button" class="btn btn-primary" (click)="exportToPDF()" [disabled]="isLoadingPDF">
+                        <span *ngIf="isLoadingPDF">Generando PDF...</span>
+                        <span *ngIf="!isLoadingPDF">Descargar PDF <i class="uil uil-arrow-right"></i></span>
+                    </button>                    
                     </div>
                   </div>
+                  <!-- total datos: {{infoExcel}} -->
                   <div class="row mb-3">
                     <div class="col-12 col-md-6 col-lg-3">
                       <label class="d-flex align-items-center">Inicio:

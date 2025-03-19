@@ -484,48 +484,33 @@ export class OrdersComponent implements OnInit {
   }
 
   async exportToPDF(): Promise<void> {
+    // console.log("📌 Intentando exportar PDF con infoExcel:", this.infoExcel);
+
+    if (!this.infoExcel || this.infoExcel.length === 0) {
+        console.warn("⚠️ No hay datos en infoExcel para exportar.");
+        // alert("No hay datos para exportar a PDF.");
+        return;
+    }
+
     this.isLoadingPDF = true;
     try {
-      const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
-        const transactionDate = new Date(transaction.DATE);
-        const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
-        const end = this.serviceEndDate ? new Date(this.serviceEndDate) : null;
-
-        let matchesDateRange = true;
-        if (start && end) {
-          matchesDateRange = transactionDate >= start && transactionDate <= end;
-        } else if (start) {
-          matchesDateRange = transactionDate >= start;
-        } else if (end) {
-          matchesDateRange = transactionDate <= end;
-        }
-
-        let matchesSearchTerm = Object.values(transaction).some(val =>
-          val.toString().toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
-        );
-
-        return matchesDateRange && matchesSearchTerm;
-      });
-
       const doc = new jsPDF('landscape');
       const imgUrl = '../../../../assets/images/logoKonnecta.png';
       const imgData = await this.getBase64ImageFromURL(imgUrl);
 
-      const imgX = 15;
-      const imgY = 12;
-      const imgWidth = 15;
-      const imgHeight = 14;
-
+      // Posiciones para el logo
+      const imgX = 15, imgY = 12, imgWidth = 15, imgHeight = 14;
       doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
 
+      // Línea separadora
       const lineX = imgX + imgWidth + 5;
       const lineY1 = imgY;
       const lineY2 = imgY + imgHeight;
-
       doc.setDrawColor(0, 0, 0);
       doc.setLineWidth(0.5);
       doc.line(lineX, lineY1, lineX, lineY2);
 
+      // Información del cliente
       const textX = lineX + 5;
       const textYStart = 13;
       const textLineHeight = 5;
@@ -538,16 +523,17 @@ export class OrdersComponent implements OnInit {
       doc.text(`SEND TO: ${this.enviadoNombre}`, textX, textYStart + 3 * textLineHeight);
       doc.text(`TYPE: ${this.tipoOperacionNombre}`, 190, 23);
 
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      const formattedTime = currentDate.toLocaleTimeString('es-ES');
-      const dateTimeText = `${formattedDate}, ${formattedTime}`;
+    // Fecha y hora actual
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const formattedTime = currentDate.toLocaleTimeString('es-ES');
+    const dateTimeText = `${formattedDate}, ${formattedTime}`;
+    doc.text(dateTimeText, 190, 28);
 
-      doc.text(dateTimeText, 190, 28);
-
+    // Crear tabla con los datos de infoExcel
       (doc as any).autoTable({
         head: [['#', 'DATE', 'TIME', 'OUT IP', 'IN IP', 'GEO OUT', 'GEO IN', 'CARRIER', 'PRODUCT', 'AMOUNT', 'PHONE', 'TRN', 'STATUS', 'T TIME']],
-        body: allFilteredTransactions.map((transaction, index) => [
+        body: this.infoExcel.map((transaction: any, index: number) => [
           index + 1,
           transaction.DATE,
           transaction.TIME,
@@ -572,6 +558,7 @@ export class OrdersComponent implements OnInit {
       const finalY = (doc as any).lastAutoTable.finalY || 30;
       const tableWidth = doc.internal.pageSize.width - 40;
 
+      // Agregar UTAE
       const formattedUnidadesTAE = parseFloat(this.unidadesTAE).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
       doc.setFillColor(31, 78, 120);
@@ -581,13 +568,54 @@ export class OrdersComponent implements OnInit {
       doc.text('UTAE:', 190, finalY + 6);
       doc.text(formattedUnidadesTAE, 202, finalY + 6);
 
+      // Guardar el PDF
       doc.save(`Transacciones - ${this.selectedInvoice}.pdf`);
     } catch (error) {
-      
+        console.error("❌ Error generando el PDF:", error);
+        // alert("Hubo un error al generar el PDF.");
     } finally {
-      this.isLoadingPDF = false;
+        this.isLoadingPDF = false;
     }
   }
+
+  public infoExcel
+  obtenerTotalTransacciones(id: any, fechaFactura: any, factura: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        this.isLoadingGrid = true;
+        const year = new Date(fechaFactura).getFullYear();
+        this.serviceTransactions = [];
+        this.filteredServiceTransactions = [];
+        this.selectedId = id;
+        this.selectedYear = year;
+        this.selectedInvoice = factura;
+
+        const selectedOperacion = this.informacion.find(op => op.Id === id);
+        if (selectedOperacion) {
+            this.unidadesTAE = selectedOperacion.CantidadTotal;
+        }
+
+        this.cliente.obtenerTransaccionesExcel(id, year).subscribe((response: any) => {
+            if (response && response.length > 0) {
+                this.infoExcel = response; // Aseguramos que infoExcel almacena los datos
+                console.log(" Datos de transacciones cargados en infoExcel:", this.infoExcel.length);
+            } else {
+                console.warn(" No se obtuvieron datos de transacciones.");
+                this.infoExcel = [];
+            }
+
+            this.cdRef.detectChanges(); // Forzamos la actualización en Angular
+            setTimeout(() => {
+                this.showServiceTable = true;
+                console.log(" showServiceTable actualizado");
+            }, 500);
+            resolve();
+        }, error => {
+            console.error(" Error obteniendo transacciones:", error);
+            reject(error);
+        });
+    });
+  }
+
 
   public datos: any
   showInfo(id: any, fechaFactura: any, factura: string): void {
@@ -608,6 +636,7 @@ export class OrdersComponent implements OnInit {
       this.unidadesTAE = selectedOperacion.CantidadTotal;
     }
 
+    this.obtenerTotalTransacciones(id, fechaFactura, factura);
     this.cliente.obtenerTransacciones(id, year, 1, 50).subscribe((response: any) => {
       this.isLoadingGrid = false;
 
@@ -646,6 +675,7 @@ export class OrdersComponent implements OnInit {
     this.serviceCurrentPage = page - 1;
     this.servicePageSize = pageSize;
 
+    this.obtenerTransaccionesOKExcel(id, year);
     this.cliente.obtenerTransaccionesOK(id, year, page, pageSize).subscribe((response: any) => {
       this.isLoadingGrid = false;
       this.serviceTransactions = response.data;
@@ -654,6 +684,35 @@ export class OrdersComponent implements OnInit {
       this.serviceTotalPages = response.totalPages;
       // console.log(`📌 Transacciones OK - Página ${this.serviceCurrentPage + 1} de ${this.serviceTotalPages}`);
       this.cdRef.detectChanges();
+    });
+  }
+
+  obtenerTransaccionesOKExcel(id: number, year: number, page: number = 1, pageSize: number = 50): void {
+    // console.log("📌 Obteniendo Transacciones Exitosas...");
+
+    this.showFuction = false; 
+    this.isLoadingGrid = true;
+    this.servicePageSize = 50; 
+    this.serviceCurrentPage = 0;
+    this.serviceTransactions = [];
+    this.filteredServiceTransactions = [];
+    this.serviceCurrentPage = page - 1;
+    this.servicePageSize = pageSize;
+
+    this.cliente.obtenerTransaccionesExcelOk(id, year).subscribe((response: any) => {
+      if (response && response.length > 0) {
+        this.infoExcel = response; // Aseguramos que infoExcel almacena los datos
+        console.log(" Datos de transacciones cargados en infoExcel:", this.infoExcel.length);
+    } else {
+        console.warn(" No se obtuvieron datos de transacciones.");
+        this.infoExcel = [];
+    }
+
+    this.cdRef.detectChanges(); // Forzamos la actualización en Angular
+    setTimeout(() => {
+        this.showServiceTable = true;
+        console.log("✅ showServiceTable actualizado");
+    }, 500);
     });
   }
 
