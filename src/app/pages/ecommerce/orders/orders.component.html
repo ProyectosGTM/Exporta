@@ -19,121 +19,90 @@
   <app-page-title title="Operaciones"></app-page-title>
   <div class="row">
     <div class="col-lg-12">
-      <div class="card-body">
-        <div class="card">
-          <div class="card-body">
-            <div class="row mb-2">
-              <div class="col-12">
-                <div class="row g-2">
-                  <div class="col-12 col-md-6 col-lg-3">
-                    <label class="d-flex align-items-center">Inicio:
-                      <input type="date" class="form-control ms-2" [(ngModel)]="informacionStartDate"
-                        (change)="filterInformacionByDateRange()">
-                    </label>
-                  </div>
-                  <div class="col-12 col-md-6 col-lg-3">
-                    <label class="d-flex align-items-center">Fin:
-                      <input type="date" class="form-control ms-2" [(ngModel)]="informacionEndDate"
-                        (change)="filterInformacionByDateRange()">
-                    </label>
-                  </div>
-                  <div class="col-12 col-lg-6 d-flex align-items-center">
-                    <span [@fadeInUp] *ngIf="showTotalRecordsMessage">
-                      Total de registros por fecha: {{ filteredInformacion.length }}
-                    </span>
-                  </div>
-                </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="row mb-md-2">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length">
+                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Inicio:
+                  <input type="date" class="form-control" [(ngModel)]="informacionStartDate"
+                    (change)="filterInformacionByDateRange()">
+                </label>
+                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Fin:
+                  <input type="date" class="form-control" [(ngModel)]="informacionEndDate"
+                    (change)="filterInformacionByDateRange()">
+                </label>
+                <span [@fadeInUp] *ngIf="showTotalRecordsMessage" class="d-inline-flex align-items-center"
+                  style="margin-left: 15px;">
+                  Total de registros por fecha: {{ filteredInformacion.length }}
+                </span>
               </div>
             </div>
-            <div class="table-responsive mb-4 col-12 col-lg-12">
-              <div class="container-fluid">
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div>
-                      <div class="table-responsive content-cards">
+            <div class="col-sm-12 col-md-6">
+              <div id="tickets-table_filter" class="dataTables_filter text-md-end">
+                <label class="d-inline-flex align-items-center" style="margin-left: 15px;">Buscar:&nbsp;&nbsp;
+                  <input type="text" class="form-control" [(ngModel)]="informacionSearchTerm"
+                    (input)="performInformacionSearch()" placeholder="Buscar...">
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive mb-4 col-12 col-lg-12">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="table-responsive content-cards" style="max-height: 430px; position: relative;">
                         <div *ngIf="validarTotal" class="alert alert-center">
                           <span class="alert-icon">⚠️</span>
                           <span class="alert-text">Sin registros por mostrar.</span>
                         </div>
-                        <ng-container *ngIf="!validarTotal">
-                          <dx-data-grid id="gridContainer" [columnHidingEnabled]="true" [showBorders]="true"
-                            [showColumnLines]="true" [showRowLines]="true" [dataSource]="filteredInformacion"
-                            [width]="'100%'">
-                            <dxo-search-panel [visible]="true" [width]="200"
-                              placeholder="Búsqueda Inteligente"></dxo-search-panel>
-                            <dxo-paging [pageSize]="5"></dxo-paging>
-                            <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[50, 100, 200]"
-                              [showInfo]="true"></dxo-pager>
-                            <dxo-group-panel [emptyPanelText]="mensajeAgrupar" [visible]="true"></dxo-group-panel>
-                            <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
-                            <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
-                            <dxo-export [enabled]="false" [allowExportSelectedData]="true"
-                              [texts]="{ exportAll: 'Exportar todos los datos a Excel', exportSelectedRows: 'Exportar filas seleccionadas a Excel' }"></dxo-export>
-                            <dxi-column caption="ID" dataField="Id" alignment="center">
-                              <div *dxTemplate="let row of 'idn'">
-                                {{ row.rowIndex + 1 + '#' + informacionStartIndex }}
-                              </div>
-                            </dxi-column>
-                            <dxi-column dataField="FechaFactura" caption="Fecha Factura" alignment="center"
-                              dataType="date" format="dd-MM-yyyy"> </dxi-column>
-                            <dxi-column dataField="FolioFactura" caption="Folio Factura"
-                              alignment="center"></dxi-column>
-                            <dxi-column caption="Acciones" alignment="center" [width]="150"
-                              cellTemplate="acciones"></dxi-column>
-                            <div *dxTemplate="let row of 'acciones'" class="d-flex gap-3 justify-content-center">
-                              <button valueExpr="id" id="actualizarButton" class="btn btn-primary btn-sm btn-rounded"
-                                (click)="showInfo(row.data.Id, row.data.FechaFactura, row.data.FolioFactura)">
-                                Ver información
-                              </button>
-                            </div>
-                          </dx-data-grid>
-                        </ng-container>
-
-                        <!-- <table *ngIf="!validarTotal"
-                              class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
-                              <thead>
-                                <tr>
-                                  <th>ID</th>
-                                  <th>Fecha Factura</th>
-                                  <th>Folio Factura</th>
-                                  <th>Acciones</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr *ngFor="let data of filteredInformacion; let i = index">
-                                  <td>{{ i + 1 + informacionStartIndex }}</td>
-                                  <td>{{ data.FechaFactura | date: 'dd-MM-yyyy' }}</td>
-                                  <td>{{ data.FolioFactura }}</td>
-                                  <td>
-                                    <button type="button" (click)="showInfo(data.Id, data.FechaFactura, data.FolioFactura)"
-                                      class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
-                                      Ver información
-                                    </button>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table> -->
+                        <table *ngIf="!validarTotal"
+                          class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Fecha Factura</th>
+                              <th>Folio Factura</th>
+                              <th>Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let data of filteredInformacion; let i = index">
+                              <td>{{ i + 1 + informacionStartIndex }}</td>
+                              <td>{{ data.FechaFactura | date: 'dd-MM-yyyy' }}</td>
+                              <td>{{ data.FolioFactura }}</td>
+                              <td>
+                                <button type="button" (click)="showInfo(data.Id, data.FechaFactura, data.FolioFactura)"
+                                  class="btn btn-primary btn-sm btn-rounded waves-effect waves-light">
+                                  Ver información
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
 
-                      <!-- <div *ngIf="!validarTotal" class="d-flex justify-content-between align-items-center mt-3">
-                            <label class="d-inline-flex align-items-center">Mostrar
-                              <select name="informacionPageSize" [(ngModel)]="informacionPageSize"
-                                class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm"
-                                (change)="onInformacionPageSizeChange()">
-                                <option *ngFor="let option of informacionPageSizeOptions" [ngValue]="option">{{ option }}
-                                </option>
-                              </select>
-                            </label>
-                            <div class="pagination-controls ms-auto">
-                              <button class="btn btn-primary" [disabled]="informacionCurrentPage === 0"
-                                (click)="onInformacionPreviousPage()">Anterior</button>&nbsp;&nbsp;
-                              <span>Página {{ informacionCurrentPage + 1 }} de {{ informacionTotalPages }} ({{
-                                informacionTotalRecords }} items)</span>&nbsp;&nbsp;
-                              <button class="btn btn-primary"
-                                [disabled]="informacionCurrentPage === informacionTotalPages - 1"
-                                (click)="onInformacionNextPage()">Siguiente</button>
-                            </div>
-                          </div> -->
+                      <div *ngIf="!validarTotal" class="d-flex justify-content-between align-items-center mt-3">
+                        <label class="d-inline-flex align-items-center">Mostrar
+                          <select name="informacionPageSize" [(ngModel)]="informacionPageSize"
+                            class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm"
+                            (change)="onInformacionPageSizeChange()">
+                            <option *ngFor="let option of informacionPageSizeOptions" [ngValue]="option">{{ option }}
+                            </option>
+                          </select>
+                        </label>
+                        <div class="pagination-controls ms-auto">
+                          <button class="btn btn-primary" [disabled]="informacionCurrentPage === 0"
+                            (click)="onInformacionPreviousPage()">Anterior</button>&nbsp;&nbsp;
+                          <span>Página {{ informacionCurrentPage + 1 }} de {{ informacionTotalPages }} ({{
+                            informacionTotalRecords }} items)</span>&nbsp;&nbsp;
+                          <button class="btn btn-primary"
+                            [disabled]="informacionCurrentPage === informacionTotalPages - 1"
+                            (click)="onInformacionNextPage()">Siguiente</button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -141,77 +110,131 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="card" *ngIf="showServiceTable" id="gridContainers">
-          <div class="card-body">
-            <div class="table-responsive mb-4 col-12 col-lg-12 mt-0">
-              <div class="container-fluid">
-                <div class="row mb-3 align-items-center">
-                  <div class="col-12 col-lg-6 d-flex align-items-center gap-2">
-                    <h4 class="fw-bold mb-0">Transacciones</h4>
-                    <span class="respuesta">Factura: {{ selectedInvoice }}</span>
+      <div class="card" *ngIf="showServiceTable" id="transaccionesTitle" [@fadeInUp]>
+        <div class="card-body">
+          <div class="table-responsive mb-4 col-12 col-lg-12">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="row mb-3 align-items-center">
+                    <div class="col-12 col-lg-6 d-flex align-items-center gap-2">
+                      <h4 class="fw-bold mb-0">Transacciones</h4>
+                      <span class="respuesta">Factura: {{ selectedInvoice }}</span>
+                    </div>
+                    <div class="col-12 col-lg-6 d-flex justify-content-lg-end gap-2 mt-2 mt-lg-0">
+                      <button type="button" (click)="obtenerTransaccionesOK(selectedId, selectedYear)"
+                        class="btn btn-warning">
+                        <i class="uil uil-check"></i> Obtener Transacciones Exitosas
+                      </button>
+                      <button type="button" class="btn btn-primary" (click)="exportToPDF()">
+                        Descargar PDF <i class="uil uil-arrow-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-12 col-md-6 col-lg-3">
+                      <label class="d-flex align-items-center">Inicio:
+                        <input type="date" class="form-control form-control ms-2" [(ngModel)]="serviceStartDate"
+                          (change)="filterServiceTransactionsByDateRange()">
+                      </label>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                      <label class="d-flex align-items-center">Fin:
+                        <input type="date" class="form-control form-control ms-2" [(ngModel)]="serviceEndDate"
+                          (change)="filterServiceTransactionsByDateRange()">
+                      </label>
+                    </div>
+                  </div>
+                  <div id="tableContainer" class="table-responsive content-cards">
+                    <table class="table table-centered datatables dt-responsive nowrap table-card-list compact-table">
+                      <thead>
+                        <tr>
+                          <!-- <th>#</th> -->
+                          <th>DATE</th>
+                          <th>TIME</th>
+                          <th>OUT IP</th>
+                          <th>IN IP</th>
+                          <th>GEO OUT</th>
+                          <th>GEO IN</th>
+                          <th>CARRIER</th>
+                          <th>PRODUCT</th>
+                          <th>AMOUNT</th>
+                          <th>PHONE</th>
+                          <th>TRN</th>
+                          <th>STATUS</th>
+                          <th>T TIME</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let transaction of filteredServiceTransactions; let i = index">
+                          <!-- <th scope="row">{{ i + 1 + serviceStartIndex }}</th> -->
+                          <td>{{ transaction.DATE }}</td>
+                          <td>{{ transaction.TIME }}</td>
+                          <td>{{ transaction.OUT_IP }}</td>
+                          <td>{{ transaction.IN_IP }}</td>
+                          <td>{{ transaction.GEO_OUT }}</td>
+                          <td>{{ transaction.GEO_IN }}</td>
+                          <td>{{ transaction.CARRIER }}</td>
+                          <td>{{ transaction.PROD }}</td>
+                          <td>{{ transaction.AMOUNT }}</td>
+                          <td>{{ transaction.PHONE }}</td>
+                          <td>{{ transaction.TRN }}</td>
+                          <td>{{ transaction.ST }}</td>
+                          <td>{{ transaction.T_TIME }}</td>
+                        </tr>
+                        <tr>
+                          <td style="background-color: #1F4E78; color: white;" colspan="9" class="text-end">
+                            <strong>UTAE :</strong>
+                          </td>
+                          <td style="background-color: #1F4E78; color: white;"><strong style="margin-left: -17%;">
+                            {{ unidadesTAE | number:'1.2-2' }}</strong>
+                          </td>
+                          <td style="background-color: #1F4E78; color: white;" colspan="4"></td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
 
-                  <div class="col-12 col-lg-6 d-flex justify-content-lg-end gap-2 mt-2 mt-lg-0">
-                    <button type="button" (click)="obtenerTransaccionesOK(selectedId, selectedYear)"
-                      class="btn btn-warning">
-                      <i class="uil uil-check"></i> Obtener Transacciones Exitosas
-                    </button>
-
-                    <button type="button" class="btn btn-primary" (click)="exportToPDF()">
-                      Descargar PDF <i class="uil uil-arrow-right"></i>
-                    </button>
+                  <div *ngIf="showFuction">
+                    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+                      <label class="d-flex align-items-center mb-2 mb-md-0">Mostrar
+                        <select name="servicePageSize" [(ngModel)]="servicePageSize"
+                          class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm ms-2"
+                          (change)="onServicePageSizeChange()">
+                          <option *ngFor="let option of servicePageSizeOptions" [ngValue]="option">{{ option }}</option>
+                        </select>
+                      </label>
+                      <div class="pagination-controls ms-auto mb-2 mb-md-0">
+                        <button class="btn btn-primary me-2" (click)="onServicePreviousPage()"
+                          [disabled]="serviceCurrentPage === 0">Anterior</button>
+                        <span> Página {{ serviceCurrentPage + 1 }} de {{ datos }} ({{ totalRecords }} items)</span>
+                        <button class="btn btn-primary ms-2" (click)="onServiceNextPage()"
+                          [disabled]="serviceCurrentPage + 1 === datos">Siguiente</button>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                <div class="row mb-3">
-                  <div class="col-12 col-md-6 col-lg-3">
-                    <label class="d-flex align-items-center">Inicio:
-                      <input type="date" class="form-control form-control ms-2" [(ngModel)]="serviceStartDate"
-                        (change)="filterServiceTransactionsByDateRange()">
-                    </label>
+                  <div *ngIf="!showFuction">
+                    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
+                      <label class="d-flex align-items-center mb-2 mb-md-0">Mostrar
+                        <select name="servicePageSize" [(ngModel)]="servicePageSize"
+                          class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm ms-2"
+                          (change)="onServiceOKPageSizeChange()">
+                          <option *ngFor="let option of servicePageSizeOptions" [ngValue]="option">{{ option }}</option>
+                        </select>
+                      </label>
+                      <div class="pagination-controls ms-auto mb-2 mb-md-0">
+                        <button class="btn btn-primary me-2" [disabled]="serviceCurrentPage === 0"
+                          (click)="onServiceOKPreviousPage()">Anterior</button>
+                        <span> Página {{ serviceCurrentPage + 1 }} de {{ serviceTotalPages }} ({{ serviceTotalRecords }}
+                          items)</span>
+                        <button class="btn btn-primary ms-2" [disabled]="serviceCurrentPage + 1 === serviceTotalPages"
+                          (click)="onServiceOKNextPage()">Siguiente</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-12 col-md-6 col-lg-3">
-                    <label class="d-flex align-items-center">Fin:
-                      <input type="date" class="form-control form-control ms-2" [(ngModel)]="serviceEndDate"
-                        (change)="filterServiceTransactionsByDateRange()">
-                    </label>
-                  </div>
-                </div>
-
-                <div class="table-responsive">
-                  <dx-data-grid [dataSource]="filteredServiceTransactions" [columnHidingEnabled]="true"
-                    [showBorders]="true" [showColumnLines]="true" [showRowLines]="true" [rowAlternationEnabled]="true"
-                    [width]="'100%'" (onExporting)="onExporting($event)" (onOptionChanged)="onPageChange($event)"
-                    [loadPanel]="{ enabled: true, text: 'Cargando...', showPane: true, showIndicator: true }">
-                    <dxo-search-panel [visible]="true" [width]="200"
-                      placeholder="Búsqueda Inteligente"></dxo-search-panel>
-                    <dxo-paging [pageSize]="50"></dxo-paging>
-                    <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[50, 100, 200]"
-                      [showInfo]="true"></dxo-pager>
-                    <dxo-group-panel [emptyPanelText]="mensajeAgrupar" [visible]="true"></dxo-group-panel>
-                    <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
-                    <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
-                    <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
-                    <dxi-column dataField="DATE" caption="DATE" alignment="center"></dxi-column>
-                    <dxi-column dataField="TIME" caption="TIME" alignment="center"></dxi-column>
-                    <dxi-column dataField="OUT_IP" caption="OUT IP" alignment="center"></dxi-column>
-                    <dxi-column dataField="IN_IP" caption="IN IP" alignment="center"></dxi-column>
-                    <dxi-column dataField="GEO_OUT" caption="GEO OUT" alignment="center"></dxi-column>
-                    <dxi-column dataField="GEO_IN" caption="GEO IN" alignment="center"></dxi-column>
-                    <dxi-column dataField="CARRIER" caption="CARRIER" alignment="center"></dxi-column>
-                    <dxi-column dataField="PROD" caption="PRODUCT" alignment="center"></dxi-column>
-                    <dxi-column dataField="AMOUNT" caption="AMOUNT" alignment="center" dataType="number"></dxi-column>
-                    <dxo-summary>
-                      <dxi-total-item column="AMOUNT" [displayFormat]="'UTAE: ' + (unidadesTAE | number:'1.2-2')"
-                        valueFormat="currency">
-                      </dxi-total-item>
-                    </dxo-summary>
-                    <dxi-column dataField="PHONE" caption="PHONE" alignment="center"></dxi-column>
-                    <dxi-column dataField="TRN" caption="TRN" alignment="center"></dxi-column>
-                    <dxi-column dataField="ST" caption="STATUS" alignment="center"></dxi-column>
-                    <dxi-column dataField="T_TIME" caption="T TIME" alignment="center"></dxi-column>
-                  </dx-data-grid>
                 </div>
               </div>
             </div>
@@ -220,4 +243,3 @@
       </div>
     </div>
   </div>
-</div>

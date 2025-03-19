@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -9,7 +9,6 @@ import { scaleInAnimation } from 'src/app/core/animations/scale-in.animation';
 import { ClienteService } from 'src/app/shared/services/clientes.service';
 import { SharedDataService } from 'src/app/shared/services/shared-data.service';
 import { Location } from '@angular/common';
-import CustomStore from 'devextreme/data/custom_store';
 
 interface Transaction {
   DATE: string;
@@ -34,10 +33,6 @@ interface Transaction {
   animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
 export class OrdersComponent implements OnInit {
-  public dataSource: any;
-  public cantidadTotalFactura: number;
-  public paginaActual: number = 1;
-  public cantidadTotalRegistros: number
   public nombre: string;
   public nombreCorto: string;
   public nombreUsuario: string;
@@ -48,7 +43,7 @@ export class OrdersComponent implements OnInit {
   transactions: Transaction[] = [];
   filteredTransactions: Transaction[] = [];
   pageSizeOptions = [10, 50, 100, 200];
-  pageSize = 60;
+  pageSize = 10;
   currentPage = 0;
   totalRecords = 0;
   totalPages = 0;
@@ -56,19 +51,22 @@ export class OrdersComponent implements OnInit {
   startDate: string = '';
   endDate: string = '';
   showTotalRecordsMessage: boolean = false;
+
   selectedId: any;
   selectedYear: number;
   selectedInvoice: string;
+
   serviceTransactions: Transaction[] = [];
   filteredServiceTransactions: Transaction[] = [];
-  servicePageSizeOptions = [10, 50, 100, 200];
-  servicePageSize = 10;
+  servicePageSizeOptions = [50, 100, 200];
+  servicePageSize = 50;
   serviceCurrentPage = 0;
   serviceTotalRecords = 0;
-  serviceTotalPages = 0;
+  serviceTotalPages: any;
   serviceSearchTerm: string = '';
   serviceStartDate: string = '';
   serviceEndDate: string = '';
+
   showServiceTable: boolean = false;
   informacion: any[] = [];
   informacionDos: any;
@@ -85,6 +83,7 @@ export class OrdersComponent implements OnInit {
   isLoading: boolean = false;
   isLoadingGrid: boolean = false;
   isLoadingPDF: boolean = false;
+
   clienteNombre: string;
   logotipo: string;
   idUsuario: string;
@@ -94,19 +93,13 @@ export class OrdersComponent implements OnInit {
   afiliadoNombreCorto: string;
   tipoOperacionNombre: string;
 
-  public mensajeAgrupar: string = "Arrastre un encabezado de columna aquí para agrupar por esa columna";
-  public showFilterRow: boolean;
-  public showHeaderFilter: boolean;
-
   constructor(
     private http: HttpClient,
     private cliente: ClienteService,
     private sharedDataService: SharedDataService,
-    private location: Location
-  ) {
-    this.showFilterRow = true;
-    this.showHeaderFilter = true;
-  }
+    private location: Location,
+    private cdRef: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.location.replaceState('');
@@ -129,22 +122,29 @@ export class OrdersComponent implements OnInit {
     });
 
     this.sharedDataService.idRol$.subscribe(idRol => {
+      
       this.idRol = idRol;
+
     });
 
     this.sharedDataService.nombreUsuario$.subscribe(nombre => {
+      
+
       this.nombreUsuario = nombre;
     });
 
     this.sharedDataService.afiliadoNombre$.subscribe(nombre => {
       this.afiliadoNombre = nombre;
+      
     });
 
     this.sharedDataService.afiliadoNombreCorto$.subscribe(nombreCorto => {
       this.afiliadoNombreCorto = nombreCorto;
+      
     });
     this.obtenerUsuarios();
   }
+
 
   obtenerUsuarios() {
     this.validarTotal = true;
@@ -164,7 +164,7 @@ export class OrdersComponent implements OnInit {
     }, error => {
       this.isLoading = false;
       this.validarTotal = true;
-      // console.error('Error al obtener usuario:', error);
+      
     });
   }
 
@@ -214,10 +214,16 @@ export class OrdersComponent implements OnInit {
   }
 
   onServicePageSizeChange(): void {
-    this.serviceCurrentPage = 0;
-    this.updateServiceTotalPages();
-    this.filterServiceTransactions();
+    setTimeout(() => {
+      document.getElementById("transaccionesTitle")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 200);
+    // console.log(`📌 Cambio de registros por página a: ${this.servicePageSize}`);
+
+    this.serviceCurrentPage = 0; 
+
+    this.loadTransactions(); 
   }
+
 
   onNextPage(): void {
     if ((this.currentPage + 1) * this.pageSize < this.totalRecords) {
@@ -234,10 +240,56 @@ export class OrdersComponent implements OnInit {
   }
 
   onServiceNextPage(): void {
-    if ((this.serviceCurrentPage + 1) * this.servicePageSize < this.serviceTotalRecords) {
+    setTimeout(() => {
+      document.getElementById("transaccionesTitle")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 200);
+    // console.log("➡️ Botón SIGUIENTE presionado");
+    // console.log(`📌 Página actual antes: ${this.serviceCurrentPage + 1}`);
+
+    if (this.serviceCurrentPage < this.datos - 1) {  
       this.serviceCurrentPage++;
-      this.filterServiceTransactions();
+      // console.log(`✅ Nueva página: ${this.serviceCurrentPage + 1}`);
+      this.loadTransactions();
     }
+  }
+
+  onServicePreviousPage(): void {
+    setTimeout(() => {
+      document.getElementById("transaccionesTitle")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 200);
+    // console.log("⬅️ Botón ANTERIOR presionado");
+    // console.log(`📌 Página actual antes: ${this.serviceCurrentPage + 1}`);
+
+    if (this.serviceCurrentPage > 0) {
+      this.serviceCurrentPage--;
+      // console.log(`✅ Nueva página: ${this.serviceCurrentPage + 1}`);
+      this.loadTransactions();
+    }
+  }
+
+  loadTransactions(): void {
+    this.isLoadingGrid = true;
+
+    // console.log(`🔄 Cargando datos para página: ${this.serviceCurrentPage + 1} con ${this.servicePageSize} registros por página`);
+
+    this.cliente.obtenerTransacciones(this.selectedId, this.selectedYear, this.serviceCurrentPage + 1, this.servicePageSize)
+      .subscribe((response: any) => {
+        this.isLoadingGrid = false;
+
+        this.serviceTransactions = response.data;
+        this.filteredServiceTransactions = [...this.serviceTransactions]; 
+        this.serviceTotalRecords = response.totalRecords;
+        this.datos = response.totalPages;
+
+        // console.log(`📌 Página actual en la tabla: ${this.serviceCurrentPage + 1}`);
+        // console.log(`📌 Total de páginas: ${this.datos}`);
+
+        
+        this.cdRef.detectChanges();
+      }, error => {
+        this.isLoadingGrid = false;
+        // console.error("❌ Error obteniendo transacciones:", error);
+      });
   }
 
   onPreviousPage(): void {
@@ -254,25 +306,7 @@ export class OrdersComponent implements OnInit {
     }
   }
 
-  onServicePreviousPage(): void {
-    if (this.serviceCurrentPage > 0) {
-      this.serviceCurrentPage--;
-      this.filterServiceTransactions();
-    }
-  }
 
-  formatCustomDate = (date: Date): string => {
-    if (!date) return '';
-    const day = date.getDate();
-    const month = this.months[date.getMonth()];
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
-
-  private months = [
-    'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
-  ];
 
   get startIndex(): number {
     return this.currentPage * this.pageSize;
@@ -366,8 +400,8 @@ export class OrdersComponent implements OnInit {
 
   filterServiceTransactions(): void {
     if (!this.serviceStartDate && !this.serviceEndDate) {
-        this.filteredServiceTransactions = [...this.serviceTransactions];
-        return;
+      this.filteredServiceTransactions = [...this.serviceTransactions];
+      return;
     }
 
     const start = this.serviceStartDate ? new Date(this.serviceStartDate) : null;
@@ -378,23 +412,21 @@ export class OrdersComponent implements OnInit {
     }
 
     this.filteredServiceTransactions = this.serviceTransactions.filter(transaction => {
-        const transactionDate = new Date(transaction.DATE);
+      const transactionDate = new Date(transaction.DATE);
 
-        const startDateOnly = start ? new Date(start.getFullYear(), start.getMonth(), start.getDate()) : null;
-        const endDateOnly = end ? new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999) : null;
-        const transactionDateOnly = new Date(transactionDate.getFullYear(), transactionDate.getMonth(), transactionDate.getDate());
+      const startDateOnly = start ? new Date(start.getFullYear(), start.getMonth(), start.getDate()) : null;
+      const endDateOnly = end ? new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999) : null;
+      const transactionDateOnly = new Date(transactionDate.getFullYear(), transactionDate.getMonth(), transactionDate.getDate());
 
-        let matchesStartDate = startDateOnly ? transactionDateOnly >= startDateOnly : true;
-        let matchesEndDate = endDateOnly ? transactionDateOnly <= endDateOnly : true;
+      let matchesStartDate = startDateOnly ? transactionDateOnly >= startDateOnly : true;
+      let matchesEndDate = endDateOnly ? transactionDateOnly <= endDateOnly : true;
 
-        return matchesStartDate && matchesEndDate;
+      return matchesStartDate && matchesEndDate;
     });
 
     this.serviceTotalRecords = this.filteredServiceTransactions.length;
     this.updateServiceTotalPages();
   }
-
-
 
   exportToExcel(): void {
     const allFilteredTransactions = this.serviceTransactions.filter(transaction => {
@@ -444,7 +476,7 @@ export class OrdersComponent implements OnInit {
           reader.readAsDataURL(blob);
         },
         error: (error) => {
-          // console.error('Error al obtener la imagen desde la URL:', error);
+          
           reject('No se pudo obtener la imagen desde la URL');
         }
       });
@@ -551,105 +583,116 @@ export class OrdersComponent implements OnInit {
 
       doc.save(`Transacciones - ${this.selectedInvoice}.pdf`);
     } catch (error) {
-      // console.error('Error generando el PDF:', error);
+      
     } finally {
       this.isLoadingPDF = false;
     }
   }
 
-  onPageChange(event: any): void {
-    if (event.fullName === "paging.pageIndex") {
-      const gridElement = document.getElementById("gridContainers");
-      
-      if (gridElement) {
-        gridElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-  }
-  
-
+  public datos: any
   showInfo(id: any, fechaFactura: any, factura: string): void {
+    // consol.log("📌 Seleccionando nueva transacción:", factura);
+    this.showFuction = true; 
+    this.servicePageSize = 50;
     this.isLoadingGrid = true;
     const year = new Date(fechaFactura).getFullYear();
-    this.serviceTransactions = []; 
+    this.serviceTransactions = [];
     this.filteredServiceTransactions = [];
+    this.serviceCurrentPage = 0; 
     this.selectedId = id;
     this.selectedYear = year;
     this.selectedInvoice = factura;
 
     const selectedOperacion = this.informacion.find(op => op.Id === id);
     if (selectedOperacion) {
-        this.unidadesTAE = selectedOperacion.CantidadTotal;
-        this.cantidadTotalFactura = Math.floor(parseFloat(selectedOperacion.CantidadTotal));
-        this.cantidadTotalRegistros = selectedOperacion.CantidadRegistros + selectedOperacion.CantidadRegistrosError;
-
-      console.log("📌 Cantidad Total de la Factura (entero):", this.cantidadTotalFactura);
-      console.log("🔹 Cantidad de Registros:", selectedOperacion.CantidadRegistros);
-      console.log("⚠️ Registros con Error:", selectedOperacion.CantidadRegistrosError);
-      console.log("🟢 Cantidad Total de Registros (Correctos + Errores):", this.cantidadTotalRegistros);
+      this.unidadesTAE = selectedOperacion.CantidadTotal;
     }
 
-    this.cliente.obtenerTransacciones(id, year, 1, this.cantidadTotalRegistros).subscribe({
-      next: (response: any) => {
-        this.isLoadingGrid = false;
-
-        console.log("📥 Respuesta completa de la API:", response);
-
-        if (response.data) {
-          console.log("📊 Datos dentro de 'data':", response.data);
-          this.serviceTransactions = response.data;
-          this.filteredServiceTransactions = [...this.serviceTransactions];
-          console.log("✅ Transacciones asignadas:", this.serviceTransactions);
-        } else {
-          console.warn("⚠️ La API no devolvió un array en 'data', asignando array vacío.");
-          this.serviceTransactions = [];
-          this.filteredServiceTransactions = [];
-        }
-
-        this.serviceTotalRecords = this.filteredServiceTransactions.length;
-        this.updateServiceTotalPages();
-        this.showServiceTable = true;
-
-        this.filterServiceTransactionsByDateRange();
-
-        setTimeout(() => {
-          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        }, 0);
-      },
-      error: (error) => {
-        this.isLoadingGrid = false;
-        console.error("❌ Error obteniendo transacciones:", error);
-      }
-    });
-  }
-
-  onPageIndexChanged(e: any) {
-    const pageIndex = e.component.pageIndex();
-    this.paginaActual = pageIndex + 1;
-    console.log(`📢 Página cambiada a: ${this.paginaActual}`);
-
-    e.component.refresh();
-  }
-
-  getIndex(rowIndex: number): number {
-    return rowIndex + 1;
-  }
-
-  obtenerTransaccionesOK(id: number, year: number): void {
-    this.isLoadingGrid = true;
-    this.serviceTransactions = [];
-    this.filteredServiceTransactions = [];
-    this.cliente.obtenerTransaccionesOK(id, year, 1, this.cantidadTotalRegistros).subscribe((response: any) => {
+    this.cliente.obtenerTransacciones(id, year, 1, 50).subscribe((response: any) => {
       this.isLoadingGrid = false;
+
+      this.datos = response.totalPages;
       this.serviceTransactions = response.data;
-      this.serviceTotalRecords = this.serviceTransactions.length;
+      this.filteredServiceTransactions = [...this.serviceTransactions]; 
+      this.serviceTotalPages = response.totalPages;
+      this.serviceTotalRecords = response.totalRecords;
+      this.totalRecords = response.totalRecords;
+
+      // console.log("📌 Nueva Transacción Seleccionada:", factura);
+      // console.log("📌 Total de Páginas:", this.datos);
+      // console.log("📌 Página Reiniciada a 1");
+
+      this.cdRef.detectChanges();
       this.updateServiceTotalPages();
       this.filterServiceTransactions();
-      this.showServiceTable = true;
       setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      }, 0);
+        this.showServiceTable = true;
+        // console.log("✅ showServiceTable actualizado");
+      }, 500);
     });
   }
 
+
+  public showFuction: boolean = true;
+  obtenerTransaccionesOK(id: number, year: number, page: number = 1, pageSize: number = 50): void {
+    // console.log("📌 Obteniendo Transacciones Exitosas...");
+
+    this.showFuction = false; 
+    this.isLoadingGrid = true;
+    this.servicePageSize = 50; 
+    this.serviceCurrentPage = 0;
+    this.serviceTransactions = [];
+    this.filteredServiceTransactions = [];
+    this.serviceCurrentPage = page - 1;
+    this.servicePageSize = pageSize;
+
+    this.cliente.obtenerTransaccionesOK(id, year, page, pageSize).subscribe((response: any) => {
+      this.isLoadingGrid = false;
+      this.serviceTransactions = response.data;
+      this.filteredServiceTransactions = [...this.serviceTransactions]; 
+      this.serviceTotalRecords = response.totalRecords;
+      this.serviceTotalPages = response.totalPages;
+      // console.log(`📌 Transacciones OK - Página ${this.serviceCurrentPage + 1} de ${this.serviceTotalPages}`);
+      this.cdRef.detectChanges();
+    });
+  }
+
+
+  onServiceOKNextPage(): void {
+    // console.log("➡️ Botón SIGUIENTE en Transacciones OK presionado");
+
+    if (this.serviceCurrentPage + 1 < this.serviceTotalPages) {
+      this.serviceCurrentPage++;
+      this.obtenerTransaccionesOK(this.selectedId, this.selectedYear, this.serviceCurrentPage + 1, this.servicePageSize);
+      setTimeout(() => {
+        document.getElementById("transaccionesTitle")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 200);
+    } else {
+      // console.log("🚫 Ya estás en la última página.");
+    }
+  }
+
+  onServiceOKPreviousPage(): void {
+    // console.log("⬅️ Botón ANTERIOR en Transacciones OK presionado");
+
+    if (this.serviceCurrentPage > 0) {
+      this.serviceCurrentPage--;
+      this.obtenerTransaccionesOK(this.selectedId, this.selectedYear, this.serviceCurrentPage + 1, this.servicePageSize);
+      setTimeout(() => {
+        document.getElementById("transaccionesTitle")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 200);
+    } else {
+      // console.log("🚫 Ya estás en la primera página.");
+    }
+  }
+
+  onServiceOKPageSizeChange(): void {
+    setTimeout(() => {
+      document.getElementById("transaccionesTitle")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 200);
+    // console.log(`📌 Cambio de registros por página a: ${this.servicePageSize}`);
+
+    this.serviceCurrentPage = 0; 
+    this.obtenerTransaccionesOK(this.selectedId, this.selectedYear, 1, this.servicePageSize);
+  }
 }
