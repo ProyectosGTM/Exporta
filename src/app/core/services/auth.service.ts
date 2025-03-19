@@ -108,14 +108,14 @@ export class AuthenticationService extends BaseServicesService {
 
   updateUsuario(id: string, form: any): Observable<any> {
     return this.http.put<any>(
-      `${environment.API_SECURITY}/api/controlusuarios/${id}`,
+      `${environment.API_SECURITY}/controlusuarios/${id}`,
       form
     );
   }
 
   getUsuarioControl(id: string): Observable<any> {
     return this.http.get<any>(
-      `${environment.API_SECURITY}/api/controlusuarios/${id}`
+      `${environment.API_SECURITY}/controlusuarios/${id}`
     );
   }
   

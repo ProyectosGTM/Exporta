@@ -11,15 +11,15 @@ export class ClienteService {
   constructor(private http: HttpClient) { }
 
   obtenerClienteTecsa(idCliente: string): Observable<any> {
-    return this.http.get<any>(`${environment.API_SECURITY}/api/clientes/${idCliente}`);
+    return this.http.get<any>(`${environment.API_SECURITY}/clientes/${idCliente}`);
   }
 
   obtenerUsuario(idUsuario: string): Observable<any> {
-    return this.http.get<any>(`${environment.API_SECURITY}/api/usuarios/${idUsuario}`);
+    return this.http.get<any>(`${environment.API_SECURITY}/usuarios/${idUsuario}`);
   }
 
   obtenerOperaciones(idOp: string) {
-    return this.http.get<any>(`${environment.API_SECURITY}/api/operaciones/${idOp}`).pipe(
+    return this.http.get<any>(`${environment.API_SECURITY}/operaciones/${idOp}`).pipe(
       catchError(error => {
         console.error('Error al obtener operaciones', error);
         return throwError(error);
@@ -30,22 +30,22 @@ export class ClienteService {
 
   obtenerTransacciones(id: number, year: number, page: number, pageSize: number): Observable<any> {
     return this.http.get<any>(
-      `${environment.API_SECURITY}/api/transacciones/paginated/${id}?year=${year}&page=${page}&pageSize=${pageSize}`
+      `${environment.API_SECURITY}/transacciones/paginated/${id}?year=${year}&page=${page}&pageSize=${pageSize}`
     );
   }
 
   obtenerTransaccionesOK(id: number, year: number, page: number, pageSize: number): Observable<any> {
     return this.http.get<any>(
-      `${environment.API_SECURITY}/api/transaccionesok/paginated/${id}?year=${year}&page=${page}&pageSize=${pageSize}`
+      `${environment.API_SECURITY}/transaccionesok/paginated/${id}?year=${year}&page=${page}&pageSize=${pageSize}`
     );
   }
 
   obtenerTransaccionesExcel(id: number, year: number): Observable<any> {
-    return this.http.get<any>(`${environment.API_SECURITY}/api/transacciones/${id}?year=${year}`);
+    return this.http.get<any>(`${environment.API_SECURITY}/transacciones/${id}?year=${year}`);
   }
 
   obtenerTransaccionesExcelOk(id: number, year: number): Observable<any> {
-    return this.http.get<any>(`${environment.API_SECURITY}/api/transaccionesok/${id}?year=${year}`);
+    return this.http.get<any>(`${environment.API_SECURITY}/transaccionesok/${id}?year=${year}`);
   }
   
 }
