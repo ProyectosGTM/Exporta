@@ -597,7 +597,7 @@ export class OrdersComponent implements OnInit {
         this.cliente.obtenerTransaccionesExcel(id, year).subscribe((response: any) => {
             if (response && response.length > 0) {
                 this.infoExcel = response; // Aseguramos que infoExcel almacena los datos
-                console.log(" Datos de transacciones cargados en infoExcel:", this.infoExcel.length);
+                // console.log(" Datos de transacciones cargados en infoExcel:", this.infoExcel.length);
             } else {
                 console.warn(" No se obtuvieron datos de transacciones.");
                 this.infoExcel = [];
@@ -606,7 +606,7 @@ export class OrdersComponent implements OnInit {
             this.cdRef.detectChanges(); // Forzamos la actualización en Angular
             setTimeout(() => {
                 this.showServiceTable = true;
-                console.log(" showServiceTable actualizado");
+                // console.log(" showServiceTable actualizado");
             }, 500);
             resolve();
         }, error => {
