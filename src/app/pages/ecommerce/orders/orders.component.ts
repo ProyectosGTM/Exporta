@@ -483,23 +483,30 @@ export class OrdersComponent implements OnInit {
     });
   }
 
+  public imagePDF: any;
   async exportToPDF(): Promise<void> {
-    // console.log("📌 Intentando exportar PDF con infoExcel:", this.infoExcel);
 
     if (!this.infoExcel || this.infoExcel.length === 0) {
         console.warn("⚠️ No hay datos en infoExcel para exportar.");
-        // alert("No hay datos para exportar a PDF.");
         return;
+    }
+
+    if(this.logotipo == 'https://exporta.s3.amazonaws.com/LogosClientes/tecsa.png'){
+      this.imagePDF = '../../../../assets/images/tecsaPDF.png'
+    } else if(this.logotipo == 'https://exporta.s3.amazonaws.com/LogosClientes/entorno.png' ){
+      this.imagePDF = '../../../../assets/images/entornoPDF.png'
+    } else{
+      this.imagePDF = '../../../../assets/images/logoKonnecta.png'
     }
 
     this.isLoadingPDF = true;
     try {
       const doc = new jsPDF('landscape');
-      const imgUrl = '../../../../assets/images/logoKonnecta.png';
-      const imgData = await this.getBase64ImageFromURL(imgUrl);
+      // const imgUrl = '../../../../assets/images/logoKonnecta.png';
+      const imgData = await this.getBase64ImageFromURL(this.imagePDF);
 
       // Posiciones para el logo
-      const imgX = 15, imgY = 12, imgWidth = 15, imgHeight = 14;
+      const imgX = 15, imgY = 12, imgWidth = 28, imgHeight = 14;
       doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
 
       // Línea separadora

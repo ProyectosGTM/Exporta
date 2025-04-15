@@ -34,18 +34,19 @@ export class ClienteService {
     );
   }
 
+  obtenerTransaccionesExcel(id: number, year: number): Observable<any> {
+    return this.http.get<any>(`http://216.238.84.225:3006/api/transacciones/${id}?year=${year}`);
+  }
+
+  
   obtenerTransaccionesOK(id: number, year: number, page: number, pageSize: number): Observable<any> {
     return this.http.get<any>(
       `${environment.API_SECURITY}/transaccionesok/paginated/${id}?year=${year}&page=${page}&pageSize=${pageSize}`
     );
   }
 
-  obtenerTransaccionesExcel(id: number, year: number): Observable<any> {
-    return this.http.get<any>(`${environment.API_SECURITY}/transacciones/${id}?year=${year}`);
-  }
-
   obtenerTransaccionesExcelOk(id: number, year: number): Observable<any> {
-    return this.http.get<any>(`${environment.API_SECURITY}/transaccionesok/${id}?year=${year}`);
+    return this.http.get<any>(`http://216.238.84.225:3006/api/transaccionesok/${id}?year=${year}`);
   }
   
 }
