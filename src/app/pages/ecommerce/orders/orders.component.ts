@@ -495,12 +495,12 @@ export class OrdersComponent implements OnInit {
     this.isLoadingPDF = true;
     try {
       const doc = new jsPDF('landscape');
-      const imgUrl = '../../../../assets/images/logoKonnecta.png';
-      const imgData = await this.getBase64ImageFromURL(imgUrl);
+      // const imgUrl = '../../../../assets/images/logoKonnecta.png';
+      const imgData = this.logotipo;
 
       // Posiciones para el logo
-      const imgX = 15, imgY = 12, imgWidth = 15, imgHeight = 14;
-      doc.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
+      const imgX = 15, imgY = 12, imgWidth = 30, imgHeight = 14;
+      doc.addImage(imgData, imgX, imgY, imgWidth, imgHeight);
 
       // Línea separadora
       const lineX = imgX + imgWidth + 5;
