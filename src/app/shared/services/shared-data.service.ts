@@ -114,6 +114,9 @@ afiliadoNombre$ = this.afiliadoNombreSource.asObservable();
 private afiliadoNombreCortoSource = new BehaviorSubject<string>(this.getAfiliadoNombreCortoFromStorage());
 afiliadoNombreCorto$ = this.afiliadoNombreCortoSource.asObservable();
 
+private afiliadoLogoLocal = new BehaviorSubject<string>(this.getAfiliadoLogoFromStorage());
+afiliadoLogoLocal$ = this.afiliadoLogoLocal.asObservable();
+
 setAfiliadoNombre(nombre: string) {
   this.afiliadoNombreSource.next(nombre);
   localStorage.setItem('afiliadoNombre', nombre);
@@ -124,12 +127,22 @@ setAfiliadoNombreCorto(nombreCorto: string) {
   localStorage.setItem('afiliadoNombreCorto', nombreCorto);
 }
 
+setAfiliadoLogo(afiliadoLogo: string) {
+  this.afiliadoLogoLocal.next(afiliadoLogo);
+  localStorage.setItem('afiliadoLogoLocal', afiliadoLogo); // <- Corrección aquí
+}
+
+
 getAfiliadoNombreFromStorage(): string {
   return localStorage.getItem('afiliadoNombre') || null;
 }
 
 getAfiliadoNombreCortoFromStorage(): string {
   return localStorage.getItem('afiliadoNombreCorto') || null;
+}
+
+getAfiliadoLogoFromStorage(): string {
+  return localStorage.getItem('afiliadoLogoLocal') || null;
 }
 
 

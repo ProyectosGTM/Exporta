@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -98,11 +98,17 @@ export class OrdersComponent implements OnInit {
     private cliente: ClienteService,
     private sharedDataService: SharedDataService,
     private location: Location,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private ngZone: NgZone
   ) { }
 
+  public logoLocal: any;
   ngOnInit(): void {
     this.location.replaceState('');
+    this.sharedDataService.afiliadoLogoLocal$.subscribe(LogotipoAfiliadoLocal => {
+      this.logoLocal = LogotipoAfiliadoLocal;
+    });
+    
     this.sharedDataService.nombreCliente$.subscribe(nombre => {
       this.clienteNombre = nombre;
     });
@@ -482,25 +488,38 @@ export class OrdersComponent implements OnInit {
       });
     });
   }
+  public imagePDF: any;
 
   async exportToPDF(): Promise<void> {
-    // console.log("📌 Intentando exportar PDF con infoExcel:", this.infoExcel);
-
-    if (!this.infoExcel || this.infoExcel.length === 0) {
-        console.warn("⚠️ No hay datos en infoExcel para exportar.");
-        // alert("No hay datos para exportar a PDF.");
-        return;
-    }
-
     this.isLoadingPDF = true;
+  
+    // 👇 Esta línea permite que Angular renderice el cambio antes de seguir
+    await new Promise(resolve => setTimeout(resolve, 0));
+  
+    if (!this.infoExcel || this.infoExcel.length === 0) {
+      console.warn("⚠️ No hay datos en infoExcel para exportar.");
+      this.isLoadingPDF = false;
+      return;
+    }
+  
+    // Asignación condicional del logotipo
+    let imgWidth = 15;
+    if (this.logoLocal === '../../../../assets/images/logoOlivares.png') {
+      this.imagePDF = this.logoLocal;
+      this.isLoadingPDF = true;
+      imgWidth = 30;
+    } else {
+      this.isLoadingPDF = true;
+      this.imagePDF = '../../../../assets/images/logoKonnecta.png';
+      imgWidth = 15;
+    }
+  
     try {
       const doc = new jsPDF('landscape');
-      // const imgUrl = '../../../../assets/images/logoKonnecta.png';
-      const imgData = this.logotipo;
-
-      // Posiciones para el logo
-      const imgX = 15, imgY = 12, imgWidth = 30, imgHeight = 14;
-      doc.addImage(imgData, imgX, imgY, imgWidth, imgHeight);
+  
+      // Imagen
+      const imgX = 15, imgY = 12, imgHeight = 14;
+      doc.addImage(this.imagePDF, imgX, imgY, imgWidth, imgHeight);
 
       // Línea separadora
       const lineX = imgX + imgWidth + 5;
@@ -522,15 +541,14 @@ export class OrdersComponent implements OnInit {
       doc.text(`NAME: ${this.afiliadoNombre}`, textX, textYStart + 2 * textLineHeight);
       doc.text(`SEND TO: ${this.enviadoNombre}`, textX, textYStart + 3 * textLineHeight);
       doc.text(`TYPE: ${this.tipoOperacionNombre}`, 190, 23);
-
-    // Fecha y hora actual
+  
     const currentDate = new Date();
     const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const formattedTime = currentDate.toLocaleTimeString('es-ES');
     const dateTimeText = `${formattedDate}, ${formattedTime}`;
     doc.text(dateTimeText, 190, 28);
-
-    // Crear tabla con los datos de infoExcel
+  
+      // Tabla
       (doc as any).autoTable({
         head: [['#', 'DATE', 'TIME', 'OUT IP', 'IN IP', 'GEO OUT', 'GEO IN', 'CARRIER', 'PRODUCT', 'AMOUNT', 'PHONE', 'TRN', 'STATUS', 'T TIME']],
         body: this.infoExcel.map((transaction: any, index: number) => [

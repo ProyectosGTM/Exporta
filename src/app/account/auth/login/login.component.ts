@@ -104,6 +104,7 @@ export class LoginComponent implements OnInit {
                   const afiliado = usuario.afiliados[0];
                   this.sharedDataService.setAfiliadoNombre(afiliado.Nombre);
                   this.sharedDataService.setAfiliadoNombreCorto(afiliado.NombreCorto);
+                  this.sharedDataService.setAfiliadoLogo(afiliado.LogotipoAfiliadoLocal);
             
                   console.log('Nombre almacenado:', afiliado.Nombre); 
                   console.log('Nombre Corto almacenado:', afiliado.NombreCorto);
