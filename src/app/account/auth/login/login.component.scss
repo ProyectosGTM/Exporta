@@ -1,120 +1,184 @@
-.buttonSubmit{
-	display: flex;
-	justify-content: center;
-	align-items: center;
-    margin-left: auto;
-	gap: 0.5rem;
-}
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #2d313e, #394049, #009acb);
 
-.greens{
-	color: #0387ff;
-}
+  .login-box {
+    background: #fff;
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    animation: fadeIn 0.6s ease-in-out;
 
-.blueButton{
-    background-color: #0387ff;
-    color: white;
-}
-
-
-#small-indicator .dx-loadindicator-icon {
-    border-color: white !important;
-}
-
-
-#small-indicator .dx-loadindicator-segment {
-    background-color: white !important;
-}
-
-.eyeButton{
-    position: absolute;
-    cursor: pointer;
-    right: 33px;
-    top: 230px;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-	transition: 0.3s ease-in-out all;
-    align-items: center;
-    border-radius: 50%;
-    background-color: none;
-    ::ng-deep svg{
-        display: flex;
-}
-    & > * {
-        pointer-events: none;
-}
-}
-.eyeButton:hover{
-    background-color: rgb(184, 184, 184);
-}
-
-h5{
-    color: white;
-}
-
-p{
-    color: white;
-}
-
-.tamaños{
-    width: 30%;
-    height: 25%;
-}
-
-.text-white{
-    color: white;
+    .logo img {
+      width: 250px;
+      margin-bottom: 2.3rem;
     }
-.text-gray{
-    color: #adadad;
+
+    h2 {
+      margin-bottom: 0.2rem;
+      color: #005081;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .google-btn {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 0.7rem;
+      width: 100%;
+      border-radius: 8px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+      transition: background 0.3s;
+
+      &:hover {
+        background: #f1f1f1;
+      }
+
+      i {
+        color: #db4437;
+      }
+    }
+
+    .separator {
+      position: relative;
+      margin: 1.5rem 0;
+      text-align: center;
+      color: #999;
+      font-size: 0.9rem;
+
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 40%;
+        height: 1px;
+        background: #ccc;
+      }
+
+      &::before {
+        left: 0;
+      }
+
+      &::after {
+        right: 0;
+      }
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 1.2rem;
+
+      label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #333;
+        margin-bottom: 0.3rem;
+        display: block;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.9rem;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 1rem;
+
+        &:focus {
+          border-color: #005081;
+          outline: none;
+        }
+      }
+
+      .password-container {
+        position: relative;
+
+        input {
+          padding-right: 40px;
+        }
+
+        i {
+          position: absolute;
+          top: 50%;
+          right: 12px;
+          transform: translateY(-50%);
+          cursor: pointer;
+          color: #888;
+        }
+      }
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+
+      label {
+        color: #444;
+      }
+
+      .forgot {
+        color: #007bff;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    button[type='submit'] {
+      background-color: #005081;
+      color: white;
+      border: none;
+      padding: 0.9rem;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s;
+
+      &:hover {
+        background-color: #003d63;
+      }
+
+      &:disabled {
+        background-color: #aaa;
+        cursor: not-allowed;
+      }
+    }
+  }
 }
 
-.background-login{
-    background-color: #23252f; border: #23252f;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-
-.text-muted{
-  color: #d5e2f9;
-}
-
-* {
-  box-sizing: border-box;
-}
-body {
-  background-size: 100% 100%;
-  background-color: #3f4762;
-  font-family: "Varela Round", sans-serif;
-  line-height: 1.5;
-  margin: 0;
-  min-block-size: 100vh;
-}
-
-.justigy{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-.btn-new{
-  background-color: #036dfd;
-  color: rgb(255, 255, 255);
-  transition: 0.2s ease-in-out all;
-}
-
-.btn-new:hover{
-  background-color: #0049af;
-  color: white;
-  transition: 0.2s ease-in-out all;
-}
-
-.btn-new:disabled{
-  background-color: #92bfff;
-  color: white;
-  transition: 0.2s ease-in-out all;
-  border: none;
-}
 
 .loader {
   width: 20px;

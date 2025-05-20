@@ -22,6 +22,12 @@ import { SharedDataService } from 'src/app/shared/services/shared-data.service';
   animations: [fadeInRightAnimation, fadeInUpAnimation, scaleInAnimation]
 })
 export class LoginComponent implements OnInit {
+  showPassword = false;
+
+togglePassword() {
+  this.showPassword = !this.showPassword;
+}
+
   loginForm: UntypedFormGroup;
   public credentials: Credentials;
   public textLogin: string = 'Iniciar Sesión';

@@ -9,6 +9,7 @@ import { scaleInAnimation } from 'src/app/core/animations/scale-in.animation';
 import { ClienteService } from 'src/app/shared/services/clientes.service';
 import { SharedDataService } from 'src/app/shared/services/shared-data.service';
 import { Location } from '@angular/common';
+import { AuthenticationService } from 'src/app/core/services/auth.service';
 
 interface Transaction {
   DATE: string;
@@ -99,8 +100,11 @@ export class OrdersComponent implements OnInit {
     private sharedDataService: SharedDataService,
     private location: Location,
     private cdRef: ChangeDetectorRef,
-    private ngZone: NgZone
-  ) { }
+    private ngZone: NgZone,
+    private users: AuthenticationService
+  ) { 
+    this.users.getUser();
+  }
 
   public logoLocal: any;
   ngOnInit(): void {
